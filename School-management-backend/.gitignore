@@ -1,0 +1,53 @@
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Environment files
+.env
+.env.local
+
+# Build folders
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# IntelliJ
+.idea/
+
+# Dependency directories
+vendor/
+
+# XAMPP / PHP temp
+tmp/
+temp/
+
+# Uploads (optional)
+uploads/
+
+# Cache
+.cache/
+
+# Coverage
+coverage/
+
+# Database
+*.sql
+
+# React Native
+.expo/
+android/app/build/
+ios/build/
+
+# Firebase
+google-services.json
+GoogleService-Info.plist

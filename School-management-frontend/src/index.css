@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #12b886;
+  --color-primary-hover: #0ca678;
+  --color-background: #F0F5FB;
+  --color-surface: #ffffff;
+}
+
+body {
+  background-color: var(--color-background);
+  color: #5c5c5c;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark body {
+  --color-background: #0f172a;
+  background-color: var(--color-background);
+  color: #94a3b8;
+}
+
+/* Custom Scrollbar for sidebar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+.accordion-content {
+  transition: max-height 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.accordion-content.open {
+  max-height: 500px;
+}
+
+.accordion-content.closed {
+  max-height: 0px;
+}
