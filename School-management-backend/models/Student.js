@@ -72,6 +72,7 @@ const studentSchema = new mongoose.Schema({
   category: { type: String },
   aadharNumber: { type: String },
   email: { type: String },
+  avatar: { type: String },
   createdAt: {
     type: Date,
     default: Date.now

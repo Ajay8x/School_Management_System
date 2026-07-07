@@ -2,16 +2,14 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, XCircle } from 'lucide-react';
 
-export default function HealthRecord() {
-  const [date, setDate] = useState('');
+export default function ServiceAllocation() {
   const [batch, setBatch] = useState('');
-  const [recordVision, setRecordVision] = useState(false);
-  const [recordChest, setRecordChest] = useState(false);
-  const [recordDental, setRecordDental] = useState(false);
+  const [studentName, setStudentName] = useState('');
+  const [type, setType] = useState('');
+  const [studentGroup, setStudentGroup] = useState('');
 
-  // We are designing the empty state based on the mockup
+  // Designing the empty state based on the mockup
   const noRecordFound = true;
-  const batchError = batch === ''; // Show error when empty as per mockup
 
   return (
     <div className="bg-gray-100 dark:bg-slate-900 min-h-screen">
@@ -21,24 +19,17 @@ export default function HealthRecord() {
         <span className="text-gray-400 mr-2">&gt;</span>
         <Link to="/admin/students" className="text-gray-500 hover:text-gray-700 font-medium mr-2">Student</Link>
         <span className="text-gray-400 mr-2">&gt;</span>
-        <span className="text-gray-800 font-medium">Health Record</span>
+        <span className="text-gray-800 font-medium">Service Allocation</span>
       </div>
 
       <div className="p-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Health Record</h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Service Allocation</h1>
+        </div>
 
         {/* Filter Card */}
         <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-6 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Date</label>
-              <input 
-                type="date" 
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full px-3 py-2 border-b border-gray-300 dark:border-slate-600 bg-transparent focus:outline-none focus:border-blue-500 text-sm text-gray-500"
-              />
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
             <div>
               <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Select Batch</label>
               <select 
@@ -50,41 +41,44 @@ export default function HealthRecord() {
                 <option value="2023-2024">2023-2024</option>
                 <option value="2024-2025">2024-2025</option>
               </select>
-              {batchError && <p className="text-red-500 text-xs mt-1">The batch field is required.</p>}
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Student Name</label>
+              <input 
+                type="text" 
+                placeholder="Student Name"
+                value={studentName}
+                onChange={(e) => setStudentName(e.target.value)}
+                className="w-full px-3 py-2 border-b border-gray-300 dark:border-slate-600 bg-transparent focus:outline-none focus:border-blue-500 text-sm text-gray-800"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Type</label>
+              <select 
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                className="w-full px-3 py-2 border-b border-gray-300 dark:border-slate-600 bg-transparent focus:outline-none focus:border-blue-500 text-sm text-gray-500 appearance-none"
+              >
+                <option value="">Type</option>
+                <option value="Hostel">Hostel</option>
+                <option value="Transport">Transport</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Student Group</label>
+              <select 
+                value={studentGroup}
+                onChange={(e) => setStudentGroup(e.target.value)}
+                className="w-full px-3 py-2 border-b border-gray-300 dark:border-slate-600 bg-transparent focus:outline-none focus:border-blue-500 text-sm text-gray-500 appearance-none"
+              >
+                <option value="">Student Group</option>
+                <option value="Group A">Group A</option>
+                <option value="Group B">Group B</option>
+              </select>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Record Vision</label>
-              <div 
-                className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${recordVision ? 'bg-slate-800' : 'bg-gray-200 border border-gray-300'}`}
-                onClick={() => setRecordVision(!recordVision)}
-              >
-                <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${recordVision ? 'translate-x-6' : ''}`}></div>
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Record Chest</label>
-              <div 
-                className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${recordChest ? 'bg-slate-800' : 'bg-gray-200 border border-gray-300'}`}
-                onClick={() => setRecordChest(!recordChest)}
-              >
-                <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${recordChest ? 'translate-x-6' : ''}`}></div>
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Record Dental</label>
-              <div 
-                className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${recordDental ? 'bg-slate-800' : 'bg-gray-200 border border-gray-300'}`}
-                onClick={() => setRecordDental(!recordDental)}
-              >
-                <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${recordDental ? 'translate-x-6' : ''}`}></div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex justify-end space-x-3">
+          <div className="flex justify-end space-x-3 mt-8">
             <button className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-md transition-colors">
               Cancel
             </button>
@@ -99,10 +93,10 @@ export default function HealthRecord() {
           </div>
         </div>
 
-        {/* Update Health Record Card */}
+        {/* Service Allocation Card */}
         <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
           <div className="p-4 border-b border-gray-200 dark:border-slate-700 flex justify-between items-center">
-            <h3 className="text-base font-bold text-gray-800 dark:text-white">Update Health Record</h3>
+            <h3 className="text-base font-bold text-gray-800 dark:text-white">Service Allocation</h3>
           </div>
 
           <div className="p-4">

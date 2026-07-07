@@ -1,0 +1,13 @@
+DB id password 
+id= ajju8x
+password = [1234561]
+
+
+
+Frontend admin id password 
+admin@gmail.com
+123456
+
+Frontend super admin id password 
+super@gmail.com
+123456

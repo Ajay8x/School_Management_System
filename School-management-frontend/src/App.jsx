@@ -15,7 +15,13 @@ import Teachers from './pages/Teachers';
 import AddStudent from './pages/students/AddStudent';
 import StudentProfile from './pages/students/StudentProfile';
 import RollNumber from './pages/students/RollNumber';
+import Photo from './pages/students/Photo';
 import HealthRecord from './pages/students/HealthRecord';
+import ElectiveSubject from './pages/students/ElectiveSubject';
+import StudentAttendance from './pages/students/Attendance';
+import FeeAllocation from './pages/students/FeeAllocation';
+import ServiceAllocation from './pages/students/ServiceAllocation';
+import Promotion from './pages/students/Promotion';
 import Enquiry from './pages/reception/Enquiry';
 import VisitorLog from './pages/reception/VisitorLog';
 import Complaint from './pages/reception/Complaint';
@@ -66,13 +72,13 @@ function App() {
           <Route path="students/edit/:id" element={<AddStudent />} />
           <Route path="students/registration" element={<AddStudent />} />
           <Route path="students/roll-number" element={<RollNumber />} />
-          <Route path="students/photo" element={<Placeholder title="Photo" />} />
+          <Route path="students/photo" element={<Photo />} />
           <Route path="students/health-record" element={<HealthRecord />} />
-          <Route path="students/elective-subject" element={<Placeholder title="Elective Subject" />} />
-          <Route path="students/attendance" element={<Placeholder title="Student Attendance" />} />
-          <Route path="students/fee-allocation" element={<Placeholder title="Fee Allocation" />} />
-          <Route path="students/service-allocation" element={<Placeholder title="Service Allocation" />} />
-          <Route path="students/promotion" element={<Placeholder title="Promotion" />} />
+          <Route path="students/elective-subject" element={<ElectiveSubject />} />
+          <Route path="students/attendance" element={<StudentAttendance />} />
+          <Route path="students/fee-allocation" element={<FeeAllocation />} />
+          <Route path="students/service-allocation" element={<ServiceAllocation />} />
+          <Route path="students/promotion" element={<Promotion />} />
           <Route path="students/edit-request" element={<Placeholder title="Edit Request" />} />
           <Route path="students/service-request" element={<Placeholder title="Service Request" />} />
           <Route path="students/leave-request" element={<Placeholder title="Leave Request" />} />

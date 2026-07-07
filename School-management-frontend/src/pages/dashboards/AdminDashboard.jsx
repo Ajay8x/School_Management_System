@@ -1,6 +1,15 @@
 import { Users, GraduationCap, ArrowUp, Briefcase, Bell } from 'lucide-react';
 import { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts';
 import API from '../../api/axios';
 import { AuthContext } from '../../context/AuthContext';
 
@@ -97,8 +106,41 @@ export default function Dashboard() {
           <div className="flex justify-between items-center mb-6">
              <h2 className="text-[16px] font-bold text-gray-800 dark:text-white">User Overview</h2>
           </div>
-          <div className="h-[300px] flex items-center justify-center bg-gray-50/50 dark:bg-slate-700/50 rounded-xl border border-dashed border-gray-200 dark:border-slate-600 transition-colors duration-300">
-            <p className="text-gray-400 dark:text-slate-500 text-sm">Chart Placeholder</p>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart
+                data={[
+                  { name: 'Jan', Students: 4000, Teachers: 240, Parents: 2400 },
+                  { name: 'Feb', Students: 4200, Teachers: 250, Parents: 2500 },
+                  { name: 'Mar', Students: 4500, Teachers: 260, Parents: 2800 },
+                  { name: 'Apr', Students: 4800, Teachers: 270, Parents: 3000 },
+                  { name: 'May', Students: 5000, Teachers: 280, Parents: 3100 },
+                  { name: 'Jun', Students: 5200, Teachers: 290, Parents: 3300 },
+                  { name: 'Jul', Students: stats.students || 5400, Teachers: stats.teachers || 300, Parents: stats.guardians || 3500 },
+                ]}
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+              >
+                <defs>
+                  <linearGradient id="colorStudents" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#ff8a4c" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#ff8a4c" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="colorTeachers" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#4361ee" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#4361ee" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#94a3b8' }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#94a3b8' }} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <Tooltip 
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)' }}
+                  labelStyle={{ fontWeight: 'bold', color: '#334155' }}
+                />
+                <Area type="monotone" dataKey="Students" stroke="#ff8a4c" strokeWidth={3} fillOpacity={1} fill="url(#colorStudents)" />
+                <Area type="monotone" dataKey="Teachers" stroke="#4361ee" strokeWidth={3} fillOpacity={1} fill="url(#colorTeachers)" />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </div>
         

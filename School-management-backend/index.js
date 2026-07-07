@@ -2,12 +2,55 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const seedDummyData = require('./config/seedDummyData');
+const User = require('./models/User');
 
 // Load environment variables
 dotenv.config();
 
 // Connect to database
 connectDB();
+
+// Seed Admins
+const seedAdmins = async () => {
+  try {
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    const superAdminEmail = process.env.SUPER_ADMIN_EMAIL;
+    const superAdminPassword = process.env.SUPER_ADMIN_PASSWORD;
+
+    if (superAdminEmail && superAdminPassword) {
+      const superAdminExists = await User.findOne({ email: superAdminEmail });
+      if (!superAdminExists) {
+        await User.create({
+          name: 'Super Admin',
+          email: superAdminEmail,
+          password: superAdminPassword,
+          role: 'super-admin'
+        });
+        console.log('Super Admin seeded successfully from .env');
+      }
+    }
+
+    if (adminEmail && adminPassword) {
+      const adminExists = await User.findOne({ email: adminEmail });
+      if (!adminExists) {
+        await User.create({
+          name: 'Admin',
+          email: adminEmail,
+          password: adminPassword,
+          role: 'admin'
+        });
+        console.log('Admin seeded successfully from .env');
+      }
+    }
+  } catch (error) {
+    console.error('Failed to seed admins:', error);
+  }
+};
+
+seedAdmins();
+seedDummyData();
 
 const app = express();
 
