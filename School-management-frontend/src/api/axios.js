@@ -1,8 +1,11 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api', // Pointing to the backend we just built
+  baseURL: import.meta.env.DEV
+    ? "http://localhost:5000/api"
+    : "https://school-management-system-new-coral.vercel.app/api",
 });
+
 
 // Add a request interceptor to attach the JWT token to every request
 API.interceptors.request.use((config) => {
