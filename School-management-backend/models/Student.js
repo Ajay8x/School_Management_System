@@ -17,7 +17,7 @@ const studentSchema = new mongoose.Schema({
   lastName: { type: String },
   rollNumber: {
     type: String,
-    required: [true, 'Please add a roll number'],
+    sparse: true,
     unique: true
   },
   className: {
@@ -87,14 +87,18 @@ const studentSchema = new mongoose.Schema({
   }
 });
 
-// Auto-generate 'name' from firstName + middleName + lastName before saving
-studentSchema.pre('save', async function() {
+// Auto-generate 'name' and 'parentName' before validation
+studentSchema.pre('validate', async function(next) {
   if (this.firstName) {
     this.name = [this.firstName, this.middleName, this.lastName].filter(Boolean).join(' ');
   }
   if (!this.parentName && this.guardians && this.guardians.length > 0) {
     this.parentName = this.guardians[0].name;
   }
+  if (!this.rollNumber) {
+    this.rollNumber = undefined;
+  }
+  next();
 });
 
 module.exports = mongoose.model('Student', studentSchema);
