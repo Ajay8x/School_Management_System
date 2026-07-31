@@ -88,7 +88,7 @@ const studentSchema = new mongoose.Schema({
 });
 
 // Auto-generate 'name' and 'parentName' before validation
-studentSchema.pre('validate', function(next) {
+studentSchema.pre('validate', function() {
   if (this.firstName) {
     this.name = [this.firstName, this.middleName, this.lastName].filter(Boolean).join(' ');
   }
@@ -98,7 +98,6 @@ studentSchema.pre('validate', function(next) {
   if (!this.rollNumber) {
     this.rollNumber = undefined;
   }
-  next();
 });
 
 module.exports = mongoose.model('Student', studentSchema);
