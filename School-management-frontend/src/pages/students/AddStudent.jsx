@@ -19,7 +19,7 @@ export default function AddStudent() {
     period: '',
     course: '',
     className: '',
-    applicationNumber: '',
+    rollNumber: '',
     enrollmentType: '',
     dateOfRegistration: new Date().toISOString().split('T')[0],
     // Student
@@ -238,8 +238,8 @@ export default function AddStudent() {
                   </select>
                 </div>
                 <div>
-                  <label className={labelClass}>Application Number</label>
-                  <input type="text" name="applicationNumber" value={formData.applicationNumber} onChange={handleChange} className={inputClass} placeholder="Application Number" />
+                  <label className={labelClass}>Roll Number (Optional)</label>
+                  <input type="text" name="rollNumber" value={formData.rollNumber} onChange={handleChange} className={inputClass} placeholder="Roll Number" />
                 </div>
                 <div>
                   <label className={labelClass}>Select Enrollment Type</label>
