@@ -40,20 +40,20 @@ exports.createStudent = async (req, res) => {
     const serialNumber = `STU-${1001 + count}`;
     studentData.serialNumber = serialNumber;
 
-    // 1. Create the student record
-    const student = await Student.create(studentData);
-
-    // 2. Auto-create a User account so the student can login
-    const loginPassword = password || serialNumber; // default password = serialNumber
-    
-    // Ensure we have a unique email for the User model (enforced by schema)
-    let loginEmail = student.email;
+    // Ensure we have a unique email for the User model
+    let loginEmail = studentData.email;
     
     // Check if a user with this email already exists
     const existingUserByEmail = await User.findOne({ email: loginEmail });
     if (existingUserByEmail) {
       return res.status(400).json({ message: 'Email already in use by another user' });
     }
+
+    // 1. Create the student record
+    const student = await Student.create(studentData);
+
+    // 2. Auto-create a User account so the student can login
+    const loginPassword = password || serialNumber; // default password = serialNumber
 
     await User.create({
       name: student.name || student.firstName || student.rollNumber,

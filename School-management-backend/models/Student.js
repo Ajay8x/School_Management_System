@@ -88,7 +88,7 @@ const studentSchema = new mongoose.Schema({
 });
 
 // Auto-generate 'name' and 'parentName' before validation
-studentSchema.pre('validate', async function(next) {
+studentSchema.pre('validate', function(next) {
   if (this.firstName) {
     this.name = [this.firstName, this.middleName, this.lastName].filter(Boolean).join(' ');
   }
