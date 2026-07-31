@@ -1,4 +1,5 @@
 const Teacher = require('../models/Teacher');
+const User = require('../models/User');
 
 // @desc    Get all teachers
 // @route   GET /api/teachers
@@ -32,8 +33,31 @@ exports.getTeacher = async (req, res) => {
 // @access  Private (Admin)
 exports.createTeacher = async (req, res) => {
   try {
-    const teacher = await Teacher.create(req.body);
-    res.status(201).json(teacher);
+    const teacherData = req.body;
+    
+    // Generate serial number
+    const count = await Teacher.countDocuments();
+    const serialNumber = `TCH-${1001 + count}`;
+    teacherData.serialNumber = serialNumber;
+
+    // Check if a user with this email already exists
+    const existingUserByEmail = await User.findOne({ email: teacherData.email });
+    if (existingUserByEmail) {
+      return res.status(400).json({ message: 'Email already in use by another user' });
+    }
+
+    const teacher = await Teacher.create(teacherData);
+
+    // Auto-create a User account so the teacher can login
+    await User.create({
+      name: teacher.name,
+      email: teacher.email,
+      password: serialNumber, // default password
+      role: 'teacher',
+      serialNumber: serialNumber
+    });
+
+    res.status(201).json({ ...teacher.toObject(), serialNumber, defaultPassword: true });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

@@ -71,7 +71,15 @@ const studentSchema = new mongoose.Schema({
   nationality: { type: String, default: 'Indian' },
   category: { type: String },
   aadharNumber: { type: String },
-  email: { type: String },
+  email: { 
+    type: String,
+    required: [true, 'Please add an email'],
+    unique: true
+  },
+  serialNumber: {
+    type: String,
+    unique: true
+  },
   avatar: { type: String },
   createdAt: {
     type: Date,

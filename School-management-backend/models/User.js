@@ -26,6 +26,11 @@ const userSchema = new mongoose.Schema({
     enum: ['super-admin', 'admin', 'teacher', 'student', 'parent', 'accountant', 'librarian'],
     default: 'student'
   },
+  serialNumber: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
   // Link to Student document (for student role users)
   studentId: {
     type: mongoose.Schema.Types.ObjectId,

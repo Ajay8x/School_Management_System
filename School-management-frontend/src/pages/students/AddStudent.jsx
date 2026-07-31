@@ -29,6 +29,7 @@ export default function AddStudent() {
     gender: '',
     dateOfBirth: '',
     contact: '',
+    email: '',
     previousInstitute: '',
     // Guardian List
     guardians: [],
@@ -138,8 +139,8 @@ export default function AddStudent() {
         setSuccess('Student updated successfully!');
         setTimeout(() => navigate(targetRoute), 1500);
       } else {
-        await API.post('/students', submitData);
-        setSuccess('Student registered successfully!');
+        const result = await API.post('/students', submitData);
+        setSuccess(`Student registered successfully! Serial Number (Password): ${result.data.serialNumber}`);
         if (keepAdding) {
           setTimeout(() => {
             resetForm();
@@ -284,6 +285,10 @@ export default function AddStudent() {
                 <div>
                   <label className={labelClass}>Previous Institute</label>
                   <input type="text" name="previousInstitute" value={formData.previousInstitute} onChange={handleChange} className={inputClass} placeholder="Previous Institute" />
+                </div>
+                <div>
+                  <label className={labelClass}>Email Address *</label>
+                  <input type="email" name="email" value={formData.email} onChange={handleChange} className={inputClass} placeholder="Student Email" required />
                 </div>
               </div>
             </fieldset>

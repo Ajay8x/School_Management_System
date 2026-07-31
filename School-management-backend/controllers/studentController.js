@@ -35,20 +35,24 @@ exports.createStudent = async (req, res) => {
   try {
     const { password, ...studentData } = req.body;
 
+    // Generate serial number
+    const count = await Student.countDocuments();
+    const serialNumber = `STU-${1001 + count}`;
+    studentData.serialNumber = serialNumber;
+
     // 1. Create the student record
     const student = await Student.create(studentData);
 
     // 2. Auto-create a User account so the student can login
-    const loginPassword = password || student.rollNumber; // default password = rollNumber
+    const loginPassword = password || serialNumber; // default password = serialNumber
     
-    // Ensure we have a unique email for the User model
-    let loginEmail = (student.email && student.email.trim()) || `${student.rollNumber}@campuspilot.local`;
+    // Ensure we have a unique email for the User model (enforced by schema)
+    let loginEmail = student.email;
     
     // Check if a user with this email already exists
     const existingUserByEmail = await User.findOne({ email: loginEmail });
     if (existingUserByEmail) {
-      // If email is taken, fall back to rollNumber based email to avoid crash
-      loginEmail = `${student.rollNumber}-${Date.now()}@campuspilot.local`;
+      return res.status(400).json({ message: 'Email already in use by another user' });
     }
 
     await User.create({
@@ -57,9 +61,10 @@ exports.createStudent = async (req, res) => {
       password: loginPassword,
       role: 'student',
       studentId: student._id,
+      serialNumber: serialNumber
     });
 
-    res.status(201).json({ ...student.toObject(), loginEmail, defaultPassword: !password });
+    res.status(201).json({ ...student.toObject(), loginEmail, serialNumber, defaultPassword: !password });
   } catch (error) {
     console.error('Student Creation Error:', error);
     res.status(400).json({ message: error.message });

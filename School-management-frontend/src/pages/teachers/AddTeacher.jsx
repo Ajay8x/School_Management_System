@@ -11,10 +11,12 @@ export default function AddTeacher() {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   
   const [formData, setFormData] = useState({
     name: '',
     employeeId: '',
+    email: '',
     subject: '',
     contact: '',
     salary: ''
@@ -33,6 +35,7 @@ export default function AddTeacher() {
           setFormData({
             name: res.data.name,
             employeeId: res.data.employeeId,
+            email: res.data.email || '',
             subject: res.data.subject,
             contact: res.data.contact,
             salary: res.data.salary
@@ -51,14 +54,18 @@ export default function AddTeacher() {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess('');
 
     try {
       if (id) {
         await API.put(`/teachers/${id}`, formData);
+        setSuccess('Teacher updated successfully!');
+        setTimeout(() => navigate(`/${user.role}/teachers`), 1500);
       } else {
-        await API.post('/teachers', formData);
+        const result = await API.post('/teachers', formData);
+        setSuccess(`Teacher registered successfully! Serial Number (Password): ${result.data.serialNumber}`);
+        setTimeout(() => navigate(`/${user.role}/teachers`), 3000);
       }
-      navigate(`/${user.role}/teachers`);
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || 'Failed to add teacher');
@@ -93,6 +100,12 @@ export default function AddTeacher() {
         </div>
       )}
 
+      {success && (
+        <div className="bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 p-4 rounded-lg mb-6 border border-green-200 dark:border-green-800 transition-colors duration-300 font-medium">
+          ✓ {success}
+        </div>
+      )}
+
       <div className="bg-white dark:bg-slate-800 rounded-[15px] shadow-[0_2px_15px_-3px_rgba(0,0,0,0.02)] border border-gray-100/50 dark:border-slate-700 p-6 transition-colors duration-300">
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -120,6 +133,19 @@ export default function AddTeacher() {
                 required
                 className="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-lg bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors duration-300"
                 placeholder="e.g. EMP1001"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 dark:text-slate-300 mb-2">Email Address *</label>
+              <input 
+                type="email" 
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-lg bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors duration-300"
+                placeholder="e.g. jane.doe@school.com"
               />
             </div>
 
