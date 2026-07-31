@@ -52,6 +52,7 @@ import Roles from './pages/Roles';
 import Users from './pages/Users';
 import Settings from './pages/Settings';
 import Placeholder from './components/Placeholder';
+import UserCredentials from './pages/super-admin/UserCredentials';
 
 function App() {
   return (
@@ -188,6 +189,7 @@ function App() {
       <Route path="/super-admin" element={<ProtectedRoute allowedRoles={['super-admin']} />}>
         <Route element={<Layout />}>
           <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="credentials" element={<UserCredentials />} />
         </Route>
       </Route>
       

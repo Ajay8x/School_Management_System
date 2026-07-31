@@ -68,3 +68,39 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// @desc    Get all users with their credentials (email and serial number)
+// @route   GET /api/users/credentials
+// @access  Private/SuperAdmin
+exports.getUserCredentials = async (req, res) => {
+  try {
+    const users = await User.find({}).select('name email role serialNumber createdAt').sort({ createdAt: -1 });
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Reset user password to default (serial number)
+// @route   PUT /api/users/:id/reset-password
+// @access  Private/SuperAdmin
+exports.resetUserPassword = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (!user.serialNumber) {
+      return res.status(400).json({ message: 'User does not have a serial number to reset to' });
+    }
+
+    // Set password to serialNumber
+    user.password = user.serialNumber;
+    await user.save();
+
+    res.json({ message: 'Password reset to default successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

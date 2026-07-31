@@ -212,6 +212,7 @@ export default function Layout() {
     { name: 'Event', href: '/event', icon: Calendar, roles: ['admin', 'teacher', 'student', 'parent'] },
     { name: 'Message', href: '/message', icon: MessageSquare, roles: ['admin', 'teacher', 'student', 'parent'] },
     { name: 'Users', href: '/users', icon: Users, roles: ['admin'] },
+    { name: 'User Credentials', href: '/credentials', icon: Key, roles: ['super-admin'] },
     { name: 'Role & Access', href: '/roles', icon: ShieldCheck, roles: ['admin'] },
     { name: 'Settings', href: '/settings', icon: Settings, roles: ['admin'] },
   ];
