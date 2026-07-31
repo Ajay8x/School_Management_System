@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api', // Pointing to the backend we just built
+  baseURL: 'https://school-management-system-75o0.onrender.com/api', // Pointing to the backend we just built
 });
 
 // Add a request interceptor to attach the JWT token to every request
