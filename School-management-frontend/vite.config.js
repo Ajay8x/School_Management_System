@@ -9,6 +9,8 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
-    allowedHosts: true
+    allowedHosts: [
+      'school-management-system-1-wemg.onrender.com'
+    ]
   }
 })
