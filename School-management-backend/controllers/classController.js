@@ -45,7 +45,7 @@ exports.createClass = async (req, res) => {
 exports.updateClass = async (req, res) => {
   try {
     const classItem = await Class.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+      returnDocument: 'after',
       runValidators: true
     });
     if (!classItem) {

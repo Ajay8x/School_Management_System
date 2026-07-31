@@ -45,7 +45,7 @@ exports.createNotice = async (req, res) => {
 exports.updateNotice = async (req, res) => {
   try {
     const notice = await Notice.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+      returnDocument: 'after',
       runValidators: true
     });
     if (!notice) {

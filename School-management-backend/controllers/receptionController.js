@@ -34,7 +34,7 @@ exports.createVisitor = async (req, res) => {
 
 exports.updateVisitorOutTime = async (req, res) => {
   try {
-    const data = await Visitor.findByIdAndUpdate(req.params.id, { outTime: Date.now() }, { new: true });
+    const data = await Visitor.findByIdAndUpdate(req.params.id, { outTime: Date.now() }, { returnDocument: 'after' });
     res.json(data);
   } catch (err) { res.status(400).json({ message: err.message }); }
 };
@@ -56,7 +56,7 @@ exports.createComplaint = async (req, res) => {
 
 exports.updateComplaint = async (req, res) => {
   try {
-    const data = await Complaint.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const data = await Complaint.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after' });
     res.json(data);
   } catch (err) { res.status(400).json({ message: err.message }); }
 };

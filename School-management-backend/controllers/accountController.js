@@ -30,7 +30,7 @@ exports.createAccount = async (req, res) => {
 exports.updateAccount = async (req, res) => {
   try {
     const transaction = await Account.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+      returnDocument: 'after',
       runValidators: true
     });
     if (!transaction) {

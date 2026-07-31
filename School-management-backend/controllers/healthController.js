@@ -39,7 +39,7 @@ exports.upsertHealthRecord = async (req, res) => {
     let record = await HealthRecord.findOneAndUpdate(
       { student },
       { ...recordData, updatedAt: Date.now() },
-      { new: true, upsert: true, runValidators: true }
+      { returnDocument: 'after', upsert: true, runValidators: true }
     );
     
     res.status(201).json(record);

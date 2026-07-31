@@ -69,7 +69,7 @@ exports.createGuardian = async (req, res) => {
 exports.updateGuardian = async (req, res) => {
   try {
     const guardian = await Guardian.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+      returnDocument: 'after',
       runValidators: true
     });
     if (!guardian) {

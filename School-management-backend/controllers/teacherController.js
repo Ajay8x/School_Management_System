@@ -69,7 +69,7 @@ exports.createTeacher = async (req, res) => {
 exports.updateTeacher = async (req, res) => {
   try {
     const teacher = await Teacher.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+      returnDocument: 'after',
       runValidators: true
     });
     if (!teacher) {

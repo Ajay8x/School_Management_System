@@ -56,7 +56,7 @@ exports.updateFee = async (req, res) => {
   try {
     const oldFee = await Fee.findById(req.params.id);
     const fee = await Fee.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+      returnDocument: 'after',
       runValidators: true
     });
     

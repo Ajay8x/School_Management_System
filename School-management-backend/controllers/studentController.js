@@ -77,7 +77,7 @@ exports.createStudent = async (req, res) => {
 exports.updateStudent = async (req, res) => {
   try {
     const student = await Student.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+      returnDocument: 'after',
       runValidators: true
     });
     if (!student) {
@@ -120,7 +120,7 @@ exports.updateRollNumbers = async (req, res) => {
     
     const results = await Promise.all(
       updates.map(u => 
-        Student.findByIdAndUpdate(u.id, { rollNumber: u.rollNumber }, { new: true })
+        Student.findByIdAndUpdate(u.id, { rollNumber: u.rollNumber }, { returnDocument: 'after' })
       )
     );
     
