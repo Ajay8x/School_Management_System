@@ -53,7 +53,7 @@ exports.createStudent = async (req, res) => {
     const student = await Student.create(studentData);
 
     // 2. Auto-create a User account so the student can login
-    const loginPassword = password || serialNumber; // default password = serialNumber
+    const loginPassword = password || process.env.DEFAULT_PASSWORD || serialNumber; // default password from env
 
     await User.create({
       name: student.name || student.firstName || student.rollNumber,

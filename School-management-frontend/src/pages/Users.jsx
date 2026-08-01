@@ -70,6 +70,28 @@ export default function Users() {
     }
   };
 
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newUser, setNewUser] = useState({ name: '', email: '', role: 'student', password: '' });
+  const [addingUser, setAddingUser] = useState(false);
+
+  const handleAddUser = async (e) => {
+    e.preventDefault();
+    setAddingUser(true);
+    try {
+      const payload = { ...newUser };
+      if (!payload.password) delete payload.password; // backend might use default if empty or we can leave it
+      await API.post('/auth/register', payload);
+      alert('User added successfully');
+      setShowAddModal(false);
+      setNewUser({ name: '', email: '', role: 'student', password: '' });
+      fetchUsers();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to add user');
+    } finally {
+      setAddingUser(false);
+    }
+  };
+
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           user.email.toLowerCase().includes(searchQuery.toLowerCase());
@@ -111,13 +133,24 @@ export default function Users() {
           </h1>
           <p className="text-gray-500 dark:text-slate-400 mt-1">Manage all system users and their account statuses.</p>
         </div>
-        <button 
-          onClick={fetchUsers}
-          className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm"
-        >
-          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          Refresh List
-        </button>
+        <div className="flex gap-2">
+          {currentUser?.role === 'super-admin' && (
+            <button 
+              onClick={() => setShowAddModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-xl text-sm font-medium transition-all shadow-sm"
+            >
+              <UserCog className="w-4 h-4" />
+              Add User
+            </button>
+          )}
+          <button 
+            onClick={fetchUsers}
+            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm"
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            Refresh List
+          </button>
+        </div>
       </div>
 
       {/* Role Stats Grid */}
@@ -347,6 +380,85 @@ export default function Users() {
                  Cancel
                </button>
             </div>
+          </div>
+        </div>
+      {/* Add User Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-in zoom-in duration-200">
+            <div className="p-6 border-b border-gray-100 dark:border-slate-700 flex items-center justify-between bg-gray-50/50 dark:bg-slate-800/50">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                <UserCog className="w-5 h-5 text-teal-500" />
+                Add New User
+              </h3>
+              <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleAddUser} className="p-8 space-y-4">
+              <div>
+                <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Full Name</label>
+                <input 
+                  type="text" 
+                  required
+                  value={newUser.name}
+                  onChange={(e) => setNewUser({...newUser, name: e.target.value})}
+                  className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
+                  placeholder="John Doe"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Email Address</label>
+                <input 
+                  type="email" 
+                  required
+                  value={newUser.email}
+                  onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                  className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
+                  placeholder="john@example.com"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Role</label>
+                <select 
+                  value={newUser.role}
+                  onChange={(e) => setNewUser({...newUser, role: e.target.value})}
+                  className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
+                >
+                  {Object.entries(ROLE_CONFIG).map(([id, config]) => (
+                    <option key={id} value={id}>{config.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Password (Optional)</label>
+                <input 
+                  type="password"
+                  value={newUser.password}
+                  onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                  className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
+                  placeholder="Leave blank for default"
+                />
+              </div>
+              <div className="pt-4 flex justify-end gap-3">
+                 <button 
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="px-6 py-2.5 text-sm font-bold text-gray-500 hover:text-gray-700 transition-colors"
+                 >
+                   Cancel
+                 </button>
+                 <button 
+                  type="submit"
+                  disabled={addingUser}
+                  className="px-6 py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-xl text-sm font-bold transition-all disabled:opacity-50 flex items-center gap-2"
+                 >
+                   {addingUser && <RefreshCw className="w-4 h-4 animate-spin" />}
+                   Add User
+                 </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

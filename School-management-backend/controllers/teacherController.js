@@ -52,7 +52,7 @@ exports.createTeacher = async (req, res) => {
     await User.create({
       name: teacher.name,
       email: teacher.email,
-      password: serialNumber, // default password
+      password: process.env.DEFAULT_PASSWORD || serialNumber, // default password from env
       role: 'teacher',
       serialNumber: serialNumber
     });
