@@ -245,22 +245,26 @@ export default function Users() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        {currentUser?.role === 'super-admin' && user.email !== 'superadmin@school.com' && (
+                        {currentUser?.role === 'super-admin' && (
                           <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button 
-                              onClick={() => setEditingUser(user)}
-                              className="p-2 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg transition-colors"
-                              title="Change Role"
-                            >
-                              <Edit className="w-4.5 h-4.5" />
-                            </button>
-                            <button 
-                              onClick={() => handleDeleteUser(user._id)}
-                              className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-lg transition-colors"
-                              title="Delete User"
-                            >
-                              <Trash2 className="w-4.5 h-4.5" />
-                            </button>
+                            {user.role !== 'super-admin' && (
+                              <>
+                                <button 
+                                  onClick={() => setEditingUser(user)}
+                                  className="p-2 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg transition-colors"
+                                  title="Change Role"
+                                >
+                                  <Edit className="w-4.5 h-4.5" />
+                                </button>
+                                <button 
+                                  onClick={() => handleDeleteUser(user._id)}
+                                  className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-lg transition-colors"
+                                  title="Delete User"
+                                >
+                                  <Trash2 className="w-4.5 h-4.5" />
+                                </button>
+                              </>
+                            )}
                           </div>
                         )}
                         <MoreVertical className="w-5 h-5 text-gray-300 dark:text-slate-600 group-hover:hidden ml-auto" />
