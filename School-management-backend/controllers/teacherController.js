@@ -40,6 +40,12 @@ exports.createTeacher = async (req, res) => {
     const serialNumber = `TCH-${1001 + count}`;
     teacherData.serialNumber = serialNumber;
 
+    // Check if a teacher with this employeeId already exists
+    const existingTeacher = await Teacher.findOne({ employeeId: teacherData.employeeId });
+    if (existingTeacher) {
+      return res.status(400).json({ message: `Employee ID "${teacherData.employeeId}" is already in use by another teacher` });
+    }
+
     // Check if a user with this email already exists
     const existingUserByEmail = await User.findOne({ email: teacherData.email });
     if (existingUserByEmail) {

@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Menu, Search, Sun, Moon, Bell, Settings,
   ChevronDown, ChevronRight, CheckCircle, GraduationCap, Users, UserCheck, 
   BookOpen, FileText, CreditCard, Clock, UserPlus, FileBadge, Library, 
-  Wallet, Briefcase, ClipboardList, Calendar, MessageSquare, ShieldCheck, LogOut, Key
+  Wallet, Briefcase, ClipboardList, Calendar, MessageSquare, ShieldCheck, LogOut, Key, X
 } from 'lucide-react';
 
 // Custom Sidebar Item Component
@@ -89,6 +89,41 @@ export default function Layout() {
   const [isDark, setIsDark] = useState(() => {
     return document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
   });
+
+  const [showProfileModal, setShowProfileModal] = useState(false);
+
+  // Notifications State
+  const [notices, setNotices] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const fetchNotices = async () => {
+      try {
+        const res = await API.get('/notices');
+        // Sort by date descending
+        const sorted = res.data.sort((a, b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt));
+        setNotices(sorted);
+        // Set unread count based on locally stored last read timestamp
+        const lastRead = localStorage.getItem('last_read_notices') || 0;
+        const unread = sorted.filter(n => new Date(n.date || n.createdAt).getTime() > Number(lastRead)).length;
+        setUnreadCount(unread);
+      } catch (err) {
+        console.error("Failed to load notices for notifications", err);
+      }
+    };
+    if (user) {
+      fetchNotices();
+    }
+  }, [user]);
+
+  const handleOpenNotifications = () => {
+    setShowNotifications(!showNotifications);
+    if (!showNotifications) {
+      setUnreadCount(0);
+      localStorage.setItem('last_read_notices', Date.now());
+    }
+  };
 
   useEffect(() => {
     if (isDark) {
@@ -259,9 +294,12 @@ export default function Layout() {
         
         {/* User Profile Summary */}
         <div className="p-5 border-b border-gray-100 dark:border-slate-700">
-          <div className="flex items-center space-x-3 bg-[#f8f9fa] dark:bg-slate-700/50 p-3 rounded-xl border border-gray-100 dark:border-slate-600 transition-colors duration-300">
+          <div 
+            onClick={() => setShowProfileModal(true)}
+            className="flex items-center space-x-3 bg-[#f8f9fa] dark:bg-slate-700/50 p-3 rounded-xl border border-gray-100 dark:border-slate-600 transition-colors duration-300 cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700"
+          >
             <div className="w-10 h-10 rounded-full bg-[#fbd4a3] flex items-center justify-center overflow-hidden">
-              <img src="https://ui-avatars.com/api/?name=Jone+Copper&background=fbd4a3&color=a05400" alt="avatar" className="w-full h-full object-cover" />
+              <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=fbd4a3&color=a05400`} alt="avatar" className="w-full h-full object-cover" />
             </div>
             <div>
               <p className="font-semibold text-gray-800 dark:text-white text-[14px] leading-tight">{user.name}</p>
@@ -373,38 +411,82 @@ export default function Layout() {
             <button onClick={toggleTheme} className="w-10 h-10 flex items-center justify-center rounded-full text-[#8a98ac] hover:bg-[#F0F5FB] dark:hover:bg-slate-700 dark:text-slate-300 transition">
               {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-            
-            <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#F0F5FB] dark:hover:bg-slate-700 transition">
-              <img src="https://flagcdn.com/w20/us.png" alt="US" className="w-5 h-auto rounded-sm shadow-sm" />
-            </button>
 
-            <button className="w-10 h-10 flex items-center justify-center rounded-full text-[#8a98ac] hover:bg-[#F0F5FB] dark:hover:bg-slate-700 dark:text-slate-300 transition relative">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-slate-800"></span>
-            </button>
+
+            <div className="relative">
+              <button 
+                onClick={handleOpenNotifications}
+                className="w-10 h-10 flex items-center justify-center rounded-full text-[#8a98ac] hover:bg-[#F0F5FB] dark:hover:bg-slate-700 dark:text-slate-300 transition relative z-50"
+              >
+                <Bell className="w-5 h-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-slate-800 animate-pulse"></span>
+                )}
+              </button>
+
+              {/* Backdrop to close notifications */}
+              {showNotifications && (
+                <div className="fixed inset-0 z-40" onClick={() => setShowNotifications(false)} />
+              )}
+
+              {/* Notifications Dropdown */}
+              {showNotifications && (
+                <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-gray-100 dark:border-slate-700 py-3 z-50 animate-in fade-in slide-in-from-top-3 duration-200">
+                  <div className="px-4 py-2 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800/50">
+                    <h3 className="font-bold text-gray-800 dark:text-white text-sm">Notifications</h3>
+                    <span className="text-xs text-teal-500 hover:text-teal-600 cursor-pointer font-bold">
+                      <Link to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/notice-board`} onClick={() => setShowNotifications(false)}>
+                        View All
+                      </Link>
+                    </span>
+                  </div>
+                  <div className="max-h-64 overflow-y-auto custom-scrollbar">
+                    {notices.length === 0 ? (
+                      <div className="px-4 py-8 text-center text-gray-400 dark:text-slate-500 text-xs">
+                        <Bell className="w-8 h-8 mx-auto mb-2 text-gray-300 dark:text-slate-600 opacity-60" />
+                        No new notifications
+                      </div>
+                    ) : (
+                      notices.slice(0, 4).map((notice) => (
+                        <Link 
+                          key={notice._id}
+                          to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/notice-board`}
+                          onClick={() => setShowNotifications(false)}
+                          className="block px-4 py-3 hover:bg-[#f8f9fa] dark:hover:bg-slate-700/50 border-b border-gray-100 dark:border-slate-700/50 last:border-0 transition-colors"
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-teal-50 dark:bg-slate-900/50 flex items-center justify-center text-teal-500 mt-0.5 flex-shrink-0">
+                              <ClipboardList className="w-4 h-4" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-bold text-gray-800 dark:text-white truncate">{notice.title}</p>
+                              <p className="text-[11px] text-gray-500 dark:text-slate-400 mt-0.5 line-clamp-2 leading-tight">{notice.content}</p>
+                              <p className="text-[9px] text-gray-400 dark:text-slate-500 mt-1">{new Date(notice.date || notice.createdAt).toLocaleDateString()}</p>
+                            </div>
+                          </div>
+                        </Link>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
             
             <div className="ml-2 pl-2 border-l border-gray-200 dark:border-slate-700 flex items-center">
-               <button className="w-9 h-9 rounded-full bg-gray-200 dark:bg-slate-600 border-2 border-white dark:border-slate-800 shadow-sm overflow-hidden ml-2 mr-2">
-                 <img src="https://ui-avatars.com/api/?name=Jone+Copper&background=fbd4a3&color=a05400" alt="avatar" className="w-full h-full object-cover" />
-               </button>
-               <button 
-                 onClick={() => {
-                   setPasswordStatus({ loading: false, error: '', success: '' });
-                   setPasswordForm({ oldPassword: '', newPassword: '' });
-                   setShowPasswordModal(true);
-                 }}
-                 className="w-10 h-10 flex items-center justify-center rounded-full text-teal-600 hover:bg-teal-50 dark:text-teal-400 dark:hover:bg-teal-500/10 transition"
-                 title="Change Password"
-               >
-                 <Key className="w-5 h-5" />
-               </button>
-               <button 
-                 onClick={logout}
-                 className="w-10 h-10 flex items-center justify-center rounded-full text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition"
-                 title="Logout"
-               >
-                 <LogOut className="w-5 h-5" />
-               </button>
+                <button 
+                  onClick={() => setShowProfileModal(true)}
+                  className="w-9 h-9 rounded-full bg-gray-200 dark:bg-slate-600 border-2 border-white dark:border-slate-800 shadow-sm overflow-hidden ml-2 mr-2 hover:opacity-80 transition"
+                  title="My Profile"
+                >
+                  <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=fbd4a3&color=a05400`} alt="avatar" className="w-full h-full object-cover" />
+                </button>
+                <button 
+                  onClick={logout}
+                  className="w-10 h-10 flex items-center justify-center rounded-full text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition"
+                  title="Logout"
+                >
+                  <LogOut className="w-5 h-5" />
+                </button>
             </div>
           </div>
         </header>
@@ -473,6 +555,78 @@ export default function Layout() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Modal */}
+      {showProfileModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 w-full max-w-sm border border-gray-100 dark:border-slate-700 mx-4 overflow-hidden relative animate-in zoom-in duration-200">
+            
+            {/* Close Button */}
+            <button 
+              onClick={() => setShowProfileModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex flex-col items-center text-center pt-4 pb-2">
+              {/* Large Avatar */}
+              <div className="w-24 h-24 rounded-full bg-[#fbd4a3] border-4 border-white dark:border-slate-700 shadow-md overflow-hidden mb-4">
+                <img 
+                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=fbd4a3&color=a05400&size=128`} 
+                  alt="avatar" 
+                  className="w-full h-full object-cover" 
+                />
+              </div>
+
+              {/* User Name */}
+              <h2 className="text-xl font-bold text-gray-800 dark:text-white leading-tight">{user.name}</h2>
+              
+              {/* Role Badge */}
+              <span className="inline-block mt-2 px-3 py-1 bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 border border-teal-100 dark:border-teal-900/50 rounded-full text-xs font-bold uppercase tracking-wider">
+                {user.role}
+              </span>
+
+              {/* Info Rows */}
+              <div className="w-full mt-6 space-y-3.5 border-t border-gray-100 dark:border-slate-700 pt-5 text-left">
+                <div>
+                  <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest">Login Username / Email</p>
+                  <p className="text-sm font-semibold text-gray-700 dark:text-slate-300 mt-0.5 break-all">{user.email}</p>
+                </div>
+                {user.studentId && (
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest">Student Link ID</p>
+                    <p className="text-sm font-semibold text-gray-700 dark:text-slate-300 mt-0.5 font-mono">{user.studentId}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="w-full mt-8 flex gap-2">
+                <button
+                  onClick={() => {
+                    setShowProfileModal(false);
+                    setPasswordStatus({ loading: false, error: '', success: '' });
+                    setPasswordForm({ oldPassword: '', newPassword: '' });
+                    setShowPasswordModal(true);
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-gray-50 dark:bg-slate-700 hover:bg-gray-100 dark:hover:bg-slate-650 text-gray-700 dark:text-slate-300 rounded-xl text-xs font-bold border border-gray-100 dark:border-slate-600 transition flex items-center justify-center gap-1.5"
+                >
+                  <Key className="w-3.5 h-3.5" />
+                  Change Password
+                </button>
+                <button
+                  onClick={logout}
+                  className="px-4 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  Log Out
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
