@@ -114,6 +114,7 @@ function App() {
           <Route path="users" element={<Users />} />
           <Route path="roles" element={<Roles />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="credentials" element={<UserCredentials />} />
 
           {/* Reception Module */}
           <Route path="reception/enquiry" element={<Enquiry />} />
@@ -189,7 +190,6 @@ function App() {
       <Route path="/super-admin" element={<ProtectedRoute allowedRoles={['super-admin']} />}>
         <Route element={<Layout />}>
           <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="credentials" element={<UserCredentials />} />
         </Route>
       </Route>
       
