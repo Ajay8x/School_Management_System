@@ -17,6 +17,13 @@ exports.createEnquiry = async (req, res) => {
   } catch (err) { res.status(400).json({ message: err.message }); }
 };
 
+exports.updateEnquiry = async (req, res) => {
+  try {
+    const data = await Enquiry.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after' });
+    res.json(data);
+  } catch (err) { res.status(400).json({ message: err.message }); }
+};
+
 // --- Visitor ---
 exports.getVisitors = async (req, res) => {
   try {

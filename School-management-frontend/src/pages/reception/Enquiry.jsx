@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 import API from '../../api/axios';
 import { 
   UserPlus, Search, Plus, Save, RefreshCw, X, 
@@ -8,12 +9,17 @@ import {
 } from 'lucide-react';
 
 export default function Enquiry() {
+  const { user } = useContext(AuthContext);
   const [enquiries, setEnquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'add'
+  
+  const [selectedEnquiry, setSelectedEnquiry] = useState(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
   
   const [formData, setFormData] = useState({
     purpose: 'Admission',
@@ -53,6 +59,27 @@ export default function Enquiry() {
       alert('Failed to save enquiry');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleOpenDetails = (enq) => {
+    setSelectedEnquiry(enq);
+    setIsDetailModalOpen(true);
+  };
+
+  const handleUpdateStatus = async (status) => {
+    if (!selectedEnquiry) return;
+    setUpdatingStatus(true);
+    try {
+      const res = await API.put(`/reception/enquiries/${selectedEnquiry._id}`, { status });
+      setEnquiries(prev => prev.map(e => e._id === selectedEnquiry._id ? res.data : e));
+      setSelectedEnquiry(res.data);
+      setIsDetailModalOpen(false);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update status');
+    } finally {
+      setUpdatingStatus(false);
     }
   };
 
@@ -198,7 +225,10 @@ export default function Enquiry() {
                         </span>
                       </td>
                       <td className="px-8 py-6 text-right">
-                        <button className="p-2 text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-colors">
+                        <button 
+                          onClick={() => handleOpenDetails(enq)}
+                          className="p-2 text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-colors"
+                        >
                           <ChevronRight className="w-5 h-5" />
                         </button>
                       </td>
@@ -331,6 +361,98 @@ export default function Enquiry() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Detail & Action Modal */}
+      {isDetailModalOpen && selectedEnquiry && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-800 rounded-[32px] shadow-2xl p-8 w-full max-w-xl border border-gray-100 dark:border-slate-700 mx-4 overflow-hidden relative animate-in zoom-in duration-200">
+            
+            {/* Close button */}
+            <button 
+              onClick={() => setIsDetailModalOpen(false)}
+              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-xl font-black text-gray-800 dark:text-white uppercase tracking-tight">Enquiry Details</h3>
+                <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Received on {new Date(selectedEnquiry.date).toLocaleDateString()}</p>
+              </div>
+
+              {/* Grid Details */}
+              <div className="grid grid-cols-2 gap-6 border-t border-gray-100 dark:border-slate-700 pt-6">
+                <div>
+                  <p className="text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest">Name</p>
+                  <p className="text-sm font-bold text-gray-800 dark:text-white mt-1 uppercase">{selectedEnquiry.name}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest">Contact</p>
+                  <p className="text-sm font-bold text-gray-800 dark:text-white mt-1">{selectedEnquiry.contact}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest">Email Address</p>
+                  <p className="text-sm font-bold text-gray-800 dark:text-white mt-1 break-all">{selectedEnquiry.email || 'N/A'}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest">Purpose</p>
+                  <span className="inline-block mt-1 px-3 py-1 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 rounded-lg text-xs font-bold uppercase tracking-wider">
+                    {selectedEnquiry.purpose}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest">Source</p>
+                  <p className="text-sm font-bold text-gray-700 dark:text-slate-300 mt-1">{selectedEnquiry.source}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest">Current Status</p>
+                  <span className={`inline-block mt-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                    selectedEnquiry.status === 'Resolved' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400' :
+                    selectedEnquiry.status === 'Follow-up' ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400' :
+                    'bg-gray-50 text-gray-400 dark:bg-slate-700 dark:text-slate-500'
+                  }`}>
+                    {selectedEnquiry.status}
+                  </span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="border-t border-gray-100 dark:border-slate-700 pt-6">
+                <p className="text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest">Description / Remarks</p>
+                <p className="text-sm text-gray-600 dark:text-slate-300 mt-2 bg-gray-50/50 dark:bg-slate-900/50 p-4 rounded-2xl whitespace-pre-wrap leading-relaxed">
+                  {selectedEnquiry.description || 'No description or remarks added.'}
+                </p>
+              </div>
+
+              {/* Status Update Buttons (Admin/Super-Admin only) */}
+              {(user?.role === 'admin' || user?.role === 'super-admin') && (
+                <div className="border-t border-gray-100 dark:border-slate-700 pt-6">
+                  <h4 className="text-[10px] font-black text-gray-400 dark:text-slate-500 uppercase tracking-widest mb-4">Change Status</h4>
+                  <div className="flex gap-4">
+                    {['Pending', 'Follow-up', 'Resolved'].map((st) => (
+                      <button
+                        key={st}
+                        onClick={() => handleUpdateStatus(st)}
+                        disabled={updatingStatus}
+                        className={`flex-1 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all ${
+                          selectedEnquiry.status === st
+                            ? st === 'Resolved' ? 'bg-emerald-500 text-white border-emerald-500 shadow-lg shadow-emerald-500/20' :
+                              st === 'Follow-up' ? 'bg-amber-50 text-white border-amber-500 shadow-lg shadow-amber-500/20' :
+                              'bg-slate-500 text-white border-slate-500 shadow-lg shadow-slate-500/20'
+                            : 'bg-gray-50 dark:bg-slate-900 text-gray-400 border-gray-150 dark:border-slate-700 hover:border-indigo-500/30'
+                        }`}
+                      >
+                        {updatingStatus && selectedEnquiry.status === st ? 'Saving...' : st}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { 
-  getEnquiries, createEnquiry,
+  getEnquiries, createEnquiry, updateEnquiry,
   getVisitors, createVisitor, updateVisitorOutTime,
   getComplaints, createComplaint, updateComplaint
 } = require('../controllers/receptionController');
@@ -9,6 +9,7 @@ const { protect, authRole } = require('../middlewares/authMiddleware');
 
 // Enquiry Routes
 router.route('/enquiries').get(protect, getEnquiries).post(protect, createEnquiry);
+router.route('/enquiries/:id').put(protect, updateEnquiry);
 
 // Visitor Routes
 router.route('/visitors').get(protect, getVisitors).post(protect, createVisitor);
