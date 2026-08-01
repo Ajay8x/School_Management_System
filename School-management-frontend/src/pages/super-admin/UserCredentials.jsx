@@ -46,9 +46,11 @@ export default function UserCredentials() {
   };
 
   const filteredUsers = users.filter(u => 
-    u.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    u.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    u.serialNumber?.toLowerCase().includes(searchTerm.toLowerCase())
+    u.email !== 'superadmin@school.com' && (
+      u.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      u.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      u.serialNumber?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
   );
 
   if (loading) {

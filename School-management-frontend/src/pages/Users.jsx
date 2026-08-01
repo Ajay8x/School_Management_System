@@ -245,7 +245,7 @@ export default function Users() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        {currentUser?.role === 'super-admin' && (
+                        {currentUser?.role === 'super-admin' && user.email !== 'superadmin@school.com' && (
                           <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button 
                               onClick={() => setEditingUser(user)}
