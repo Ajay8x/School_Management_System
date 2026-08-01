@@ -310,7 +310,7 @@ export default function Layout() {
         </div>
         
         {/* Navigation Menu */}
-        <div className="flex-1 py-4 pb-20">
+        <div className="flex-1 py-4 pb-4">
           <ul className="space-y-0.5">
             {navigation.map((item) => {
               const isActive = location.pathname === item.href;
@@ -326,6 +326,17 @@ export default function Layout() {
               );
             })}
           </ul>
+        </div>
+
+        {/* Sidebar Footer Logout Button */}
+        <div className="p-4 border-t border-gray-100 dark:border-slate-700 sticky bottom-0 bg-white dark:bg-slate-800 z-10 transition-colors duration-300">
+          <button 
+            onClick={logout}
+            className="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 hover:text-rose-600 dark:hover:text-rose-400 transition-colors font-medium text-[15px]"
+          >
+            <LogOut className="w-5 h-5 text-rose-500" strokeWidth={1.5} />
+            <span>Log Out</span>
+          </button>
         </div>
       </div>
 
@@ -479,13 +490,6 @@ export default function Layout() {
                   title="My Profile"
                 >
                   <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=fbd4a3&color=a05400`} alt="avatar" className="w-full h-full object-cover" />
-                </button>
-                <button 
-                  onClick={logout}
-                  className="w-10 h-10 flex items-center justify-center rounded-full text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition"
-                  title="Logout"
-                >
-                  <LogOut className="w-5 h-5" />
                 </button>
             </div>
           </div>

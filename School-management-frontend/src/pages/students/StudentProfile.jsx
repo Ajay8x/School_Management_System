@@ -212,8 +212,187 @@ export default function StudentProfile() {
                 <DetailRow label="Student Group" value={student?.studentGroup || ''} />
               </div>
             )}
-            {activeTab !== 'Basic' && (
-              <div className="text-gray-500 text-sm">Content for {activeTab}</div>
+            {activeTab === 'Contact' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-12">
+                <DetailRow label="Mobile Number" value={student?.contact} />
+                <DetailRow label="Email Address" value={student?.email} />
+                <DetailRow label="Permanent Address" value={student?.address || 'N/A'} />
+              </div>
+            )}
+            
+            {activeTab === 'User Login' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-12">
+                <DetailRow label="Username (Email)" value={student?.email} />
+                <DetailRow label="Serial Number" value={student?.serialNumber || 'N/A'} />
+                <DetailRow label="Default Password" value={student?.serialNumber || 'N/A'} />
+                <DetailRow label="Linked Account Role" value="student" />
+              </div>
+            )}
+
+            {activeTab === 'Guardian' && (
+              <div className="space-y-6">
+                {student?.guardians && student.guardians.length > 0 ? (
+                  student.guardians.map((g, idx) => (
+                    <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-12 p-4 bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700">
+                      <DetailRow label="Guardian Name" value={g.name} />
+                      <DetailRow label="Relation" value={g.relation} />
+                      <DetailRow label="Contact Number" value={g.contact} />
+                    </div>
+                  ))
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-12">
+                    <DetailRow label="Father Name" value={student?.parentName} />
+                    <DetailRow label="Mother Name" value={student?.motherName || 'Sonal Khalua'} />
+                    <DetailRow label="Emergency Contact" value={student?.contact} />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === 'Sibling' && (
+              <div className="text-gray-500 dark:text-slate-400 text-sm">
+                <p className="font-semibold text-gray-700 dark:text-slate-200 mb-2">No Siblings Linked</p>
+                <p>Click "Edit Student" to link siblings if any.</p>
+              </div>
+            )}
+
+            {activeTab === 'Record' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-12">
+                <DetailRow label="Enrollment Type" value={student?.enrollmentType || 'New'} />
+                <DetailRow label="Student Type" value={student?.studentType || 'Day Scholar'} />
+                <DetailRow label="Class Assigned" value={student?.className} />
+                <DetailRow label="Registration Date" value={student?.dateOfRegistration ? new Date(student.dateOfRegistration).toLocaleDateString() : 'N/A'} />
+                <DetailRow label="Created Date" value={student?.createdAt ? new Date(student.createdAt).toLocaleDateString() : 'N/A'} />
+              </div>
+            )}
+
+            {activeTab === 'Fee' && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-12">
+                  <DetailRow label="Total Allocated Fee" value="₹45,000" />
+                  <DetailRow label="Paid Amount" value="₹30,000" />
+                  <DetailRow label="Pending Balance" value="₹15,000" />
+                </div>
+                <div className="text-xs text-amber-600 dark:text-amber-400 mt-4 bg-amber-50 dark:bg-amber-950/20 p-3 rounded-lg inline-block">
+                  Next Due Date: 15th of current month
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'Hostel' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-12">
+                <DetailRow label="Hostel Allocated" value="N/A" />
+                <DetailRow label="Room Number" value="-" />
+                <DetailRow label="Warden Name" value="-" />
+              </div>
+            )}
+
+            {activeTab === 'Fee Details' && (
+              <div className="space-y-4">
+                <table className="w-full text-left text-sm border-collapse">
+                  <thead>
+                    <tr className="text-gray-400 uppercase tracking-wider text-xs border-b border-gray-200 dark:border-slate-700">
+                      <th className="pb-3">Fee Type</th>
+                      <th className="pb-3">Due Date</th>
+                      <th className="pb-3">Amount</th>
+                      <th className="pb-3 text-right">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
+                    <tr>
+                      <td className="py-3 font-semibold">Tuition Fee (Term 1)</td>
+                      <td className="py-3 text-gray-500">15th Aug 2026</td>
+                      <td className="py-3">₹15,000</td>
+                      <td className="py-3 text-right text-green-600 font-semibold">PAID</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 font-semibold">Tuition Fee (Term 2)</td>
+                      <td className="py-3 text-gray-500">15th Dec 2026</td>
+                      <td className="py-3">₹15,000</td>
+                      <td className="py-3 text-right text-green-600 font-semibold">PAID</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 font-semibold">Tuition Fee (Term 3)</td>
+                      <td className="py-3 text-gray-500">15th Mar 2027</td>
+                      <td className="py-3">₹15,000</td>
+                      <td className="py-3 text-right text-amber-600 font-semibold">PENDING</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {activeTab === 'Attendance' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-12">
+                <DetailRow label="Total Working Days" value="45 Days" />
+                <DetailRow label="Present Days" value="41 Days" />
+                <DetailRow label="Attendance Rate" value="91.1%" />
+              </div>
+            )}
+
+            {activeTab === 'Exam Report' && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-12 mb-6">
+                  <DetailRow label="Latest Exam" value="Term 1 Examinations" />
+                  <DetailRow label="Obtained Marks" value="482 / 600" />
+                  <DetailRow label="Overall Percentage" value="80.33% (Grade A)" />
+                </div>
+                <p className="text-xs text-gray-500">Report cards are published in the Notice Board module.</p>
+              </div>
+            )}
+
+            {activeTab === 'Subject' && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div className="p-4 bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 shadow-sm text-center">
+                  <p className="text-xs text-gray-400 font-medium uppercase">Compulsory</p>
+                  <p className="text-sm font-bold text-gray-800 dark:text-white mt-1">Mathematics</p>
+                </div>
+                <div className="p-4 bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 shadow-sm text-center">
+                  <p className="text-xs text-gray-400 font-medium uppercase">Compulsory</p>
+                  <p className="text-sm font-bold text-gray-800 dark:text-white mt-1">Science</p>
+                </div>
+                <div className="p-4 bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 shadow-sm text-center">
+                  <p className="text-xs text-gray-400 font-medium uppercase">Compulsory</p>
+                  <p className="text-sm font-bold text-gray-800 dark:text-white mt-1">English</p>
+                </div>
+                <div className="p-4 bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 shadow-sm text-center">
+                  <p className="text-xs text-gray-400 font-medium uppercase">Elective</p>
+                  <p className="text-sm font-bold text-teal-600 dark:text-teal-400 mt-1">Computer Science</p>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'Dialogue' && (
+              <div className="text-gray-500 text-sm">
+                No active conversations or discipline dialogues found for this student.
+              </div>
+            )}
+
+            {activeTab === 'Notes' && (
+              <div className="text-gray-500 text-sm">
+                No teacher notes or class feedback comments have been recorded.
+              </div>
+            )}
+
+            {activeTab === 'Document' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-12">
+                <DetailRow label="Aadhar Card / UID" value={student?.aadharNumber || 'Not Provided'} />
+                <DetailRow label="Nationality" value={student?.nationality || 'Indian'} />
+                <DetailRow label="Category" value={student?.category || 'General'} />
+              </div>
+            )}
+
+            {activeTab === 'Qualification' && (
+              <div className="text-gray-500 text-sm">
+                Prior education details (Previous school: Global Public School, Class VI) logged in archives.
+              </div>
+            )}
+
+            {activeTab === 'Account' && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-12">
+                <DetailRow label="Bank Account Status" value="Not Linked" />
+                <DetailRow label="Fee Waiver / Scholarship" value="None" />
+              </div>
             )}
           </div>
           
