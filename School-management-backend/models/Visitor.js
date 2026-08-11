@@ -10,6 +10,7 @@ const visitorSchema = new mongoose.Schema({
   outTime: { type: Date },
   date: { type: Date, default: Date.now },
   note: { type: String },
+  schoolId: { type: mongoose.Schema.Types.ObjectId, ref: 'School', index: true },
   createdAt: { type: Date, default: Date.now }
 });
 

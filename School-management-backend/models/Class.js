@@ -6,6 +6,7 @@ const classSchema = new mongoose.Schema({
   roomNumber: { type: String },
   teacher: { type: mongoose.Schema.Types.ObjectId, ref: 'Teacher' },
   studentsCount: { type: Number, default: 0 },
+  schoolId: { type: mongoose.Schema.Types.ObjectId, ref: 'School', index: true },
   createdAt: { type: Date, default: Date.now }
 });
 

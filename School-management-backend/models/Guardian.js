@@ -28,6 +28,11 @@ const guardianSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add a relationship to student (e.g., Father, Mother, Uncle)']
   },
+  schoolId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'School',
+    index: true
+  },
   createdAt: {
     type: Date,
     default: Date.now

@@ -81,6 +81,11 @@ const studentSchema = new mongoose.Schema({
     unique: true
   },
   avatar: { type: String },
+  schoolId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'School',
+    index: true
+  },
   createdAt: {
     type: Date,
     default: Date.now

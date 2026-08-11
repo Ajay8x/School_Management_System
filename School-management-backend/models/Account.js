@@ -29,6 +29,11 @@ const accountSchema = new mongoose.Schema({
     type: Date, 
     default: Date.now 
   },
+  schoolId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'School',
+    index: true
+  },
   createdAt: { 
     type: Date, 
     default: Date.now 

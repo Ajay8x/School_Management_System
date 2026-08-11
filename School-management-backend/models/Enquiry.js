@@ -10,6 +10,7 @@ const enquirySchema = new mongoose.Schema({
   source: { type: String }, // e.g. Social Media, Website, Walk-in
   assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'Teacher' },
   status: { type: String, enum: ['Pending', 'Follow-up', 'Resolved'], default: 'Pending' },
+  schoolId: { type: mongoose.Schema.Types.ObjectId, ref: 'School', index: true },
   createdAt: { type: Date, default: Date.now }
 });
 

@@ -10,6 +10,7 @@ const complaintSchema = new mongoose.Schema({
   actionTaken: { type: String },
   assignedTo: { type: String },
   status: { type: String, enum: ['Pending', 'In Progress', 'Resolved'], default: 'Pending' },
+  schoolId: { type: mongoose.Schema.Types.ObjectId, ref: 'School', index: true },
   createdAt: { type: Date, default: Date.now }
 });
 
