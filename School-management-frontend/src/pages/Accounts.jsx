@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import API from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
+import { useSchoolRefresh } from '../hooks/useSchoolRefresh';
 import { 
   BarChart3, Plus, Trash2, Edit, Search, 
   TrendingUp, TrendingDown, Landmark, 
@@ -40,6 +41,8 @@ export default function Accounts() {
   useEffect(() => {
     fetchTransactions();
   }, []);
+
+  useSchoolRefresh(fetchTransactions);
 
   const fetchTransactions = async () => {
     try {

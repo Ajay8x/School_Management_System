@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import API from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
+import { useSchoolRefresh } from '../hooks/useSchoolRefresh';
 import { 
   Wallet, Search, Plus, Trash2, Edit, 
   CreditCard, Banknote, Receipt, CheckCircle2,
@@ -34,6 +35,8 @@ export default function Fees() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useSchoolRefresh(fetchData);
 
   const fetchData = async () => {
     try {

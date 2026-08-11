@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import API from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
+import { useSchoolRefresh } from '../hooks/useSchoolRefresh';
 import { 
   Bell, Plus, Trash2, Edit, Search, 
   Calendar, User, Tag, X, Save, RefreshCw,
@@ -32,6 +33,8 @@ export default function NoticeBoard() {
   useEffect(() => {
     fetchNotices();
   }, []);
+
+  useSchoolRefresh(fetchNotices);
 
   const fetchNotices = async () => {
     try {

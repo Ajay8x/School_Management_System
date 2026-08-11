@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import API from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
+import { useSchoolRefresh } from '../hooks/useSchoolRefresh';
 import { 
   BookOpen, Plus, Trash2, Edit, Search, Users, 
   DoorOpen, UserCheck, X, Save, RefreshCw, MoreVertical,
@@ -31,6 +32,8 @@ export default function Classes() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useSchoolRefresh(fetchData);
 
   const fetchData = async () => {
     try {

@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import API from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
+import { useSchoolRefresh } from '../hooks/useSchoolRefresh';
 import { Plus, Trash2, Edit, Search, Eye, ChevronRight } from 'lucide-react';
 
 export default function Teachers() {
@@ -14,6 +15,8 @@ export default function Teachers() {
   useEffect(() => {
     fetchTeachers();
   }, []);
+
+  useSchoolRefresh(fetchTeachers);
 
   const fetchTeachers = async () => {
     try {
