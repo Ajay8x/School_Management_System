@@ -259,6 +259,8 @@ export const SchoolProvider = ({ children }) => {
       setCurrentSchool(target);
       localStorage.setItem('active_school_id', target._id);
       localStorage.setItem('active_school', JSON.stringify(target));
+      // Notify all pages to re-fetch their data for the new school
+      window.dispatchEvent(new CustomEvent('school-switched', { detail: { schoolId: target._id, school: target } }));
     }
   };
 

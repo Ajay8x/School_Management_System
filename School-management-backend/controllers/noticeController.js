@@ -5,7 +5,8 @@ const Notice = require('../models/Notice');
 // @access  Private
 exports.getNotices = async (req, res) => {
   try {
-    const notices = await Notice.find().sort({ date: -1 });
+    const filter = req.schoolId ? { schoolId: req.schoolId } : {};
+    const notices = await Notice.find(filter).sort({ date: -1 });
     res.json(notices);
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
@@ -32,7 +33,9 @@ exports.getNotice = async (req, res) => {
 // @access  Private (Admin)
 exports.createNotice = async (req, res) => {
   try {
-    const notice = await Notice.create(req.body);
+    const noticeData = { ...req.body };
+    if (req.schoolId) noticeData.schoolId = req.schoolId;
+    const notice = await Notice.create(noticeData);
     res.status(201).json(notice);
   } catch (error) {
     res.status(400).json({ message: error.message });

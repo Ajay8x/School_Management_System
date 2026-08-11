@@ -6,7 +6,8 @@ const User = require('../models/User');
 // @access  Private (Admin, Teacher)
 exports.getStudents = async (req, res) => {
   try {
-    const students = await Student.find().sort({ createdAt: -1 });
+    const filter = req.schoolId ? { schoolId: req.schoolId } : {};
+    const students = await Student.find(filter).sort({ createdAt: -1 });
     res.json(students);
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
@@ -39,6 +40,11 @@ exports.createStudent = async (req, res) => {
     const count = await Student.countDocuments();
     const serialNumber = `STU-${1001 + count}`;
     studentData.serialNumber = serialNumber;
+    
+    // Attach schoolId from active school
+    if (req.schoolId) {
+      studentData.schoolId = req.schoolId;
+    }
 
     // Ensure we have a unique email for the User model
     let loginEmail = studentData.email;

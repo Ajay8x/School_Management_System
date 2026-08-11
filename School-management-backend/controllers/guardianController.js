@@ -6,7 +6,8 @@ const Student = require('../models/Student');
 exports.getGuardians = async (req, res) => {
   try {
     // Fetch all students who have at least one guardian
-    const students = await Student.find({ "guardians.0": { $exists: true } });
+    const schoolFilter = req.schoolId ? { schoolId: req.schoolId, 'guardians.0': { $exists: true } } : { 'guardians.0': { $exists: true } };
+    const students = await Student.find(schoolFilter);
     
     const allGuardians = [];
     const seenGuardians = new Set();

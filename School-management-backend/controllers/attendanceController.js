@@ -15,6 +15,7 @@ exports.getAttendanceByClassAndDate = async (req, res) => {
     nextDay.setDate(queryDate.getDate() + 1);
 
     const attendances = await Attendance.find({
+      ...(req.schoolId && { schoolId: req.schoolId }),
       className,
       date: {
         $gte: queryDate,
@@ -45,15 +46,16 @@ exports.bulkSaveAttendance = async (req, res) => {
         filter: {
           studentId: record.studentId,
           className: className,
-          // Match the specific date strictly
-          date: attendanceDate
+          date: attendanceDate,
+          ...(req.schoolId && { schoolId: req.schoolId })
         },
         update: {
           $set: {
             studentId: record.studentId,
             className: className,
             date: attendanceDate,
-            status: record.status
+            status: record.status,
+            ...(req.schoolId && { schoolId: req.schoolId })
           }
         },
         upsert: true

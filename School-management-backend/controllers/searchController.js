@@ -13,13 +13,12 @@ exports.globalSearch = async (req, res) => {
       return res.json({ students: [], teachers: [], guardians: [] });
     }
 
-    const regex = new RegExp(q, 'i'); // Case-insensitive regex search
+    const regex = new RegExp(q, 'i');
+    const schoolFilter = req.schoolId ? { schoolId: req.schoolId } : {};
 
-    // Search all three collections concurrently for performance
-    const [students, teachers, guardians] = await Promise.all([
-      Student.find({ $or: [{ name: regex }, { email: regex }, { rollNumber: regex }] }).limit(5),
-      Teacher.find({ $or: [{ name: regex }, { email: regex }, { subject: regex }] }).limit(5),
-      Guardian.find({ $or: [{ name: regex }, { email: regex }, { phone: regex }] }).limit(5)
+    const [students, teachers] = await Promise.all([
+      Student.find({ ...schoolFilter, $or: [{ name: regex }, { email: regex }, { rollNumber: regex }] }).limit(5),
+      Teacher.find({ ...schoolFilter, $or: [{ name: regex }, { email: regex }, { subject: regex }] }).limit(5),
     ]);
 
     res.json({

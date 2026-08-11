@@ -6,7 +6,8 @@ const User = require('../models/User');
 // @access  Private
 exports.getTeachers = async (req, res) => {
   try {
-    const teachers = await Teacher.find().sort({ createdAt: -1 });
+    const filter = req.schoolId ? { schoolId: req.schoolId } : {};
+    const teachers = await Teacher.find(filter).sort({ createdAt: -1 });
     res.json(teachers);
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
@@ -39,6 +40,9 @@ exports.createTeacher = async (req, res) => {
     const count = await Teacher.countDocuments();
     const serialNumber = `TCH-${1001 + count}`;
     teacherData.serialNumber = serialNumber;
+    if (req.schoolId) {
+      teacherData.schoolId = req.schoolId;
+    }
 
     // Check if a teacher with this employeeId already exists
     const existingTeacher = await Teacher.findOne({ employeeId: teacherData.employeeId });

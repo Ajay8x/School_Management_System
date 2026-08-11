@@ -5,14 +5,17 @@ const Complaint = require('../models/Complaint');
 // --- Enquiry ---
 exports.getEnquiries = async (req, res) => {
   try {
-    const data = await Enquiry.find().sort({ createdAt: -1 });
+    const filter = req.schoolId ? { schoolId: req.schoolId } : {};
+    const data = await Enquiry.find(filter).sort({ createdAt: -1 });
     res.json(data);
   } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
 exports.createEnquiry = async (req, res) => {
   try {
-    const data = await Enquiry.create(req.body);
+    const d = { ...req.body };
+    if (req.schoolId) d.schoolId = req.schoolId;
+    const data = await Enquiry.create(d);
     res.status(201).json(data);
   } catch (err) { res.status(400).json({ message: err.message }); }
 };
@@ -27,14 +30,17 @@ exports.updateEnquiry = async (req, res) => {
 // --- Visitor ---
 exports.getVisitors = async (req, res) => {
   try {
-    const data = await Visitor.find().sort({ inTime: -1 });
+    const filter = req.schoolId ? { schoolId: req.schoolId } : {};
+    const data = await Visitor.find(filter).sort({ inTime: -1 });
     res.json(data);
   } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
 exports.createVisitor = async (req, res) => {
   try {
-    const data = await Visitor.create(req.body);
+    const d = { ...req.body };
+    if (req.schoolId) d.schoolId = req.schoolId;
+    const data = await Visitor.create(d);
     res.status(201).json(data);
   } catch (err) { res.status(400).json({ message: err.message }); }
 };
@@ -49,14 +55,17 @@ exports.updateVisitorOutTime = async (req, res) => {
 // --- Complaint ---
 exports.getComplaints = async (req, res) => {
   try {
-    const data = await Complaint.find().sort({ createdAt: -1 });
+    const filter = req.schoolId ? { schoolId: req.schoolId } : {};
+    const data = await Complaint.find(filter).sort({ createdAt: -1 });
     res.json(data);
   } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
 exports.createComplaint = async (req, res) => {
   try {
-    const data = await Complaint.create(req.body);
+    const d = { ...req.body };
+    if (req.schoolId) d.schoolId = req.schoolId;
+    const data = await Complaint.create(d);
     res.status(201).json(data);
   } catch (err) { res.status(400).json({ message: err.message }); }
 };

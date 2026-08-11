@@ -7,7 +7,8 @@ const Account = require('../models/Account');
 // @access  Private
 exports.getFees = async (req, res) => {
   try {
-    const fees = await Fee.find().populate('student', 'name rollNumber className');
+    const filter = req.schoolId ? { schoolId: req.schoolId } : {};
+    const fees = await Fee.find(filter).populate('student', 'name rollNumber className');
     res.json(fees);
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
@@ -31,7 +32,9 @@ exports.getStudentFees = async (req, res) => {
 // @access  Private (Admin)
 exports.createFee = async (req, res) => {
   try {
-    const fee = await Fee.create(req.body);
+    const feeData = { ...req.body };
+    if (req.schoolId) feeData.schoolId = req.schoolId;
+    const fee = await Fee.create(feeData);
     
     // If initially paid, add to accounts
     if (fee.paidAmount > 0) {

@@ -5,7 +5,8 @@ const Class = require('../models/Class');
 // @access  Private
 exports.getClasss = async (req, res) => {
   try {
-    const classes = await Class.find().populate('teacher', 'name employeeId subject');
+    const filter = req.schoolId ? { schoolId: req.schoolId } : {};
+    const classes = await Class.find(filter).populate('teacher', 'name employeeId subject');
     res.json(classes);
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
@@ -32,7 +33,9 @@ exports.getClass = async (req, res) => {
 // @access  Private (Admin)
 exports.createClass = async (req, res) => {
   try {
-    const classItem = await Class.create(req.body);
+    const classData = { ...req.body };
+    if (req.schoolId) classData.schoolId = req.schoolId;
+    const classItem = await Class.create(classData);
     res.status(201).json(classItem);
   } catch (error) {
     res.status(400).json({ message: error.message });

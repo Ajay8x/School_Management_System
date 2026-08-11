@@ -5,7 +5,8 @@ const Account = require('../models/Account');
 // @access  Private
 exports.getAccounts = async (req, res) => {
   try {
-    const transactions = await Account.find().sort({ date: -1 });
+    const filter = req.schoolId ? { schoolId: req.schoolId } : {};
+    const transactions = await Account.find(filter).sort({ date: -1 });
     res.json(transactions);
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
@@ -17,7 +18,9 @@ exports.getAccounts = async (req, res) => {
 // @access  Private (Admin)
 exports.createAccount = async (req, res) => {
   try {
-    const transaction = await Account.create(req.body);
+    const txData = { ...req.body };
+    if (req.schoolId) txData.schoolId = req.schoolId;
+    const transaction = await Account.create(txData);
     res.status(201).json(transaction);
   } catch (error) {
     res.status(400).json({ message: error.message });
