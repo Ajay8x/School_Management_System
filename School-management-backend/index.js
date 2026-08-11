@@ -4,6 +4,7 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const seedDummyData = require('./config/seedDummyData');
 const User = require('./models/User');
+const schoolMiddleware = require('./middlewares/schoolMiddleware');
 
 // Load environment variables
 dotenv.config();
@@ -64,6 +65,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+app.use(schoolMiddleware); // Attach req.schoolId from X-School-ID header
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
