@@ -89,6 +89,7 @@ app.use('/api/messages', require('./routes/messageRoutes'));
 app.use('/api/settings', require('./routes/settingsRoutes'));
 app.use('/api/health-records', require('./routes/healthRoutes'));
 app.use('/api/reception', require('./routes/receptionRoutes'));
+app.use('/api/schools', require('./routes/schoolRoutes'));
 
 // Basic route
 app.get('/', (req, res) => {

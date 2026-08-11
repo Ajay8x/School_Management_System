@@ -1,12 +1,14 @@
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { SchoolContext } from '../context/SchoolContext';
 import API from '../api/axios';
 import { 
   LayoutDashboard, Menu, Search, Sun, Moon, Bell, Settings,
   ChevronDown, ChevronRight, CheckCircle, GraduationCap, Users, UserCheck, 
   BookOpen, FileText, CreditCard, Clock, UserPlus, FileBadge, Library, 
-  Wallet, Briefcase, ClipboardList, Calendar, MessageSquare, ShieldCheck, LogOut, Key, X
+  Wallet, Briefcase, ClipboardList, Calendar, MessageSquare, ShieldCheck, LogOut, Key, X,
+  Home, Check, Building, Sliders, ChevronUp
 } from 'lucide-react';
 
 // Custom Sidebar Item Component
@@ -70,9 +72,12 @@ const SidebarItem = ({ item, isActive, onToggle, isExpanded }) => {
 
 export default function Layout() {
   const { user, loading, logout } = useContext(AuthContext);
+  const { schools, currentSchool, switchSchool, isModuleEnabled } = useContext(SchoolContext);
   const location = useLocation();
   const [expandedMenu, setExpandedMenu] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showSchoolDropdown, setShowSchoolDropdown] = useState(false);
+  const schoolDropdownRef = useRef(null);
   
   // Search State
   const [searchQuery, setSearchQuery] = useState('');
@@ -97,14 +102,23 @@ export default function Layout() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
+  // Close school dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (schoolDropdownRef.current && !schoolDropdownRef.current.contains(e.target)) {
+        setShowSchoolDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   useEffect(() => {
     const fetchNotices = async () => {
       try {
         const res = await API.get('/notices');
-        // Sort by date descending
         const sorted = res.data.sort((a, b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt));
         setNotices(sorted);
-        // Set unread count based on locally stored last read timestamp
         const lastRead = localStorage.getItem('last_read_notices') || 0;
         const unread = sorted.filter(n => new Date(n.date || n.createdAt).getTime() > Number(lastRead)).length;
         setUnreadCount(unread);
@@ -178,6 +192,7 @@ export default function Layout() {
   // Close dropdown and mobile menu on route change
   useEffect(() => {
     setShowSearchDropdown(false);
+    setShowSchoolDropdown(false);
     setSearchQuery('');
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
@@ -191,83 +206,108 @@ export default function Layout() {
     setExpandedMenu(expandedMenu === name ? '' : name);
   };
 
+  const isSuperAdmin = user.role === 'super-admin';
+
   const allNavigation = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['admin', 'teacher', 'student', 'parent', 'accountant', 'librarian'] },
     { 
-      name: 'Reception', icon: UserPlus, roles: ['admin'],
+      name: 'Reception', icon: UserPlus, roles: ['admin'], moduleKey: 'reception',
       submenu: [
-        { name: 'Enquiry', href: '/reception/enquiry' },
-        { name: 'Visitor Log', href: '/reception/visitor-log' },
-        { name: 'Gate Pass', href: '/reception/gate-pass' },
-        { name: 'Complaint', href: '/reception/complaint' },
-        { name: 'Correspondence', href: '/reception/correspondence' },
-        { name: 'Query', href: '/reception/query' }
+        { name: 'Enquiry', href: '/reception/enquiry', subKey: 'enquiry' },
+        { name: 'Visitor Log', href: '/reception/visitor-log', subKey: 'visitorLog' },
+        { name: 'Gate Pass', href: '/reception/gate-pass', subKey: 'gatePass' },
+        { name: 'Complaint', href: '/reception/complaint', subKey: 'complaint' },
+        { name: 'Correspondence', href: '/reception/correspondence', subKey: 'correspondence' },
+        { name: 'Query', href: '/reception/query', subKey: 'query' }
       ] 
     },
     { 
-      name: 'Student', icon: GraduationCap, roles: ['admin'],
+      name: 'Student', icon: GraduationCap, roles: ['admin'], moduleKey: 'student',
       submenu: [
         { name: 'Students', href: '/students' },
-        { name: 'Registration', href: '/students/registration' },
-        { name: 'Roll Number', href: '/students/roll-number' },
-        { name: 'Photo', href: '/students/photo' },
-        { name: 'Health Record', href: '/students/health-record' },
-        { name: 'Elective Subject', href: '/students/elective-subject' },
-        { name: 'Attendance', href: '/students/attendance' },
-        { name: 'Fee Allocation', href: '/students/fee-allocation' },
-        { name: 'Service Allocation', href: '/students/service-allocation' },
-        { name: 'Promotion', href: '/students/promotion' },
-        { name: 'Edit Request', href: '/students/edit-request' },
-        { name: 'Service Request', href: '/students/service-request' },
-        { name: 'Leave Request', href: '/students/leave-request' },
-        { name: 'Transfer Request', href: '/students/transfer-request' },
-        { name: 'Transfer', href: '/students/transfer' },
-        { name: 'Alumni', href: '/students/alumni' },
-        { name: 'Report', href: '/students/report' }
+        { name: 'Registration', href: '/students/registration', subKey: 'registration' },
+        { name: 'Roll Number', href: '/students/roll-number', subKey: 'rollNumber' },
+        { name: 'Photo', href: '/students/photo', subKey: 'photo' },
+        { name: 'Health Record', href: '/students/health-record', subKey: 'healthRecord' },
+        { name: 'Elective Subject', href: '/students/elective-subject', subKey: 'electiveSubject' },
+        { name: 'Attendance', href: '/students/attendance', subKey: 'attendance' },
+        { name: 'Fee Allocation', href: '/students/fee-allocation', subKey: 'feeAllocation' },
+        { name: 'Service Allocation', href: '/students/service-allocation', subKey: 'serviceAllocation' },
+        { name: 'Promotion', href: '/students/promotion', subKey: 'promotion' },
+        { name: 'Edit Request', href: '/students/edit-request', subKey: 'editRequest' },
+        { name: 'Service Request', href: '/students/service-request', subKey: 'serviceRequest' },
+        { name: 'Leave Request', href: '/students/leave-request', subKey: 'leaveRequest' },
+        { name: 'Transfer Request', href: '/students/transfer-request', subKey: 'transferRequest' },
+        { name: 'Transfer', href: '/students/transfer', subKey: 'transfer' },
+        { name: 'Alumni', href: '/students/alumni', subKey: 'alumni' },
+        { name: 'Report', href: '/students/report', subKey: 'report' }
       ] 
     },
     { 
-      name: 'Teachers', icon: Users, roles: ['admin'],
-      submenu: [{ name: 'Teacher List', href: '/teachers' }, { name: 'Add Teacher', href: '/teachers/add' }] 
+      name: 'Teachers', icon: Users, roles: ['admin'], moduleKey: 'teachers',
+      submenu: [
+        { name: 'Teacher List', href: '/teachers', subKey: 'teacherList' },
+        { name: 'Add Teacher', href: '/teachers/add', subKey: 'addTeacher' }
+      ] 
     },
     { 
-      name: 'Guardians', icon: UserCheck, roles: ['admin'],
-      submenu: [{ name: 'Guardian List', href: '/guardians' }, { name: 'Add Guardian', href: '/guardians/add' }]
+      name: 'Guardians', icon: UserCheck, roles: ['admin'], moduleKey: 'guardians',
+      submenu: [
+        { name: 'Guardian List', href: '/guardians', subKey: 'guardianList' },
+        { name: 'Add Guardian', href: '/guardians/add', subKey: 'addGuardian' }
+      ]
     },
-    { name: 'Classes', href: '/classes', icon: BookOpen, roles: ['admin', 'teacher', 'student'] },
-    { name: 'Examinations', href: '/examinations', icon: FileText, roles: ['admin', 'teacher', 'student', 'parent'] },
-    { name: 'Fees Collection', href: '/fees', icon: CreditCard, roles: ['admin', 'parent', 'accountant'] },
-    { name: 'Attendance', href: '/attendance', icon: Clock, roles: ['admin', 'teacher', 'student', 'parent'] },
-    { name: 'Leaves', href: '/leaves', icon: UserPlus, roles: ['admin', 'teacher'] },
-    { name: 'Certificate', href: '/certificate', icon: FileBadge, roles: ['admin'] },
-    { name: 'Library', href: '/library', icon: Library, roles: ['admin', 'student', 'teacher', 'librarian'] },
-    { name: 'Accounts', href: '/accounts', icon: Wallet, roles: ['admin', 'accountant'] },
-    { name: 'HRM', href: '/hrm', icon: Briefcase, roles: ['admin'] },
-    { name: 'Notice Board', href: '/notice-board', icon: ClipboardList, roles: ['admin', 'teacher', 'student', 'parent'] },
-    { name: 'Event', href: '/event', icon: Calendar, roles: ['admin', 'teacher', 'student', 'parent'] },
-    { name: 'Message', href: '/message', icon: MessageSquare, roles: ['admin', 'teacher', 'student', 'parent'] },
+    { name: 'Classes', href: '/classes', icon: BookOpen, roles: ['admin', 'teacher', 'student'], moduleKey: 'academic' },
+    { name: 'Examinations', href: '/examinations', icon: FileText, roles: ['admin', 'teacher', 'student', 'parent'], moduleKey: 'exam' },
+    { name: 'Fees Collection', href: '/fees', icon: CreditCard, roles: ['admin', 'parent', 'accountant'], moduleKey: 'finance' },
+    { name: 'Attendance', href: '/attendance', icon: Clock, roles: ['admin', 'teacher', 'student', 'parent'], moduleKey: 'attendance' },
+    { name: 'Leaves', href: '/leaves', icon: UserPlus, roles: ['admin', 'teacher'], moduleKey: 'leaves' },
+    { name: 'Certificate', href: '/certificate', icon: FileBadge, roles: ['admin'], moduleKey: 'certificate' },
+    { name: 'Library', href: '/library', icon: Library, roles: ['admin', 'student', 'teacher', 'librarian'], moduleKey: 'library' },
+    { name: 'Accounts', href: '/accounts', icon: Wallet, roles: ['admin', 'accountant'], moduleKey: 'accounts' },
+    { name: 'HRM', href: '/hrm', icon: Briefcase, roles: ['admin'], moduleKey: 'employee' },
+    { name: 'Notice Board', href: '/notice-board', icon: ClipboardList, roles: ['admin', 'teacher', 'student', 'parent'], moduleKey: 'communication' },
+    { name: 'Event', href: '/event', icon: Calendar, roles: ['admin', 'teacher', 'student', 'parent'], moduleKey: 'communication' },
+    { name: 'Message', href: '/message', icon: MessageSquare, roles: ['admin', 'teacher', 'student', 'parent'], moduleKey: 'communication' },
     { name: 'Users', href: '/users', icon: Users, roles: ['admin'] },
+    { name: 'Module Configuration', href: '/module-config', icon: Sliders, roles: ['super-admin'] },
     { name: 'User Credentials', href: '/credentials', icon: Key, roles: ['super-admin'] },
     { name: 'Role & Access', href: '/roles', icon: ShieldCheck, roles: ['admin'] },
     { name: 'Settings', href: '/settings', icon: Settings, roles: ['admin'] },
   ];
 
   const navigation = allNavigation
-    .filter(item => user.role === 'super-admin' || item.roles.includes(user.role))
+    .filter(item => {
+      // Role check
+      const hasRole = isSuperAdmin || item.roles.includes(user.role);
+      if (!hasRole) return false;
+
+      // Module enabled check for non-super-admin
+      if (!isSuperAdmin && item.moduleKey) {
+        return isModuleEnabled(item.moduleKey);
+      }
+      return true;
+    })
     .map(item => {
-      // For both admin and super-admin, use the /admin prefix for most modules
-      // This ensures super-admins can reuse the existing admin routes
-      const routePrefix = (user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`;
-      
-      // The Dashboard should still point to their specific dashboard
+      const routePrefix = (isSuperAdmin || user.role === 'admin') ? '/admin' : `/${user.role}`;
       const itemHref = item.name === 'Dashboard' ? `/${user.role}/dashboard` : `${routePrefix}${item.href}`;
+
+      // Filter submenus if subKey is set and not super admin
+      let filteredSubmenu = item.submenu;
+      if (!isSuperAdmin && item.moduleKey && item.submenu) {
+        filteredSubmenu = item.submenu.filter(sub => {
+          if (!sub.subKey) return true;
+          return isModuleEnabled(item.moduleKey, sub.subKey);
+        });
+      }
 
       return {
         ...item,
         href: itemHref,
-        submenu: item.submenu ? item.submenu.map(sub => ({ ...sub, href: `${routePrefix}${sub.href}` })) : undefined
+        submenu: filteredSubmenu ? filteredSubmenu.map(sub => ({ ...sub, href: `${routePrefix}${sub.href}` })) : undefined
       };
     });
+
 
   return (
     <div className="min-h-screen bg-[#F0F5FB] dark:bg-slate-900 flex font-sans transition-colors duration-300">
@@ -344,22 +384,22 @@ export default function Layout() {
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative z-10">
         
         {/* Topbar */}
-        <header className="h-[76px] bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700 flex items-center justify-between px-6 flex-shrink-0 transition-colors duration-300">
-          <div className="flex items-center">
+        <header className="h-[76px] bg-[#0d1527] dark:bg-slate-900 border-b border-slate-800 flex items-center justify-between px-6 flex-shrink-0 transition-colors duration-300 z-30">
+          <div className="flex items-center space-x-4">
             <button 
-              className="text-[#8a98ac] hover:text-teal-600 dark:hover:text-teal-400 transition p-2 bg-[#F0F5FB] dark:bg-slate-700 rounded-md mr-4 md:hidden"
+              className="text-slate-400 hover:text-teal-400 transition p-2 bg-slate-800/80 rounded-lg md:hidden"
               onClick={() => setIsMobileMenuOpen(true)}
             >
               <Menu className="w-5 h-5" />
             </button>
             
             {/* Search Bar */}
-            <div className="hidden md:flex items-center bg-[#F0F5FB] dark:bg-slate-700 rounded-md px-3 py-2 w-72 focus-within:ring-1 focus-within:ring-teal-500 transition-all relative">
-              <Search className="w-[18px] h-[18px] text-[#8a98ac] dark:text-slate-400 mr-2" />
+            <div className="hidden lg:flex items-center bg-slate-800/80 border border-slate-700/60 rounded-xl px-3 py-2 w-64 xl:w-72 focus-within:ring-1 focus-within:ring-teal-500 transition-all relative">
+              <Search className="w-[18px] h-[18px] text-slate-400 mr-2" />
               <input 
                 type="text" 
                 placeholder="Search database..." 
-                className="bg-transparent border-none outline-none w-full text-[14px] text-gray-700 dark:text-slate-200 placeholder-[#8a98ac] dark:placeholder-slate-400"
+                className="bg-transparent border-none outline-none w-full text-[13px] text-slate-200 placeholder-slate-400"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => {if(searchQuery.length >= 2) setShowSearchDropdown(true)}}
@@ -418,20 +458,132 @@ export default function Layout() {
             </div>
           </div>
           
-          <div className="flex items-center space-x-2">
-            <button onClick={toggleTheme} className="w-10 h-10 flex items-center justify-center rounded-full text-[#8a98ac] hover:bg-[#F0F5FB] dark:hover:bg-slate-700 dark:text-slate-300 transition">
+          {/* Topbar Right Area matching Screenshot 1 */}
+          <div className="flex items-center space-x-3 md:space-x-4">
+            
+            {/* School Switcher Selector (Screenshot 1 Match) */}
+            <div className="relative" ref={schoolDropdownRef}>
+              <button
+                type="button"
+                onClick={() => setShowSchoolDropdown(!showSchoolDropdown)}
+                className="flex items-center space-x-2 text-white hover:text-teal-300 px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700/70 transition-all font-semibold text-[15px] tracking-tight group shadow-sm"
+              >
+                <Building className="w-4 h-4 text-teal-400 flex-shrink-0" />
+                <span className="max-w-[150px] sm:max-w-[220px] md:max-w-[280px] truncate">
+                  {currentSchool?.name || 'Demo International School'}
+                </span>
+                <ChevronDown className={`w-4 h-4 text-slate-400 group-hover:text-white transition-transform duration-200 ${showSchoolDropdown ? 'rotate-180 text-teal-400' : ''}`} />
+              </button>
+
+              {/* Sleek Dark School Dropdown (Exact match to Screenshot 1) */}
+              {showSchoolDropdown && (
+                <div className="absolute right-0 mt-2.5 w-72 sm:w-80 bg-[#0c1324] border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-3 duration-200">
+                  <div className="p-3 border-b border-slate-800/80 flex items-center justify-between bg-[#080d19]">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                      <SchoolIcon className="w-3.5 h-3.5 text-teal-400" /> Switch School
+                    </span>
+                    {isSuperAdmin && (
+                      <Link
+                        to="/admin/module-config"
+                        onClick={() => setShowSchoolDropdown(false)}
+                        className="text-[11px] font-semibold text-teal-400 hover:text-teal-300"
+                      >
+                        Manage
+                      </Link>
+                    )}
+                  </div>
+
+                  <div className="max-h-[340px] overflow-y-auto custom-scrollbar py-1">
+                    {schools.map((school) => {
+                      const isSelected = school._id === currentSchool?._id;
+                      return (
+                        <button
+                          key={school._id}
+                          type="button"
+                          onClick={() => {
+                            switchSchool(school);
+                            setShowSchoolDropdown(false);
+                          }}
+                          className={`w-full text-left px-4 py-3 flex items-center justify-between transition-colors ${
+                            isSelected
+                              ? 'bg-[#16233d] text-white'
+                              : 'text-slate-300 hover:bg-[#131c31] hover:text-white'
+                          }`}
+                        >
+                          <div className="min-w-0 pr-2">
+                            <p className="text-sm font-semibold truncate leading-tight">
+                              {school.name}
+                            </p>
+                            {school.tagline && (
+                              <p className="text-[11px] text-slate-400 truncate mt-0.5 opacity-80">
+                                {school.tagline}
+                              </p>
+                            )}
+                          </div>
+
+                          {isSelected && (
+                            <div className="w-5 h-5 rounded-full bg-teal-500/20 border border-teal-500 flex items-center justify-center flex-shrink-0 text-teal-400">
+                              <Check className="w-3.5 h-3.5 stroke-[3]" />
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {isSuperAdmin && (
+                    <div className="p-2 border-t border-slate-800 bg-[#080d19]">
+                      <Link
+                        to="/admin/module-config"
+                        onClick={() => setShowSchoolDropdown(false)}
+                        className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-xl bg-teal-500/10 text-teal-400 hover:bg-teal-500/20 border border-teal-500/30 transition"
+                      >
+                        <Sliders className="w-3.5 h-3.5" />
+                        Configure School Modules
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Home Icon */}
+            <Link
+              to={`/${user.role}/dashboard`}
+              className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition"
+              title="Home Dashboard"
+            >
+              <Home className="w-5 h-5" />
+            </Link>
+
+            {/* Settings Icon */}
+            <Link
+              to={isSuperAdmin ? '/admin/module-config' : '/admin/settings'}
+              className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition"
+              title={isSuperAdmin ? 'Module & School Configuration' : 'Settings'}
+            >
+              <Settings className="w-5 h-5" />
+            </Link>
+
+            {/* Theme Toggle Button */}
+            <button 
+              onClick={toggleTheme} 
+              className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition"
+              title="Toggle Theme"
+            >
               {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
 
-
+            {/* Clock / Notifications Icon */}
             <div className="relative">
               <button 
                 onClick={handleOpenNotifications}
-                className="w-10 h-10 flex items-center justify-center rounded-full text-[#8a98ac] hover:bg-[#F0F5FB] dark:hover:bg-slate-700 dark:text-slate-300 transition relative z-50"
+                className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition relative"
+                title="Notifications"
               >
-                <Bell className="w-5 h-5" />
+                <Clock className="w-5 h-5" />
                 {unreadCount > 0 && (
-                  <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-slate-800 animate-pulse"></span>
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-slate-900 animate-pulse"></span>
                 )}
               </button>
 
@@ -442,7 +594,7 @@ export default function Layout() {
 
               {/* Notifications Dropdown */}
               {showNotifications && (
-                <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-gray-100 dark:border-slate-700 py-3 z-50 animate-in fade-in slide-in-from-top-3 duration-200">
+                <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700 py-3 z-50 animate-in fade-in slide-in-from-top-3 duration-200">
                   <div className="px-4 py-2 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800/50">
                     <h3 className="font-bold text-gray-800 dark:text-white text-sm">Notifications</h3>
                     <span className="text-xs text-teal-500 hover:text-teal-600 cursor-pointer font-bold">
@@ -483,14 +635,15 @@ export default function Layout() {
               )}
             </div>
             
-            <div className="ml-2 pl-2 border-l border-gray-200 dark:border-slate-700 flex items-center">
-                <button 
-                  onClick={() => setShowProfileModal(true)}
-                  className="w-9 h-9 rounded-full bg-gray-200 dark:bg-slate-600 border-2 border-white dark:border-slate-800 shadow-sm overflow-hidden ml-2 mr-2 hover:opacity-80 transition"
-                  title="My Profile"
-                >
-                  <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=fbd4a3&color=a05400`} alt="avatar" className="w-full h-full object-cover" />
-                </button>
+            {/* User Profile Avatar Icon (Screenshot 1 match) */}
+            <div className="pl-1 border-l border-slate-700/60 flex items-center">
+              <button 
+                onClick={() => setShowProfileModal(true)}
+                className="w-10 h-10 rounded-full bg-amber-200/80 border-2 border-amber-300/80 shadow-sm overflow-hidden hover:scale-105 transition-transform"
+                title="My Profile"
+              >
+                <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=fbd4a3&color=a05400`} alt="avatar" className="w-full h-full object-cover" />
+              </button>
             </div>
           </div>
         </header>

@@ -53,6 +53,7 @@ import Users from './pages/Users';
 import Settings from './pages/Settings';
 import Placeholder from './components/Placeholder';
 import UserCredentials from './pages/super-admin/UserCredentials';
+import ModuleConfig from './pages/super-admin/ModuleConfig';
 
 function App() {
   return (
@@ -115,6 +116,7 @@ function App() {
           <Route path="roles" element={<Roles />} />
           <Route path="settings" element={<Settings />} />
           <Route path="credentials" element={<UserCredentials />} />
+          <Route path="module-config" element={<ModuleConfig />} />
 
           {/* Reception Module */}
           <Route path="reception/enquiry" element={<Enquiry />} />

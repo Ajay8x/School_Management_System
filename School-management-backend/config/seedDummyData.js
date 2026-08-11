@@ -5,9 +5,39 @@ const Notice = require('../models/Notice');
 const Class = require('../models/Class');
 const Guardian = require('../models/Guardian');
 const User = require('../models/User');
+const School = require('../models/School');
+const { defaultModulesConfig } = require('../models/School');
+
+const seedSchools = async () => {
+  try {
+    const schoolCount = await School.countDocuments();
+    if (schoolCount === 0) {
+      console.log('Seeding initial schools...');
+      const initialSchools = [
+        { name: 'Demo International School', code: 'DIS001', isDefault: true, tagline: 'Empowering Young Minds', address: '123 Education Boulevard', phone: '+91 98765 43210', email: 'contact@demointernational.edu', modules: defaultModulesConfig },
+        { name: 'CampusTracker School', code: 'CTS002', isDefault: false, tagline: 'Inspiring Future Leaders', address: '45 Knowledge Park', phone: '+91 98765 43211', email: 'info@campustracker.edu', modules: defaultModulesConfig },
+        { name: 'BPS School Bhadoi', code: 'BPS003', isDefault: false, tagline: 'Knowledge, Character, Success', address: 'Station Road, Bhadohi', phone: '+91 98765 43212', email: 'office@bpsbhadoi.org', modules: defaultModulesConfig },
+        { name: 'Lions School Mirzapur', code: 'LSM004', isDefault: false, tagline: 'Service and Excellence', address: 'Civil Lines, Mirzapur', phone: '+91 98765 43213', email: 'admin@lionsmirzapur.org', modules: defaultModulesConfig },
+        { name: 'Shubham Model School', code: 'SMS005', isDefault: false, tagline: 'Building Strong Foundations', address: 'Varanasi Highway', phone: '+91 98765 43214', email: 'shubhammodel@edu.org', modules: defaultModulesConfig },
+        { name: 'SS PUBLIC SCHOOL', code: 'SSPS006', isDefault: false, tagline: 'Towards Higher Horizon', address: 'Ring Road Branch', phone: '+91 98765 43215', email: 'info@sspublicschool.com', modules: defaultModulesConfig },
+        { name: 'HMS', code: 'HMS007', isDefault: false, tagline: 'Modern Educational Excellence', address: 'City Centre Campus', phone: '+91 98765 43216', email: 'helpdesk@hmsedu.in', modules: defaultModulesConfig },
+        { name: 'INDIAN PUBLIC SCHOOL', code: 'IPS008', isDefault: false, tagline: 'Values and Global Vision', address: 'GT Road Campus', phone: '+91 98765 43217', email: 'admissions@indianpublic.edu', modules: defaultModulesConfig },
+        { name: 'Kids Ocean School', code: 'KOS009', isDefault: false, tagline: 'Nurturing Tiny Explorers', address: 'Green View Lane', phone: '+91 98765 43218', email: 'kids@oceanedu.com', modules: defaultModulesConfig },
+        { name: 'Dhruv Public School', code: 'DPS010', isDefault: false, tagline: 'Excellence in Every Step', address: 'Nehru Nagar Branch', phone: '+91 98765 43219', email: 'dhruvpublic@school.in', modules: defaultModulesConfig }
+      ];
+
+      await School.insertMany(initialSchools);
+      console.log('Seeded 10 default schools successfully.');
+    }
+  } catch (error) {
+    console.error('Error seeding schools:', error);
+  }
+};
 
 const seedDummyData = async () => {
   try {
+    await seedSchools();
+
     // Only seed if the database is essentially empty (checking Students as a proxy)
     const studentCount = await Student.countDocuments();
     if (studentCount > 0) {
@@ -78,3 +108,4 @@ const seedDummyData = async () => {
 };
 
 module.exports = seedDummyData;
+
