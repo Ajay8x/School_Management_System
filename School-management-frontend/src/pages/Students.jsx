@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import API from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
+import { useSchoolRefresh } from '../hooks/useSchoolRefresh';
 import { ChevronDown, Filter, Settings, List, Grid, MoreVertical, ExternalLink, ChevronLeft, ChevronRight, ArrowUp, ArrowDown } from 'lucide-react';
 
 export default function Students() {
@@ -20,6 +21,9 @@ export default function Students() {
   useEffect(() => {
     fetchStudents();
   }, []);
+
+  // Re-fetch when active school changes
+  useSchoolRefresh(fetchStudents);
 
   const fetchStudents = async () => {
     try {
