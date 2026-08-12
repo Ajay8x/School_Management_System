@@ -35,20 +35,41 @@ exports.getSchoolById = async (req, res) => {
 // @access  Private (Super Admin)
 exports.createSchool = async (req, res) => {
   try {
-    const { name, code, tagline, address, phone, email, logoUrl, status, modules } = req.body;
+    const {
+      name, appName, code, tagline, description,
+      metaAuthor, metaDescription, metaKeywords,
+      address, addressLine1, addressLine2, city, state, zipcode, country,
+      phone, email, fax, website, financialYearCode, logoUrl, status, modules
+    } = req.body;
 
-    if (!name) {
-      return res.status(400).json({ message: 'School name is required' });
+    if (!name && !appName) {
+      return res.status(400).json({ message: 'School or App name is required' });
     }
 
+    const schoolName = name || appName;
+
     const school = await School.create({
-      name,
-      code: code || name.split(' ').map(w => w[0]).join('').toUpperCase(),
-      tagline,
-      address,
-      phone,
-      email,
-      logoUrl,
+      name: schoolName,
+      appName: appName || schoolName,
+      code: code || schoolName.split(' ').map(w => w[0]).join('').toUpperCase(),
+      tagline: tagline || 'Excellence in Education',
+      description: description || 'Innovative Partner',
+      metaAuthor: metaAuthor || '',
+      metaDescription: metaDescription || '',
+      metaKeywords: metaKeywords || '',
+      address: address || '',
+      addressLine1: addressLine1 || '',
+      addressLine2: addressLine2 || '',
+      city: city || '',
+      state: state || '',
+      zipcode: zipcode || '',
+      country: country || '',
+      phone: phone || '',
+      email: email || '',
+      fax: fax || '',
+      website: website || '',
+      financialYearCode: financialYearCode || '',
+      logoUrl: logoUrl || '',
       status: status || 'active',
       modules: modules || defaultModulesConfig
     });

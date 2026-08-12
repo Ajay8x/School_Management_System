@@ -178,8 +178,52 @@ export const DEFAULT_MODULES_CONFIG = {
 };
 
 const DEFAULT_SCHOOLS = [
-  { _id: 'school_1', name: 'Demo International School', code: 'DIS001', isDefault: true, modules: DEFAULT_MODULES_CONFIG },
-  { _id: 'school_2', name: 'CampusTracker School', code: 'CTS002', isDefault: false, modules: DEFAULT_MODULES_CONFIG }
+  { 
+    _id: 'school_1', 
+    name: 'Demo International School',
+    appName: 'Campus Tracker',
+    description: 'Innovative Partner',
+    metaAuthor: 'CampusTracker',
+    metaDescription: 'Application by campustracker',
+    metaKeywords: 'campustracker',
+    addressLine1: 'Campus Tracker Campus',
+    addressLine2: 'Near BLW',
+    city: 'Varanasi',
+    state: 'Uttar Pradesh',
+    zipcode: '221005',
+    country: 'India',
+    email: 'help.chbs@gmail.com',
+    phone: '+919935332556',
+    fax: 'Fax',
+    website: 'https://campustracker.in',
+    financialYearCode: '2025-2026',
+    code: 'DIS001', 
+    isDefault: true, 
+    modules: DEFAULT_MODULES_CONFIG 
+  },
+  { 
+    _id: 'school_2', 
+    name: 'CampusTracker School', 
+    appName: 'Campus Tracker',
+    description: 'Innovative Partner',
+    metaAuthor: 'CampusTracker',
+    metaDescription: 'Application by campustracker',
+    metaKeywords: 'campustracker',
+    addressLine1: 'Campus Tracker Main Branch',
+    addressLine2: 'Near BLW',
+    city: 'Varanasi',
+    state: 'Uttar Pradesh',
+    zipcode: '221005',
+    country: 'India',
+    email: 'help.chbs@gmail.com',
+    phone: '+919935332556',
+    fax: 'Fax',
+    website: 'https://campustracker.in',
+    financialYearCode: '2025-2026',
+    code: 'CTS002', 
+    isDefault: false, 
+    modules: DEFAULT_MODULES_CONFIG 
+  }
 ];
 
 export const SchoolProvider = ({ children }) => {

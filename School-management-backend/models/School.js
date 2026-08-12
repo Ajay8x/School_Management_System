@@ -187,6 +187,11 @@ const schoolSchema = new mongoose.Schema({
     required: [true, 'Please add a school name'],
     trim: true
   },
+  appName: {
+    type: String,
+    default: 'Campus Tracker',
+    trim: true
+  },
   code: {
     type: String,
     trim: true
@@ -195,7 +200,47 @@ const schoolSchema = new mongoose.Schema({
     type: String,
     default: 'Excellence in Education'
   },
+  description: {
+    type: String,
+    default: 'Innovative Partner'
+  },
+  metaAuthor: {
+    type: String,
+    default: ''
+  },
+  metaDescription: {
+    type: String,
+    default: ''
+  },
+  metaKeywords: {
+    type: String,
+    default: ''
+  },
   address: {
+    type: String,
+    default: ''
+  },
+  addressLine1: {
+    type: String,
+    default: ''
+  },
+  addressLine2: {
+    type: String,
+    default: ''
+  },
+  city: {
+    type: String,
+    default: ''
+  },
+  state: {
+    type: String,
+    default: ''
+  },
+  zipcode: {
+    type: String,
+    default: ''
+  },
+  country: {
     type: String,
     default: ''
   },
@@ -204,6 +249,18 @@ const schoolSchema = new mongoose.Schema({
     default: ''
   },
   email: {
+    type: String,
+    default: ''
+  },
+  fax: {
+    type: String,
+    default: ''
+  },
+  website: {
+    type: String,
+    default: ''
+  },
+  financialYearCode: {
     type: String,
     default: ''
   },

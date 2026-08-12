@@ -8,7 +8,7 @@ import {
   ChevronDown, ChevronRight, CheckCircle, GraduationCap, Users, UserCheck, 
   BookOpen, FileText, CreditCard, Clock, UserPlus, FileBadge, Library, 
   Wallet, Briefcase, ClipboardList, Calendar, MessageSquare, ShieldCheck, LogOut, Key, X,
-  Home, Check, Building, Sliders, ChevronUp, Wrench, Activity
+  Home, Check, Building, Sliders, ChevronUp, Wrench, Activity, Boxes
 } from 'lucide-react';
 
 // Custom Sidebar Item Component
@@ -150,6 +150,13 @@ export default function Layout() {
   }, [isDark]);
 
   useEffect(() => {
+    if (currentSchool) {
+      const siteTitle = currentSchool.appName || currentSchool.name || 'Campus Tracker';
+      document.title = `${siteTitle} | School Management System`;
+    }
+  }, [currentSchool]);
+
+  useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
       if (searchQuery.length >= 2) {
         setIsSearching(true);
@@ -277,10 +284,11 @@ export default function Layout() {
         { name: 'Config', href: '/utility/config' }
       ] 
     },
-    { name: 'Module Configuration', href: '/module-config', icon: Sliders, roles: ['super-admin'] },
+    { name: 'Module', href: '/module-config', icon: Boxes, roles: ['super-admin'] },
     { name: 'User Credentials', href: '/credentials', icon: Key, roles: ['super-admin'] },
     { name: 'Role & Access', href: '/roles', icon: ShieldCheck, roles: ['admin'] },
-    { name: 'Settings', href: '/settings', icon: Settings, roles: ['admin'] },
+    { name: 'General Config', href: '/general-config', icon: Sliders, roles: ['admin', 'super-admin'] },
+    { name: 'Settings', href: '/settings', icon: Settings, roles: ['admin', 'super-admin'] },
   ];
 
   const navigation = allNavigation
@@ -289,9 +297,9 @@ export default function Layout() {
       const hasRole = isSuperAdmin || item.roles.includes(user.role);
       if (!hasRole) return false;
 
-      // Module enabled check for non-super-admin
+      // Module enabled check (hides menu item if super-admin turned off module for this role or school)
       if (!isSuperAdmin && item.moduleKey) {
-        return isModuleEnabled(item.moduleKey);
+        return isModuleEnabled(item.moduleKey, null, user.role);
       }
       return true;
     })
@@ -299,12 +307,12 @@ export default function Layout() {
       const routePrefix = (isSuperAdmin || user.role === 'admin') ? '/admin' : `/${user.role}`;
       const itemHref = item.name === 'Dashboard' ? `/${user.role}/dashboard` : `${routePrefix}${item.href}`;
 
-      // Filter submenus if subKey is set and not super admin
+      // Filter submenus if subKey is set
       let filteredSubmenu = item.submenu;
       if (!isSuperAdmin && item.moduleKey && item.submenu) {
         filteredSubmenu = item.submenu.filter(sub => {
           if (!sub.subKey) return true;
-          return isModuleEnabled(item.moduleKey, sub.subKey);
+          return isModuleEnabled(item.moduleKey, sub.subKey, user.role);
         });
       }
 
@@ -335,7 +343,9 @@ export default function Layout() {
             <div className="text-teal-500">
               <CheckCircle className="w-8 h-8 fill-teal-50 dark:fill-slate-700 text-teal-500" strokeWidth={1.5} />
             </div>
-            <h1 className="text-[22px] font-bold text-gray-800 dark:text-white tracking-tight">CampusPilot<span className="font-light">|</span></h1>
+            <h1 className="text-[20px] font-bold text-gray-800 dark:text-white tracking-tight truncate max-w-[180px]" title={currentSchool?.appName || currentSchool?.name || 'Campus Tracker'}>
+              {currentSchool?.appName || currentSchool?.name || 'Campus Tracker'}<span className="font-light">|</span>
+            </h1>
           </Link>
         </div>
         
@@ -477,7 +487,7 @@ export default function Layout() {
               >
                 <Building className="w-4 h-4 text-teal-400 flex-shrink-0" />
                 <span className="max-w-[150px] sm:max-w-[220px] md:max-w-[280px] truncate">
-                  {currentSchool?.name || 'Demo International School'}
+                  {currentSchool?.appName || currentSchool?.name || 'Campus Tracker'}
                 </span>
                 <ChevronDown className={`w-4 h-4 text-slate-400 group-hover:text-white transition-transform duration-200 ${showSchoolDropdown ? 'rotate-180 text-teal-400' : ''}`} />
               </button>
@@ -487,15 +497,15 @@ export default function Layout() {
                 <div className="absolute right-0 mt-2.5 w-72 sm:w-80 bg-[#0c1324] border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-3 duration-200">
                   <div className="p-3 border-b border-slate-800/80 flex items-center justify-between bg-[#080d19]">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                      <SchoolIcon className="w-3.5 h-3.5 text-teal-400" /> Switch School
+                      <Building className="w-3.5 h-3.5 text-teal-400" /> Switch School
                     </span>
                     {isSuperAdmin && (
                       <Link
-                        to="/admin/module-config"
+                        to="/admin/general-config"
                         onClick={() => setShowSchoolDropdown(false)}
                         className="text-[11px] font-semibold text-teal-400 hover:text-teal-300"
                       >
-                        Manage
+                        General Config
                       </Link>
                     )}
                   </div>
@@ -519,7 +529,7 @@ export default function Layout() {
                         >
                           <div className="min-w-0 pr-2">
                             <p className="text-sm font-semibold truncate leading-tight">
-                              {school.name}
+                              {school.appName || school.name}
                             </p>
                             {school.tagline && (
                               <p className="text-[11px] text-slate-400 truncate mt-0.5 opacity-80">
@@ -541,12 +551,12 @@ export default function Layout() {
                   {isSuperAdmin && (
                     <div className="p-2 border-t border-slate-800 bg-[#080d19]">
                       <Link
-                        to="/admin/module-config"
+                        to="/admin/general-config"
                         onClick={() => setShowSchoolDropdown(false)}
                         className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-xl bg-teal-500/10 text-teal-400 hover:bg-teal-500/20 border border-teal-500/30 transition"
                       >
                         <Sliders className="w-3.5 h-3.5" />
-                        Configure School Modules
+                        Configure School Settings
                       </Link>
                     </div>
                   )}
@@ -565,9 +575,9 @@ export default function Layout() {
 
             {/* Settings Icon */}
             <Link
-              to={isSuperAdmin ? '/admin/module-config' : '/admin/settings'}
+              to={isSuperAdmin ? '/admin/general-config' : '/admin/settings'}
               className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition"
-              title={isSuperAdmin ? 'Module & School Configuration' : 'Settings'}
+              title="General Configuration & Settings"
             >
               <Settings className="w-5 h-5" />
             </Link>

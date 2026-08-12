@@ -116,6 +116,7 @@ function App() {
           <Route path="users" element={<Users />} />
           <Route path="roles" element={<Roles />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="general-config" element={<Settings />} />
           <Route path="credentials" element={<UserCredentials />} />
           <Route path="module-config" element={<ModuleConfig />} />
 
