@@ -8,7 +8,7 @@ import {
   ChevronDown, ChevronRight, CheckCircle, GraduationCap, Users, UserCheck, 
   BookOpen, FileText, CreditCard, Clock, UserPlus, FileBadge, Library, 
   Wallet, Briefcase, ClipboardList, Calendar, MessageSquare, ShieldCheck, LogOut, Key, X,
-  Home, Check, Building, Sliders, ChevronUp
+  Home, Check, Building, Sliders, ChevronUp, Wrench, Activity
 } from 'lucide-react';
 
 // Custom Sidebar Item Component
@@ -270,6 +270,13 @@ export default function Layout() {
     { name: 'Event', href: '/event', icon: Calendar, roles: ['admin', 'teacher', 'student', 'parent'], moduleKey: 'communication' },
     { name: 'Message', href: '/message', icon: MessageSquare, roles: ['admin', 'teacher', 'student', 'parent'], moduleKey: 'communication' },
     { name: 'Users', href: '/users', icon: Users, roles: ['admin'] },
+    { 
+      name: 'Utility', icon: Wrench, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent', 'accountant', 'librarian'], moduleKey: 'utility',
+      submenu: [
+        { name: 'Activity Log', href: '/utility/activity-log' },
+        { name: 'Config', href: '/utility/config' }
+      ] 
+    },
     { name: 'Module Configuration', href: '/module-config', icon: Sliders, roles: ['super-admin'] },
     { name: 'User Credentials', href: '/credentials', icon: Key, roles: ['super-admin'] },
     { name: 'Role & Access', href: '/roles', icon: ShieldCheck, roles: ['admin'] },

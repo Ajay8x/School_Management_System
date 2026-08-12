@@ -54,6 +54,7 @@ import Settings from './pages/Settings';
 import Placeholder from './components/Placeholder';
 import UserCredentials from './pages/super-admin/UserCredentials';
 import ModuleConfig from './pages/super-admin/ModuleConfig';
+import ActivityLog from './pages/ActivityLog';
 
 function App() {
   return (
@@ -118,6 +119,10 @@ function App() {
           <Route path="credentials" element={<UserCredentials />} />
           <Route path="module-config" element={<ModuleConfig />} />
 
+          {/* Utility Module */}
+          <Route path="utility/activity-log" element={<ActivityLog />} />
+          <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
+
           {/* Reception Module */}
           <Route path="reception/enquiry" element={<Enquiry />} />
           <Route path="reception/visitor-log" element={<VisitorLog />} />
@@ -141,6 +146,8 @@ function App() {
           <Route path="event" element={<Event />} />
           <Route path="message" element={<Message />} />
           <Route path="library" element={<Library />} />
+          <Route path="utility/activity-log" element={<ActivityLog />} />
+          <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
         </Route>
       </Route>
 
@@ -155,6 +162,8 @@ function App() {
           <Route path="event" element={<Event />} />
           <Route path="message" element={<Message />} />
           <Route path="library" element={<Library />} />
+          <Route path="utility/activity-log" element={<ActivityLog />} />
+          <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
         </Route>
       </Route>
 
@@ -168,6 +177,8 @@ function App() {
           <Route path="notice-board" element={<NoticeBoard />} />
           <Route path="event" element={<Event />} />
           <Route path="message" element={<Message />} />
+          <Route path="utility/activity-log" element={<ActivityLog />} />
+          <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
         </Route>
       </Route>
 
@@ -177,6 +188,8 @@ function App() {
           <Route path="dashboard" element={<Placeholder title="Accountant Dashboard" />} />
           <Route path="fees" element={<Fees />} />
           <Route path="accounts" element={<Accounts />} />
+          <Route path="utility/activity-log" element={<ActivityLog />} />
+          <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
         </Route>
       </Route>
 
@@ -185,6 +198,8 @@ function App() {
         <Route element={<Layout />}>
           <Route path="dashboard" element={<Placeholder title="Librarian Dashboard" />} />
           <Route path="library" element={<Library />} />
+          <Route path="utility/activity-log" element={<ActivityLog />} />
+          <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
         </Route>
       </Route>
 
@@ -192,6 +207,8 @@ function App() {
       <Route path="/super-admin" element={<ProtectedRoute allowedRoles={['super-admin']} />}>
         <Route element={<Layout />}>
           <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="utility/activity-log" element={<ActivityLog />} />
+          <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
         </Route>
       </Route>
       

@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Student = require('../models/Student');
+const { logActivity } = require('../utils/logActivity');
 
 // Generate JWT
 const generateToken = (id) => {
@@ -32,6 +33,12 @@ exports.registerUser = async (req, res) => {
     });
 
     if (user) {
+      await logActivity({
+        req,
+        user,
+        activity: 'User updated.'
+      });
+
       res.status(201).json({
         _id: user._id,
         name: user.name,
@@ -60,6 +67,12 @@ exports.loginUser = async (req, res) => {
     const user = await User.findOne({ email }).select('+password');
 
     if (user && (await user.matchPassword(password))) {
+      await logActivity({
+        req,
+        user,
+        activity: 'User logged in.'
+      });
+
       res.json({
         _id: user._id,
         name: user.name,
@@ -74,6 +87,25 @@ exports.loginUser = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// @desc    Log out user
+// @route   POST /api/auth/logout
+// @access  Private
+exports.logoutUser = async (req, res) => {
+  try {
+    if (req.user) {
+      await logActivity({
+        req,
+        user: req.user,
+        activity: 'User logged out.'
+      });
+    }
+    res.json({ message: 'Logged out successfully' });
+  } catch (error) {
+    console.error('Error logging out:', error);
+    res.status(500).json({ message: 'Server error during logout' });
   }
 };
 
@@ -132,6 +164,12 @@ exports.studentLogin = async (req, res) => {
       return res.status(401).json({ message: 'Invalid roll number or password' });
     }
 
+    await logActivity({
+      req,
+      user,
+      activity: 'User logged in.'
+    });
+
     res.json({
       _id: user._id,
       name: user.name,
@@ -172,9 +210,16 @@ exports.changePassword = async (req, res) => {
     user.password = newPassword;
     await user.save();
 
+    await logActivity({
+      req,
+      user,
+      activity: 'User updated.'
+    });
+
     res.json({ message: 'Password updated successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
