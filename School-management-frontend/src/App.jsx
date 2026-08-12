@@ -56,6 +56,74 @@ import UserCredentials from './pages/super-admin/UserCredentials';
 import ModuleConfig from './pages/super-admin/ModuleConfig';
 import ActivityLog from './pages/ActivityLog';
 
+// Helper component for admin & super-admin shared routes
+const AdminAndSuperAdminRoutes = () => (
+  <>
+    <Route path="dashboard" element={<AdminDashboard />} />
+    
+    <Route path="students" element={<Students />} />
+    <Route path="students/:id" element={<StudentProfile />} />
+    <Route path="students/add" element={<AddStudent />} />
+    <Route path="students/edit/:id" element={<AddStudent />} />
+    <Route path="students/registration" element={<AddStudent />} />
+    <Route path="students/roll-number" element={<RollNumber />} />
+    <Route path="students/photo" element={<Photo />} />
+    <Route path="students/health-record" element={<HealthRecord />} />
+    <Route path="students/elective-subject" element={<ElectiveSubject />} />
+    <Route path="students/attendance" element={<StudentAttendance />} />
+    <Route path="students/fee-allocation" element={<FeeAllocation />} />
+    <Route path="students/service-allocation" element={<ServiceAllocation />} />
+    <Route path="students/promotion" element={<Promotion />} />
+    <Route path="students/edit-request" element={<Placeholder title="Edit Request" />} />
+    <Route path="students/service-request" element={<Placeholder title="Service Request" />} />
+    <Route path="students/leave-request" element={<Placeholder title="Leave Request" />} />
+    <Route path="students/transfer-request" element={<Placeholder title="Transfer Request" />} />
+    <Route path="students/transfer" element={<Placeholder title="Transfer" />} />
+    <Route path="students/alumni" element={<Placeholder title="Alumni" />} />
+    <Route path="students/report" element={<Placeholder title="Report" />} />
+    
+    <Route path="teachers" element={<Teachers />} />
+    <Route path="teachers/:id" element={<TeacherProfile />} />
+    <Route path="teachers/add" element={<AddTeacher />} />
+    <Route path="teachers/edit/:id" element={<AddTeacher />} />
+    
+    <Route path="guardians" element={<GuardiansList />} />
+    <Route path="guardians/add" element={<AddGuardian />} />
+    <Route path="guardians/edit/:id" element={<EditGuardian />} />
+    <Route path="guardians/:id" element={<GuardianDetails />} />
+
+    <Route path="classes" element={<Classes />} />
+    <Route path="examinations" element={<Examinations />} />
+    <Route path="fees" element={<Fees />} />
+    <Route path="attendance" element={<Attendance />} />
+    <Route path="leaves" element={<Leaves />} />
+    <Route path="certificate" element={<Certificate />} />
+    <Route path="library" element={<Library />} />
+    <Route path="accounts" element={<Accounts />} />
+    <Route path="hrm" element={<HRM />} />
+    <Route path="notice-board" element={<NoticeBoard />} />
+    <Route path="event" element={<Event />} />
+    <Route path="message" element={<Message />} />
+    <Route path="users" element={<Users />} />
+    <Route path="roles" element={<Roles />} />
+    <Route path="settings" element={<Settings />} />
+    <Route path="general-config" element={<Settings initialTab="general" />} />
+    <Route path="asset-config" element={<Settings initialTab="asset" />} />
+    <Route path="credentials" element={<UserCredentials />} />
+    <Route path="module-config" element={<ModuleConfig />} />
+
+    <Route path="utility/activity-log" element={<ActivityLog />} />
+    <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
+
+    <Route path="reception/enquiry" element={<Enquiry />} />
+    <Route path="reception/visitor-log" element={<VisitorLog />} />
+    <Route path="reception/gate-pass" element={<GatePass />} />
+    <Route path="reception/complaint" element={<Complaint />} />
+    <Route path="reception/correspondence" element={<Correspondence />} />
+    <Route path="reception/query" element={<Query />} />
+  </>
+);
+
 function App() {
   return (
     <Routes>
@@ -67,71 +135,14 @@ function App() {
       {/* ADMIN ROUTES */}
       <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin', 'super-admin']} />}>
         <Route element={<Layout />}>
-          <Route path="dashboard" element={<AdminDashboard />} />
-          
-          <Route path="students" element={<Students />} />
-          <Route path="students/:id" element={<StudentProfile />} />
-          <Route path="students/add" element={<AddStudent />} />
-          <Route path="students/edit/:id" element={<AddStudent />} />
-          <Route path="students/registration" element={<AddStudent />} />
-          <Route path="students/roll-number" element={<RollNumber />} />
-          <Route path="students/photo" element={<Photo />} />
-          <Route path="students/health-record" element={<HealthRecord />} />
-          <Route path="students/elective-subject" element={<ElectiveSubject />} />
-          <Route path="students/attendance" element={<StudentAttendance />} />
-          <Route path="students/fee-allocation" element={<FeeAllocation />} />
-          <Route path="students/service-allocation" element={<ServiceAllocation />} />
-          <Route path="students/promotion" element={<Promotion />} />
-          <Route path="students/edit-request" element={<Placeholder title="Edit Request" />} />
-          <Route path="students/service-request" element={<Placeholder title="Service Request" />} />
-          <Route path="students/leave-request" element={<Placeholder title="Leave Request" />} />
-          <Route path="students/transfer-request" element={<Placeholder title="Transfer Request" />} />
-          <Route path="students/transfer" element={<Placeholder title="Transfer" />} />
-          <Route path="students/alumni" element={<Placeholder title="Alumni" />} />
-          <Route path="students/report" element={<Placeholder title="Report" />} />
-          
-          <Route path="teachers" element={<Teachers />} />
-          <Route path="teachers/:id" element={<TeacherProfile />} />
-          <Route path="teachers/add" element={<AddTeacher />} />
-          <Route path="teachers/edit/:id" element={<AddTeacher />} />
-          
-          <Route path="guardians" element={<GuardiansList />} />
-          <Route path="guardians/add" element={<AddGuardian />} />
-          <Route path="guardians/edit/:id" element={<EditGuardian />} />
-          <Route path="guardians/:id" element={<GuardianDetails />} />
+          {AdminAndSuperAdminRoutes()}
+        </Route>
+      </Route>
 
-          {/* Admin Scaffolded Modules */}
-          <Route path="classes" element={<Classes />} />
-          <Route path="examinations" element={<Examinations />} />
-          <Route path="fees" element={<Fees />} />
-          <Route path="attendance" element={<Attendance />} />
-          <Route path="leaves" element={<Leaves />} />
-          <Route path="certificate" element={<Certificate />} />
-          <Route path="library" element={<Library />} />
-          <Route path="accounts" element={<Accounts />} />
-          <Route path="hrm" element={<HRM />} />
-          <Route path="notice-board" element={<NoticeBoard />} />
-          <Route path="event" element={<Event />} />
-          <Route path="message" element={<Message />} />
-          <Route path="users" element={<Users />} />
-          <Route path="roles" element={<Roles />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="general-config" element={<Settings initialTab="general" />} />
-          <Route path="asset-config" element={<Settings initialTab="asset" />} />
-          <Route path="credentials" element={<UserCredentials />} />
-          <Route path="module-config" element={<ModuleConfig />} />
-
-          {/* Utility Module */}
-          <Route path="utility/activity-log" element={<ActivityLog />} />
-          <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
-
-          {/* Reception Module */}
-          <Route path="reception/enquiry" element={<Enquiry />} />
-          <Route path="reception/visitor-log" element={<VisitorLog />} />
-          <Route path="reception/gate-pass" element={<GatePass />} />
-          <Route path="reception/complaint" element={<Complaint />} />
-          <Route path="reception/correspondence" element={<Correspondence />} />
-          <Route path="reception/query" element={<Query />} />
+      {/* SUPER ADMIN ROUTES */}
+      <Route path="/super-admin" element={<ProtectedRoute allowedRoles={['super-admin']} />}>
+        <Route element={<Layout />}>
+          {AdminAndSuperAdminRoutes()}
         </Route>
       </Route>
 
@@ -205,15 +216,6 @@ function App() {
         </Route>
       </Route>
 
-      {/* SUPER ADMIN SPECIFIC ROUTE */}
-      <Route path="/super-admin" element={<ProtectedRoute allowedRoles={['super-admin']} />}>
-        <Route element={<Layout />}>
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="utility/activity-log" element={<ActivityLog />} />
-          <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
-        </Route>
-      </Route>
-      
       {/* Catch-all route to redirect unauthorized/unknown paths to login */}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
