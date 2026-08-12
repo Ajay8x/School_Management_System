@@ -268,6 +268,15 @@ const schoolSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  assets: {
+    guestBackground: { type: String, default: '' },
+    guestFullPageBackground: { type: String, default: '' },
+    logo: { type: String, default: '' },
+    logoLight: { type: String, default: '' },
+    icon: { type: String, default: '' },
+    iconLight: { type: String, default: '' },
+    favicon: { type: String, default: '' }
+  },
   status: {
     type: String,
     enum: ['active', 'inactive'],

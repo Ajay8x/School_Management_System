@@ -199,6 +199,15 @@ const DEFAULT_SCHOOLS = [
     financialYearCode: '2025-2026',
     code: 'DIS001', 
     isDefault: true, 
+    assets: {
+      guestBackground: 'https://images.unsplash.com/photo-1532693322450-2cb5c511067d?auto=format&fit=crop&w=1920&q=80',
+      guestFullPageBackground: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80',
+      logo: '',
+      logoLight: '',
+      icon: '',
+      iconLight: '',
+      favicon: ''
+    },
     modules: DEFAULT_MODULES_CONFIG 
   },
   { 
@@ -222,6 +231,15 @@ const DEFAULT_SCHOOLS = [
     financialYearCode: '2025-2026',
     code: 'CTS002', 
     isDefault: false, 
+    assets: {
+      guestBackground: 'https://images.unsplash.com/photo-1532693322450-2cb5c511067d?auto=format&fit=crop&w=1920&q=80',
+      guestFullPageBackground: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80',
+      logo: '',
+      logoLight: '',
+      icon: '',
+      iconLight: '',
+      favicon: ''
+    },
     modules: DEFAULT_MODULES_CONFIG 
   }
 ];
