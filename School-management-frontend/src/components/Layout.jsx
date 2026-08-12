@@ -288,6 +288,7 @@ export default function Layout() {
     { name: 'User Credentials', href: '/credentials', icon: Key, roles: ['super-admin'] },
     { name: 'Role & Access', href: '/roles', icon: ShieldCheck, roles: ['admin'] },
     { name: 'General Config', href: '/general-config', icon: Sliders, roles: ['admin', 'super-admin'] },
+    { name: 'Asset Config', href: '/asset-config', icon: ImageIcon, roles: ['admin', 'super-admin'] },
     { name: 'Settings', href: '/settings', icon: Settings, roles: ['admin', 'super-admin'] },
   ];
 
@@ -340,9 +341,17 @@ export default function Layout() {
         {/* Logo Area */}
         <div className="h-[76px] flex items-center px-6 border-b border-gray-100 dark:border-slate-700 sticky top-0 bg-white dark:bg-slate-800 z-10 transition-colors duration-300">
           <Link to={`/${user.role}/dashboard`} className="flex items-center space-x-2">
-            <div className="text-teal-500">
-              <CheckCircle className="w-8 h-8 fill-teal-50 dark:fill-slate-700 text-teal-500" strokeWidth={1.5} />
-            </div>
+            {currentSchool?.assets?.logo || currentSchool?.assets?.icon || currentSchool?.logoUrl ? (
+              <img 
+                src={currentSchool?.assets?.logo || currentSchool?.assets?.icon || currentSchool?.logoUrl} 
+                alt="Logo" 
+                className="w-8 h-8 object-contain rounded-lg flex-shrink-0"
+              />
+            ) : (
+              <div className="text-teal-500 flex-shrink-0">
+                <CheckCircle className="w-8 h-8 fill-teal-50 dark:fill-slate-700 text-teal-500" strokeWidth={1.5} />
+              </div>
+            )}
             <h1 className="text-[20px] font-bold text-gray-800 dark:text-white tracking-tight truncate max-w-[180px]" title={currentSchool?.appName || currentSchool?.name || 'Campus Tracker'}>
               {currentSchool?.appName || currentSchool?.name || 'Campus Tracker'}<span className="font-light">|</span>
             </h1>
