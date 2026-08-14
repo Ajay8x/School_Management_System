@@ -55,6 +55,8 @@ import Placeholder from './components/Placeholder';
 import UserCredentials from './pages/super-admin/UserCredentials';
 import ModuleConfig from './pages/super-admin/ModuleConfig';
 import ActivityLog from './pages/ActivityLog';
+import NotFound from './pages/NotFound';
+
 
 // Helper component for admin & super-admin shared routes
 const AdminAndSuperAdminRoutes = () => (
@@ -216,8 +218,9 @@ function App() {
         </Route>
       </Route>
 
-      {/* Catch-all route to redirect unauthorized/unknown paths to login */}
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      {/* Catch-all route for unknown paths */}
+      <Route path="*" element={<NotFound />} />
+
     </Routes>
   );
 }
