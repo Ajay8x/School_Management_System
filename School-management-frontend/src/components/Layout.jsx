@@ -352,9 +352,17 @@ export default function Layout() {
                 <CheckCircle className="w-8 h-8 fill-teal-50 dark:fill-slate-700 text-teal-500" strokeWidth={1.5} />
               </div>
             )}
-            <h1 className="text-[20px] font-bold text-gray-800 dark:text-white tracking-tight truncate max-w-[180px]" title={currentSchool?.appName || currentSchool?.name || 'Campus Tracker'}>
-              {currentSchool?.appName || currentSchool?.name || 'Campus Tracker'}<span className="font-light">|</span>
-            </h1>
+            <div className="min-w-0 flex-1">
+              <h1 className="text-[16px] font-bold text-gray-800 dark:text-white tracking-tight truncate max-w-[170px]" title={currentSchool?.name || currentSchool?.appName || 'Campus Tracker'}>
+                {currentSchool?.name || currentSchool?.appName || 'Campus Tracker'}
+              </h1>
+              {currentSchool?.code && (
+                <p className="text-[10px] font-bold text-teal-600 dark:text-teal-400 tracking-wider truncate">
+                  CODE: {currentSchool.code}
+                </p>
+              )}
+            </div>
+
           </Link>
         </div>
         
@@ -495,13 +503,18 @@ export default function Layout() {
                 className="flex items-center space-x-2 text-white hover:text-teal-300 px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700/70 transition-all font-semibold text-[15px] tracking-tight group shadow-sm"
               >
                 <Building className="w-4 h-4 text-teal-400 flex-shrink-0" />
-                <span className="max-w-[150px] sm:max-w-[220px] md:max-w-[280px] truncate">
-                  {currentSchool?.appName || currentSchool?.name || 'Campus Tracker'}
+                <span className="max-w-[180px] sm:max-w-[240px] md:max-w-[320px] truncate flex items-center gap-1.5">
+                  <span className="truncate">{currentSchool?.name || currentSchool?.appName || 'Campus Tracker'}</span>
+                  {currentSchool?.code && (
+                    <span className="px-1.5 py-0.5 text-[10px] font-extrabold bg-teal-500/20 text-teal-300 rounded border border-teal-500/40 flex-shrink-0">
+                      {currentSchool.code}
+                    </span>
+                  )}
                 </span>
                 <ChevronDown className={`w-4 h-4 text-slate-400 group-hover:text-white transition-transform duration-200 ${showSchoolDropdown ? 'rotate-180 text-teal-400' : ''}`} />
               </button>
 
-              {/* Sleek Dark School Dropdown (Exact match to Screenshot 1) */}
+              {/* Sleek Dark School Dropdown */}
               {showSchoolDropdown && (
                 <div className="absolute right-0 mt-2.5 w-72 sm:w-80 bg-[#0c1324] border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-3 duration-200">
                   <div className="p-3 border-b border-slate-800/80 flex items-center justify-between bg-[#080d19]">
@@ -537,15 +550,23 @@ export default function Layout() {
                           }`}
                         >
                           <div className="min-w-0 pr-2">
-                            <p className="text-sm font-semibold truncate leading-tight">
-                              {school.appName || school.name}
-                            </p>
+                            <div className="flex items-center gap-1.5">
+                              <p className="text-sm font-semibold truncate leading-tight">
+                                {school.name || school.appName}
+                              </p>
+                              {school.code && (
+                                <span className="px-1.5 py-0.5 text-[10px] font-extrabold bg-slate-800 text-teal-400 rounded border border-slate-700 flex-shrink-0">
+                                  {school.code}
+                                </span>
+                              )}
+                            </div>
                             {school.tagline && (
                               <p className="text-[11px] text-slate-400 truncate mt-0.5 opacity-80">
                                 {school.tagline}
                               </p>
                             )}
                           </div>
+
 
                           {isSelected && (
                             <div className="w-5 h-5 rounded-full bg-teal-500/20 border border-teal-500 flex items-center justify-center flex-shrink-0 text-teal-400">

@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { SchoolContext } from '../context/SchoolContext';
 import { AuthContext } from '../context/AuthContext';
-import { Building, Check, RotateCcw, Save, ShieldAlert, Plus, Globe, Sparkles, AlertCircle } from 'lucide-react';
+import { Building, Check, RotateCcw, Save, ShieldAlert, Plus, Globe, Sparkles, AlertCircle, Hash } from 'lucide-react';
 
 export default function GeneralConfig() {
   const { currentSchool, schools, updateSchool, createSchool, switchSchool } = useContext(SchoolContext);
@@ -13,6 +13,7 @@ export default function GeneralConfig() {
   const [formData, setFormData] = useState({
     appName: '',
     name: '',
+    code: '',
     description: '',
     metaAuthor: '',
     metaDescription: '',
@@ -36,6 +37,7 @@ export default function GeneralConfig() {
   const [newSchoolData, setNewSchoolData] = useState({
     appName: '',
     name: '',
+    code: '',
     website: '',
     email: '',
     phone: '',
@@ -49,21 +51,22 @@ export default function GeneralConfig() {
     if (currentSchool) {
       setFormData({
         appName: currentSchool.appName || currentSchool.name || 'Campus Tracker',
-        name: currentSchool.name || 'Campus Tracker Campus',
+        name: currentSchool.name || 'Campus Tracker School',
+        code: currentSchool.code || '',
         description: currentSchool.description || 'Innovative Partner',
         metaAuthor: currentSchool.metaAuthor || currentSchool.appName || 'CampusTracker',
         metaDescription: currentSchool.metaDescription || `Application by ${currentSchool.appName || 'campustracker'}`,
         metaKeywords: currentSchool.metaKeywords || (currentSchool.appName || 'campustracker').toLowerCase().replace(/\s+/g, ''),
         addressLine1: currentSchool.addressLine1 || currentSchool.address || 'Campus Tracker Campus',
-        addressLine2: currentSchool.addressLine2 || 'Near BLW',
-        city: currentSchool.city || 'Varanasi',
-        state: currentSchool.state || 'Uttar Pradesh',
-        zipcode: currentSchool.zipcode || '221005',
+        addressLine2: currentSchool.addressLine2 || '',
+        city: currentSchool.city || '',
+        state: currentSchool.state || '',
+        zipcode: currentSchool.zipcode || '',
         country: currentSchool.country || 'India',
-        email: currentSchool.email || 'help.chbs@gmail.com',
-        phone: currentSchool.phone || '+919935332556',
-        fax: currentSchool.fax || 'Fax',
-        website: currentSchool.website || 'https://campustracker.in',
+        email: currentSchool.email || '',
+        phone: currentSchool.phone || '',
+        fax: currentSchool.fax || '',
+        website: currentSchool.website || '',
         financialYearCode: currentSchool.financialYearCode || '2025-2026'
       });
     }
@@ -78,7 +81,8 @@ export default function GeneralConfig() {
     if (currentSchool) {
       setFormData({
         appName: currentSchool.appName || currentSchool.name || 'Campus Tracker',
-        name: currentSchool.name || 'Campus Tracker Campus',
+        name: currentSchool.name || 'Campus Tracker School',
+        code: currentSchool.code || '',
         description: currentSchool.description || 'Innovative Partner',
         metaAuthor: currentSchool.metaAuthor || '',
         metaDescription: currentSchool.metaDescription || '',
@@ -115,6 +119,7 @@ export default function GeneralConfig() {
         ...currentSchool,
         name: formData.name || formData.appName,
         appName: formData.appName,
+        code: formData.code,
         description: formData.description,
         metaAuthor: formData.metaAuthor,
         metaDescription: formData.metaDescription,
@@ -136,9 +141,9 @@ export default function GeneralConfig() {
       await updateSchool(currentSchool._id, updatedPayload);
 
       // Update page document title immediately
-      document.title = `${formData.appName} | ${formData.name}`;
+      document.title = `${formData.name} (${formData.code || 'CODE'}) | ${formData.appName}`;
 
-      setMessage({ type: 'success', text: 'General Configuration saved successfully! Site name updated across app.' });
+      setMessage({ type: 'success', text: 'General Configuration saved successfully! School name and code updated across system.' });
       setTimeout(() => setMessage({ type: '', text: '' }), 4000);
     } catch (err) {
       console.error('Error saving configuration:', err);
@@ -148,32 +153,24 @@ export default function GeneralConfig() {
     }
   };
 
-  // Onboard New School handler
   const handleOnboardSchool = async (e) => {
     e.preventDefault();
-    if (!newSchoolData.appName && !newSchoolData.name) {
-      setMessage({ type: 'error', text: 'Please enter School/Site Name.' });
-      return;
-    }
+    if (!newSchoolData.appName && !newSchoolData.name) return;
 
     try {
       setOnboarding(true);
       const created = await createSchool({
+        ...newSchoolData,
         name: newSchoolData.name || newSchoolData.appName,
-        appName: newSchoolData.appName || newSchoolData.name,
-        description: 'Innovative Partner',
-        website: newSchoolData.website,
-        email: newSchoolData.email,
-        phone: newSchoolData.phone,
-        city: newSchoolData.city,
-        country: newSchoolData.country,
-        status: 'active'
+        appName: newSchoolData.appName,
+        code: newSchoolData.code || (newSchoolData.name || newSchoolData.appName).split(' ').map(w => w[0]).join('').toUpperCase()
       });
 
       setShowOnboardModal(false);
       setNewSchoolData({
         appName: '',
         name: '',
+        code: '',
         website: '',
         email: '',
         phone: '',
@@ -183,59 +180,56 @@ export default function GeneralConfig() {
 
       if (created) {
         switchSchool(created);
-        setMessage({ type: 'success', text: `School "${created.appName || created.name}" onboarded and selected!` });
+        setMessage({ type: 'success', text: `New school "${created.name}" onboarded and set active successfully!` });
       }
     } catch (err) {
-      console.error('Failed to onboard school:', err);
-      setMessage({ type: 'error', text: 'Failed to onboard new school.' });
+      console.error('Onboard error:', err);
+      setMessage({ type: 'error', text: 'Failed to onboard school. Please try again.' });
     } finally {
       setOnboarding(false);
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 pb-12">
-      {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-gray-100 dark:border-slate-700/80 shadow-sm">
+    <div className="space-y-6 pb-12">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-gray-200/70 dark:border-slate-700/80 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-[26px] font-bold text-gray-800 dark:text-white tracking-tight">General Configuration</h1>
-            {isSuperAdmin ? (
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-teal-50 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 border border-teal-200 dark:border-teal-800">
-                Super Admin Authorized
-              </span>
-            ) : (
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800 flex items-center gap-1">
-                <ShieldAlert className="w-3 h-3" /> Read Only View
-              </span>
-            )}
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-white tracking-tight">General Configuration</h1>
+            <span className="px-2.5 py-0.5 text-xs font-semibold bg-teal-50 dark:bg-teal-950 text-teal-600 dark:text-teal-400 border border-teal-200 dark:border-teal-800 rounded-full">
+              System Wide
+            </span>
           </div>
-          <p className="text-gray-500 dark:text-slate-400 text-sm mt-1">
-            This information will be displayed publicly so be careful what you share.
+          <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
+            Configure active school identity, name, unique code, contact parameters, and meta fields.
           </p>
         </div>
 
-        {/* Super Admin School Switcher & Onboard Button */}
+        {/* Super Admin Actions */}
         {isSuperAdmin && (
-          <div className="flex items-center gap-3 flex-wrap">
-            <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-700/60 p-1.5 rounded-xl border border-gray-200 dark:border-slate-600">
-              <Building className="w-4 h-4 text-teal-500 ml-2" />
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="relative">
               <select
                 value={currentSchool?._id || ''}
-                onChange={(e) => switchSchool(e.target.value)}
-                className="bg-transparent text-sm font-semibold text-gray-700 dark:text-slate-200 outline-none pr-3 cursor-pointer"
+                onChange={(e) => {
+                  const selected = schools.find(s => s._id === e.target.value);
+                  if (selected) switchSchool(selected);
+                }}
+                className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-slate-100 border border-gray-200 dark:border-slate-600 outline-none cursor-pointer focus:ring-2 focus:ring-teal-500"
               >
-                {schools.map((s) => (
-                  <option key={s._id} value={s._id} className="dark:bg-slate-800">
-                    {s.appName || s.name} ({s.code || 'SCH'})
+                {schools.map(school => (
+                  <option key={school._id} value={school._id}>
+                    {school.name || school.appName} {school.code ? `(${school.code})` : ''}
                   </option>
                 ))}
               </select>
             </div>
 
             <button
+              type="button"
               onClick={() => setShowOnboardModal(true)}
-              className="px-4 py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-2"
+              className="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl shadow transition flex items-center gap-1.5"
             >
               <Plus className="w-4 h-4" />
               Onboard New School
@@ -261,14 +255,44 @@ export default function GeneralConfig() {
         </div>
       )}
 
-      {/* Main Configuration Form matching exact Screenshot Layout */}
+      {/* Main Configuration Form */}
       <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200/70 dark:border-slate-700/80 shadow-sm p-6 sm:p-8 space-y-8">
         
-        {/* Section 1: General App & Meta Fields */}
+        {/* Section 1: School Identity & Code */}
         <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <h3 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider flex items-center gap-2 border-b border-gray-100 dark:border-slate-700 pb-2">
+            <Building className="w-4 h-4" /> School Identity & Code
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">App Name</label>
+              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">School Name *</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                disabled={!isSuperAdmin}
+                placeholder="e.g. Demo International School"
+                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">School Code *</label>
+              <input
+                type="text"
+                name="code"
+                value={formData.code}
+                onChange={handleChange}
+                disabled={!isSuperAdmin}
+                placeholder="e.g. DIS001"
+                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50 uppercase font-mono font-bold"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">App / System Title</label>
               <input
                 type="text"
                 name="appName"
@@ -279,9 +303,11 @@ export default function GeneralConfig() {
                 className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
               />
             </div>
+          </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Description</label>
+              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Description / Tagline</label>
               <input
                 type="text"
                 name="description"
@@ -292,56 +318,29 @@ export default function GeneralConfig() {
                 className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
               />
             </div>
-          </div>
 
-          <div>
-            <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Meta Author</label>
-            <input
-              type="text"
-              name="metaAuthor"
-              value={formData.metaAuthor}
-              onChange={handleChange}
-              disabled={!isSuperAdmin}
-              placeholder="CampusTracker"
-              className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-            />
-          </div>
-
-          <div>
-            <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Meta Description</label>
-            <input
-              type="text"
-              name="metaDescription"
-              value={formData.metaDescription}
-              onChange={handleChange}
-              disabled={!isSuperAdmin}
-              placeholder="Application by campustracker"
-              className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-            />
-          </div>
-
-          <div>
-            <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Meta Keywords</label>
-            <input
-              type="text"
-              name="metaKeywords"
-              value={formData.metaKeywords}
-              onChange={handleChange}
-              disabled={!isSuperAdmin}
-              placeholder="campustracker"
-              className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-            />
+            <div>
+              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Financial Year Code</label>
+              <input
+                type="text"
+                name="financialYearCode"
+                value={formData.financialYearCode}
+                onChange={handleChange}
+                disabled={!isSuperAdmin}
+                placeholder="2025-2026"
+                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Section 2: Address Section */}
-        <div className="pt-4 border-t border-gray-100 dark:border-slate-700/80 space-y-4">
-          <div>
-            <h3 className="text-base font-bold text-gray-800 dark:text-white">Address</h3>
-            <p className="text-xs text-gray-400 dark:text-slate-400 mt-0.5">This address will be displayed publicly.</p>
-          </div>
+        {/* Section 2: Contact Details */}
+        <div className="space-y-4 pt-4 border-t border-gray-100 dark:border-slate-700">
+          <h3 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider flex items-center gap-2 border-b border-gray-100 dark:border-slate-700 pb-2">
+            <Globe className="w-4 h-4" /> Contact & Address Information
+          </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Address Line 1</label>
               <input
@@ -350,11 +349,10 @@ export default function GeneralConfig() {
                 value={formData.addressLine1}
                 onChange={handleChange}
                 disabled={!isSuperAdmin}
-                placeholder="Campus Tracker Campus"
+                placeholder="Campus Address Line 1"
                 className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
               />
             </div>
-
             <div>
               <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Address Line 2</label>
               <input
@@ -363,11 +361,13 @@ export default function GeneralConfig() {
                 value={formData.addressLine2}
                 onChange={handleChange}
                 disabled={!isSuperAdmin}
-                placeholder="Near BLW"
+                placeholder="Campus Address Line 2"
                 className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
               />
             </div>
+          </div>
 
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div>
               <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">City</label>
               <input
@@ -376,11 +376,10 @@ export default function GeneralConfig() {
                 value={formData.city}
                 onChange={handleChange}
                 disabled={!isSuperAdmin}
-                placeholder="Varanasi"
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
+                placeholder="City"
+                className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
               />
             </div>
-
             <div>
               <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">State</label>
               <input
@@ -389,11 +388,10 @@ export default function GeneralConfig() {
                 value={formData.state}
                 onChange={handleChange}
                 disabled={!isSuperAdmin}
-                placeholder="Uttar Pradesh"
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
+                placeholder="State"
+                className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
               />
             </div>
-
             <div>
               <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Zipcode</label>
               <input
@@ -402,11 +400,10 @@ export default function GeneralConfig() {
                 value={formData.zipcode}
                 onChange={handleChange}
                 disabled={!isSuperAdmin}
-                placeholder="221005"
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
+                placeholder="Pincode"
+                className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
               />
             </div>
-
             <div>
               <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Country</label>
               <input
@@ -416,139 +413,74 @@ export default function GeneralConfig() {
                 onChange={handleChange}
                 disabled={!isSuperAdmin}
                 placeholder="India"
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
+                className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
               />
             </div>
           </div>
-        </div>
 
-        {/* Section 3: Contact Details Section */}
-        <div className="pt-4 border-t border-gray-100 dark:border-slate-700/80 space-y-4">
-          <div>
-            <h3 className="text-base font-bold text-gray-800 dark:text-white">Contact Details</h3>
-            <p className="text-xs text-gray-400 dark:text-slate-400 mt-0.5">This contact details will be displayed publicly.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Email</label>
+              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Official Email</label>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
                 disabled={!isSuperAdmin}
-                placeholder="help.chbs@gmail.com"
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
+                placeholder="email@school.com"
+                className="w-full px-3.5 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
               />
             </div>
-
             <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Phone</label>
+              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Phone Number</label>
               <input
                 type="text"
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
                 disabled={!isSuperAdmin}
-                placeholder="+919935332556"
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
+                placeholder="+91 9876543210"
+                className="w-full px-3.5 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
               />
             </div>
-
             <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Fax</label>
+              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Website</label>
               <input
                 type="text"
-                name="fax"
-                value={formData.fax}
+                name="website"
+                value={formData.website}
                 onChange={handleChange}
                 disabled={!isSuperAdmin}
-                placeholder="Fax"
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
+                placeholder="https://school.edu"
+                className="w-full px-3.5 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
               />
             </div>
           </div>
-
-          <div>
-            <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Website</label>
-            <input
-              type="text"
-              name="website"
-              value={formData.website}
-              onChange={handleChange}
-              disabled={!isSuperAdmin}
-              placeholder="https://campustracker.in"
-              className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-            />
-          </div>
         </div>
 
-        {/* Section 4: Financial Year */}
-        <div className="pt-4 border-t border-gray-100 dark:border-slate-700/80 space-y-4">
-          <div>
-            <h3 className="text-base font-bold text-gray-800 dark:text-white">Financial Year</h3>
-            <p className="text-xs text-gray-400 dark:text-slate-400 mt-0.5">Used to identify the financial year of the organization.</p>
-          </div>
-
-          <div>
-            <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Financial Year Code</label>
-            <input
-              type="text"
-              name="financialYearCode"
-              value={formData.financialYearCode}
-              onChange={handleChange}
-              disabled={!isSuperAdmin}
-              placeholder="2025-2026"
-              className="w-full md:w-1/2 px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-            />
-          </div>
-        </div>
-
-        {/* Action Buttons matching Screenshot */}
-        <div className="pt-6 border-t border-gray-100 dark:border-slate-700/80 flex items-center justify-between">
-          <button
-            type="button"
-            onClick={handleReset}
-            disabled={!isSuperAdmin || saving}
-            className="px-5 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-xs font-semibold text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition flex items-center gap-1.5 disabled:opacity-50"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            Reset
-          </button>
-
-          <div className="flex items-center gap-3">
+        {/* Section 3: Action Buttons */}
+        {isSuperAdmin && (
+          <div className="pt-6 border-t border-gray-100 dark:border-slate-700 flex items-center justify-end gap-3">
             <button
               type="button"
               onClick={handleReset}
-              disabled={!isSuperAdmin || saving}
-              className="px-6 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold transition shadow-sm disabled:opacity-50"
+              className="px-5 py-2.5 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition flex items-center gap-2"
             >
-              Cancel
+              <RotateCcw className="w-4 h-4" /> Reset
             </button>
-
             <button
               type="submit"
-              disabled={!isSuperAdmin || saving}
-              className="px-7 py-2.5 bg-[#0c1324] hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-2 disabled:opacity-50"
+              disabled={saving}
+              className="px-6 py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-xl text-sm font-semibold shadow-md transition flex items-center gap-2 disabled:opacity-50"
             >
-              {saving ? (
-                <>
-                  <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="w-3.5 h-3.5" />
-                  Save
-                </>
-              )}
+              <Save className="w-4 h-4" />
+              {saving ? 'Saving...' : 'Save Configuration'}
             </button>
           </div>
-        </div>
+        )}
       </form>
 
-      {/* Onboard New School Modal (Super Admin Feature) */}
+      {/* Onboard New School Modal */}
       {showOnboardModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700 max-w-lg w-full p-6 space-y-6">
@@ -573,26 +505,39 @@ export default function GeneralConfig() {
 
             <form onSubmit={handleOnboardSchool} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Site / App Name *</label>
+                <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">School Full Name *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Apex Global Academy"
-                  value={newSchoolData.appName}
-                  onChange={(e) => setNewSchoolData({ ...newSchoolData, appName: e.target.value, name: e.target.value })}
+                  value={newSchoolData.name}
+                  onChange={(e) => setNewSchoolData({ ...newSchoolData, name: e.target.value, appName: newSchoolData.appName || e.target.value })}
                   className="w-full px-4 py-2 text-sm border border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">School Full Name</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Apex Global Academy Campus"
-                  value={newSchoolData.name}
-                  onChange={(e) => setNewSchoolData({ ...newSchoolData, name: e.target.value })}
-                  className="w-full px-4 py-2 text-sm border border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-teal-500"
-                />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">School Code *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. AGA001"
+                    value={newSchoolData.code}
+                    onChange={(e) => setNewSchoolData({ ...newSchoolData, code: e.target.value.toUpperCase() })}
+                    className="w-full px-3 py-2 text-xs border border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-teal-500 uppercase font-mono font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">App / System Name</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Campus Tracker"
+                    value={newSchoolData.appName}
+                    onChange={(e) => setNewSchoolData({ ...newSchoolData, appName: e.target.value })}
+                    className="w-full px-3 py-2 text-xs border border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-teal-500"
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -652,9 +597,9 @@ export default function GeneralConfig() {
                 <button
                   type="submit"
                   disabled={onboarding}
-                  className="px-5 py-2 text-xs font-bold text-white bg-teal-500 hover:bg-teal-600 rounded-xl transition flex items-center gap-1.5 disabled:opacity-50"
+                  className="px-5 py-2 bg-teal-500 hover:bg-teal-600 text-white text-xs font-bold rounded-xl shadow transition disabled:opacity-50"
                 >
-                  {onboarding ? 'Onboarding...' : 'Onboard & Activate'}
+                  {onboarding ? 'Onboarding...' : 'Save & Onboard School'}
                 </button>
               </div>
             </form>
