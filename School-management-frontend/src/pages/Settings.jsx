@@ -5,8 +5,14 @@ import AssetConfig from './AssetConfig';
 import ModuleConfig from './super-admin/ModuleConfig';
 import UserCredentials from './super-admin/UserCredentials';
 import Roles from './Roles';
+import ActivityLog from './ActivityLog';
+import Placeholder from '../components/Placeholder';
 import { AuthContext } from '../context/AuthContext';
-import { Sliders, Image as ImageIcon, Boxes, Key, ShieldCheck } from 'lucide-react';
+import { 
+  Sliders, Image as ImageIcon, Boxes, Key, ShieldCheck, Activity,
+  Settings as SettingsIcon, LogIn, Bell, Mail, MessageSquare, FileText,
+  List, MessageCircle, Share2, Languages, Globe
+} from 'lucide-react';
 
 export default function Settings({ initialTab = 'general' }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -28,92 +34,91 @@ export default function Settings({ initialTab = 'general' }) {
     setSearchParams({ tab: tabId });
   };
 
+  const tabsList = [
+    { id: 'general', label: 'General Config', icon: Sliders },
+    { id: 'asset', label: 'Asset Config', icon: ImageIcon },
+    { id: 'system', label: 'System Config', icon: SettingsIcon },
+    { id: 'auth', label: 'Authentication', icon: LogIn },
+    { id: 'notification', label: 'Notification', icon: Bell },
+    { id: 'mail', label: 'Mail Config', icon: Mail },
+    { id: 'sms', label: 'SMS Config', icon: MessageSquare },
+    { id: 'whatsapp', label: 'WhatsApp Config', icon: MessageSquare },
+    { id: 'mail-template', label: 'Mail Template', icon: FileText },
+    { id: 'sms-template', label: 'SMS Template', icon: FileText },
+    { id: 'whatsapp-template', label: 'WhatsApp Template', icon: FileText },
+    { id: 'push-template', label: 'Push Notification Template', icon: FileText },
+    { id: 'feature', label: 'Feature', icon: List },
+    { id: 'chat', label: 'Chat', icon: MessageCircle },
+    { id: 'module', label: 'Module', icon: Boxes, superAdminOnly: true },
+    { id: 'social', label: 'Social Network', icon: Share2 },
+    { id: 'terminology', label: 'Terminology', icon: Languages },
+    { id: 'locale', label: 'Locale', icon: Globe },
+    { id: 'credentials', label: 'User Credentials', icon: Key, superAdminOnly: true },
+    { id: 'roles', label: 'Role & Access', icon: ShieldCheck },
+    { id: 'activity', label: 'Activity Log', icon: Activity }
+  ];
+
+  const visibleTabs = tabsList.filter(t => !t.superAdminOnly || isSuperAdmin);
+
   return (
-    <div className="space-y-6">
-      {/* Top Title Header */}
+    <div className="space-y-6 pb-12">
+      {/* Top Header */}
       <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-gray-100 dark:border-slate-700/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white tracking-tight">System Settings</h1>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white tracking-tight">System Configuration & Settings</h1>
           <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
-            Manage school configuration, assets, module controls, user credentials, and role permissions.
+            Configure system parameters, templates, integrations, authentication rules, and active modules.
           </p>
         </div>
       </div>
 
-      {/* Settings Navigation Tabs */}
-      <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl border border-gray-100 dark:border-slate-700/80 shadow-sm flex items-center gap-2 overflow-x-auto custom-scrollbar">
-        <button
-          onClick={() => handleTabChange('general')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-            activeTab === 'general'
-              ? 'bg-teal-500 text-white shadow-sm'
-              : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700'
-          }`}
-        >
-          <Sliders className="w-4 h-4" />
-          General Config
-        </button>
-
-        <button
-          onClick={() => handleTabChange('asset')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-            activeTab === 'asset'
-              ? 'bg-teal-500 text-white shadow-sm'
-              : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700'
-          }`}
-        >
-          <ImageIcon className="w-4 h-4" />
-          Asset Config
-        </button>
-
-        {isSuperAdmin && (
-          <button
-            onClick={() => handleTabChange('module')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-              activeTab === 'module'
-                ? 'bg-teal-500 text-white shadow-sm'
-                : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700'
-            }`}
-          >
-            <Boxes className="w-4 h-4" />
-            Module Control
-          </button>
-        )}
-
-        {isSuperAdmin && (
-          <button
-            onClick={() => handleTabChange('credentials')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-              activeTab === 'credentials'
-                ? 'bg-teal-500 text-white shadow-sm'
-                : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700'
-            }`}
-          >
-            <Key className="w-4 h-4" />
-            User Credentials
-          </button>
-        )}
-
-        <button
-          onClick={() => handleTabChange('roles')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
-            activeTab === 'roles'
-              ? 'bg-teal-500 text-white shadow-sm'
-              : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700'
-          }`}
-        >
-          <ShieldCheck className="w-4 h-4" />
-          Role & Access
-        </button>
+      {/* Tabs Bar */}
+      <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl border border-gray-100 dark:border-slate-700/80 shadow-sm flex items-center gap-1.5 overflow-x-auto custom-scrollbar">
+        {visibleTabs.map(tab => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => handleTabChange(tab.id)}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+                isActive
+                  ? 'bg-teal-500 text-white shadow-sm'
+                  : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700'
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              {tab.label}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Active Tab Component */}
+      {/* Active Tab View */}
       <div className="animate-in fade-in duration-200">
         {activeTab === 'general' && <GeneralConfig />}
         {activeTab === 'asset' && <AssetConfig />}
         {activeTab === 'module' && <ModuleConfig />}
         {activeTab === 'credentials' && <UserCredentials />}
         {activeTab === 'roles' && <Roles />}
+        {activeTab === 'activity' && <ActivityLog />}
+        
+        {/* Placeholder Views for New Config Subitems */}
+        {activeTab === 'system' && <Placeholder title="System Config" />}
+        {activeTab === 'auth' && <Placeholder title="Authentication & Security" />}
+        {activeTab === 'notification' && <Placeholder title="Notification Settings" />}
+        {activeTab === 'mail' && <Placeholder title="Mail Server (SMTP) Config" />}
+        {activeTab === 'sms' && <Placeholder title="SMS Gateway Config" />}
+        {activeTab === 'whatsapp' && <Placeholder title="WhatsApp API Config" />}
+        {activeTab === 'mail-template' && <Placeholder title="Mail Template" />}
+        {activeTab === 'sms-template' && <Placeholder title="SMS Template" />}
+        {activeTab === 'whatsapp-template' && <Placeholder title="WhatsApp Template" />}
+        {activeTab === 'push-template' && <Placeholder title="Push Notification Template" />}
+        {activeTab === 'feature' && <Placeholder title="Feature Toggles" />}
+        {activeTab === 'chat' && <Placeholder title="Chat & Support Settings" />}
+        {activeTab === 'social' && <Placeholder title="Social Network Integration" />}
+        {activeTab === 'terminology' && <Placeholder title="Custom Terminology" />}
+        {activeTab === 'locale' && <Placeholder title="Locale & Language Settings" />}
       </div>
     </div>
   );

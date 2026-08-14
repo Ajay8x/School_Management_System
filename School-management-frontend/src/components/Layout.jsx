@@ -8,8 +8,12 @@ import {
   ChevronDown, ChevronRight, CheckCircle, GraduationCap, Users, UserCheck, 
   BookOpen, FileText, CreditCard, Clock, UserPlus, FileBadge, Library, 
   Wallet, Briefcase, ClipboardList, Calendar, MessageSquare, ShieldCheck, LogOut, Key, X,
-  Home, Check, Building, Sliders, ChevronUp, Wrench, Activity, Boxes, Image as ImageIcon
+  Home, Check, Building, Sliders, ChevronUp, Wrench, Activity, Boxes, Image as ImageIcon,
+  CheckSquare, HelpCircle, Folder, Truck, Package, ShoppingBag, FileEdit, Newspaper,
+  ShieldAlert, PhoneCall, Utensils, FileCode, Globe, LogIn, Mail, List, MessageCircle, Share2, Languages
 } from 'lucide-react';
+
+
 
 // Custom Sidebar Item Component
 const SidebarItem = ({ item, isActive, onToggle, isExpanded }) => {
@@ -36,17 +40,25 @@ const SidebarItem = ({ item, isActive, onToggle, isExpanded }) => {
         {/* Submenu Accordion */}
         <div className={`accordion-content pl-11 pr-4 ${isExpanded ? 'open mt-1 mb-2' : 'closed'}`}>
           <ul className="space-y-1 relative before:absolute before:left-3.5 before:top-0 before:bottom-0 before:w-[1px] before:bg-gray-200 dark:before:bg-slate-600">
-            {item.submenu.map((sub) => (
-              <li key={sub.name} className="relative">
-                <span className="absolute left-[-1.5rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-gray-200 dark:bg-slate-600"></span>
-                <Link
-                  to={sub.href}
-                  className="block px-4 py-2 text-[14px] text-gray-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
-                >
-                  {sub.name}
-                </Link>
-              </li>
-            ))}
+            {item.submenu.map((sub) => {
+              const SubIcon = sub.icon;
+              return (
+                <li key={sub.name} className="relative">
+                  <Link
+                    to={sub.href}
+                    className="flex items-center space-x-2.5 px-3 py-1.5 text-[14px] text-gray-500 dark:text-slate-300 hover:text-teal-600 dark:hover:text-white transition-colors rounded-lg hover:bg-gray-100/50 dark:hover:bg-slate-700/50"
+                  >
+                    {SubIcon ? (
+                      <SubIcon className="w-4 h-4 text-gray-400 dark:text-slate-400 flex-shrink-0" strokeWidth={1.5} />
+                    ) : (
+                      <span className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-slate-500 flex-shrink-0 ml-1"></span>
+                    )}
+                    <span className="truncate">{sub.name}</span>
+                  </Link>
+                </li>
+              );
+            })}
+
           </ul>
         </div>
       </li>
@@ -216,9 +228,9 @@ export default function Layout() {
   const isSuperAdmin = user.role === 'super-admin';
 
   const allNavigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['admin', 'teacher', 'student', 'parent', 'accountant', 'librarian'] },
+    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent', 'accountant', 'librarian'] },
     { 
-      name: 'Reception', icon: UserPlus, roles: ['admin'], moduleKey: 'reception',
+      name: 'Reception', icon: UserPlus, roles: ['admin', 'super-admin'], moduleKey: 'reception',
       submenu: [
         { name: 'Enquiry', href: '/reception/enquiry', subKey: 'enquiry' },
         { name: 'Visitor Log', href: '/reception/visitor-log', subKey: 'visitorLog' },
@@ -228,8 +240,36 @@ export default function Layout() {
         { name: 'Query', href: '/reception/query', subKey: 'query' }
       ] 
     },
+    { name: 'Task', href: '/task', icon: CheckSquare, roles: ['admin', 'super-admin', 'teacher'] },
     { 
-      name: 'Student', icon: GraduationCap, roles: ['admin'], moduleKey: 'student',
+      name: 'Helpdesk', icon: HelpCircle, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'],
+      submenu: [
+        { name: 'FAQ', href: '/helpdesk/faq' },
+        { name: 'Ticket', href: '/helpdesk/ticket' }
+      ]
+    },
+
+    { 
+      name: 'Academic', icon: BookOpen, roles: ['admin', 'super-admin', 'teacher', 'student'], moduleKey: 'academic',
+      submenu: [
+        { name: 'Department', href: '/academic/department' },
+        { name: 'Program', href: '/academic/program' },
+        { name: 'Session', href: '/academic/session' },
+        { name: 'Period', href: '/academic/period' },
+        { name: 'Division', href: '/academic/division' },
+        { name: 'Course', href: '/classes' },
+        { name: 'Batch', href: '/academic/batch' },
+        { name: 'Subject', href: '/academic/subject' },
+        { name: 'Class Timing', href: '/academic/class-timing' },
+        { name: 'Timetable', href: '/academic/routine' },
+        { name: 'Book list', href: '/library' },
+        { name: 'Certificate', href: '/certificate' },
+        { name: 'ID Card', href: '/academic/id-card' }
+      ]
+    },
+
+    { 
+      name: 'Student', icon: GraduationCap, roles: ['admin', 'super-admin', 'teacher'], moduleKey: 'student',
       submenu: [
         { name: 'Students', href: '/students' },
         { name: 'Registration', href: '/students/registration', subKey: 'registration' },
@@ -251,50 +291,241 @@ export default function Layout() {
       ] 
     },
     { 
-      name: 'Teachers', icon: Users, roles: ['admin'], moduleKey: 'teachers',
+      name: 'Finance', icon: CreditCard, roles: ['admin', 'super-admin', 'accountant', 'parent'], moduleKey: 'finance',
       submenu: [
-        { name: 'Teacher List', href: '/teachers', subKey: 'teacherList' },
-        { name: 'Add Teacher', href: '/teachers/add', subKey: 'addTeacher' }
-      ] 
-    },
-    { 
-      name: 'Guardians', icon: UserCheck, roles: ['admin'], moduleKey: 'guardians',
-      submenu: [
-        { name: 'Guardian List', href: '/guardians', subKey: 'guardianList' },
-        { name: 'Add Guardian', href: '/guardians/add', subKey: 'addGuardian' }
+        { name: 'Payment Method', href: '/finance/payment-method' },
+        { name: 'Fee Group', href: '/finance/fee-group' },
+        { name: 'Fee Head', href: '/finance/fee-head' },
+        { name: 'Fee Component', href: '/finance/fee-component' },
+        { name: 'Fee Concession', href: '/finance/fee-concession' },
+        { name: 'Fee Structure', href: '/fees' },
+        { name: 'Ledger Type', href: '/finance/ledger-type' },
+        { name: 'Ledger', href: '/finance/ledger' },
+        { name: 'Tax', href: '/finance/tax' },
+        { name: 'Transaction', href: '/accounts' },
+        { name: 'Receipt', href: '/finance/receipt' },
+        { name: 'Report', href: '/finance/report' }
       ]
     },
-    { name: 'Classes', href: '/classes', icon: BookOpen, roles: ['admin', 'teacher', 'student'], moduleKey: 'academic' },
-    { name: 'Examinations', href: '/examinations', icon: FileText, roles: ['admin', 'teacher', 'student', 'parent'], moduleKey: 'exam' },
-    { name: 'Fees Collection', href: '/fees', icon: CreditCard, roles: ['admin', 'parent', 'accountant'], moduleKey: 'finance' },
-    { name: 'Attendance', href: '/attendance', icon: Clock, roles: ['admin', 'teacher', 'student', 'parent'], moduleKey: 'attendance' },
-    { name: 'Leaves', href: '/leaves', icon: UserPlus, roles: ['admin', 'teacher'], moduleKey: 'leaves' },
-    { name: 'Certificate', href: '/certificate', icon: FileBadge, roles: ['admin'], moduleKey: 'certificate' },
-    { name: 'Library', href: '/library', icon: Library, roles: ['admin', 'student', 'teacher', 'librarian'], moduleKey: 'library' },
-    { name: 'Accounts', href: '/accounts', icon: Wallet, roles: ['admin', 'accountant'], moduleKey: 'accounts' },
-    { name: 'HRM', href: '/hrm', icon: Briefcase, roles: ['admin'], moduleKey: 'employee' },
-    { name: 'Notice Board', href: '/notice-board', icon: ClipboardList, roles: ['admin', 'teacher', 'student', 'parent'], moduleKey: 'communication' },
-    { name: 'Event', href: '/event', icon: Calendar, roles: ['admin', 'teacher', 'student', 'parent'], moduleKey: 'communication' },
-    { name: 'Message', href: '/message', icon: MessageSquare, roles: ['admin', 'teacher', 'student', 'parent'], moduleKey: 'communication' },
-    { name: 'Users', href: '/users', icon: Users, roles: ['admin'] },
+
+    { 
+      name: 'Exam', icon: FileText, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'], moduleKey: 'exam',
+      submenu: [
+        { name: 'Exams', href: '/examinations' },
+        { name: 'Exam Term', href: '/exam/term' },
+        { name: 'Exam Grade', href: '/exam/grade-scale' },
+        { name: 'Exam Assessment', href: '/exam/assessment' },
+        { name: 'Observation Parameter', href: '/exam/observation-parameter' },
+        { name: 'Competency Parameter', href: '/exam/competency-parameter' },
+        { name: 'Exam Schedule', href: '/exam/schedule' },
+        { name: 'Online Exam', href: '/exam/online-exam' },
+        { name: 'Exam Form', href: '/exam/form' },
+        { name: 'Exam', href: '/examinations' },
+        { name: 'Admit Card', href: '/exam/admit-card' },
+        { name: 'Exam Mark', href: '/exam/marks' },
+        { name: 'Marksheet', href: '/exam/marksheet' },
+        { name: 'Report', href: '/exam/report' }
+      ]
+    },
+
+    { 
+      name: 'Employee', icon: Briefcase, roles: ['admin', 'super-admin'], moduleKey: 'employee',
+      submenu: [
+        { name: 'Employees', href: '/teachers' },
+        { name: 'Department', href: '/employee/department' },
+        { name: 'Designation', href: '/employee/designation' },
+        { name: 'Attendance', href: '/attendance' },
+        { name: 'Leave', href: '/leaves' },
+        { name: 'Payroll', href: '/employee/payroll' },
+        { name: 'Edit Request', href: '/employee/edit-request' }
+      ] 
+    },
+
+    { 
+      name: 'Resource', icon: Folder, roles: ['admin', 'super-admin', 'teacher', 'student'],
+      submenu: [
+        { name: 'Book Lists', href: '/library' },
+        { name: 'Student Diary', href: '/resource/student-diary' },
+        { name: 'Syllabus', href: '/resource/syllabus' },
+        { name: 'Lesson Plan', href: '/resource/lesson-plan' },
+        { name: 'Assignment', href: '/resource/assignment' },
+        { name: 'Online Class', href: '/resource/online-class' },
+        { name: 'Learning Material', href: '/resource/learning-material' },
+        { name: 'Download', href: '/resource/download' },
+        { name: 'Report', href: '/resource/report' }
+      ]
+    },
+
+    { 
+      name: 'Transport', icon: Truck, roles: ['admin', 'super-admin', 'student', 'parent'], moduleKey: 'transport',
+      submenu: [
+        { name: 'Transport Route', href: '/transport/route' },
+        { name: 'Transport Circle', href: '/transport/circle' },
+        { name: 'Transport Fee', href: '/transport/fee' },
+        { name: 'Vehicle', href: '/transport/vehicle' },
+        { name: 'Report', href: '/transport/report' }
+      ]
+    },
+
+    { 
+      name: 'Calendar', icon: Calendar, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'],
+      submenu: [
+        { name: 'Holiday', href: '/calendar/holiday' },
+        { name: 'Celebration', href: '/calendar/celebration' },
+        { name: 'Event', href: '/event' }
+      ]
+    },
+    { name: 'Gallery', href: '/gallery', icon: ImageIcon, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'] },
+    { 
+      name: 'Inventory', icon: Package, roles: ['admin', 'super-admin', 'accountant'],
+      submenu: [
+        { name: 'Vendor', href: '/inventory/vendor' },
+        { name: 'Category', href: '/inventory/category' },
+        { name: 'Item', href: '/inventory/item' },
+        { name: 'Bundle', href: '/inventory/bundle' },
+        { name: 'Requisition', href: '/inventory/requisition' },
+        { name: 'Purchase', href: '/inventory/purchase' },
+        { name: 'Return', href: '/inventory/return' },
+        { name: 'Transfer', href: '/inventory/transfer' },
+        { name: 'Adjustment', href: '/inventory/adjustment' },
+        { name: 'Report', href: '/inventory/report' }
+      ]
+    },
+    { 
+      name: 'Store', icon: ShoppingBag, roles: ['admin', 'super-admin', 'accountant'],
+      submenu: [
+        { name: 'Sale', href: '/store/sale' }
+      ]
+    },
+    { name: 'Blog', href: '/blog', icon: FileEdit, roles: ['admin', 'super-admin', 'teacher', 'student'] },
+    { name: 'News', href: '/news', icon: Newspaper, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'] },
+    { 
+      name: 'Discipline', icon: ShieldAlert, roles: ['admin', 'super-admin', 'teacher'],
+      submenu: [
+        { name: 'Incident', href: '/discipline/incident' }
+      ]
+    },
+    { name: 'Guardian', href: '/guardians', icon: UserCheck, roles: ['admin', 'super-admin'] },
+    { 
+      name: 'Approval', icon: CheckCircle, roles: ['admin', 'super-admin', 'teacher'],
+      submenu: [
+        { name: 'Type', href: '/approval/type' },
+        { name: 'Request', href: '/approval/request' },
+        { name: 'Pending Requests', href: '/approval/pending' },
+        { name: 'Processed Requests', href: '/approval/processed' }
+      ]
+    },
+
+    { name: 'Contact', href: '/contact', icon: PhoneCall, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'] },
+    { 
+      name: 'Mess', icon: Utensils, roles: ['admin', 'super-admin', 'student', 'parent'],
+      submenu: [
+        { name: 'Item', href: '/mess/item' },
+        { name: 'Meal', href: '/mess/meal' },
+        { name: 'Meal Log', href: '/mess/meal-log' }
+      ]
+    },
+
+    { 
+      name: 'Communication', icon: MessageSquare, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'], moduleKey: 'communication',
+      submenu: [
+        { name: 'Announcement', href: '/notice-board' },
+        { name: 'Email', href: '/communication/email' },
+        { name: 'SMS', href: '/communication/sms' },
+        { name: 'WhatsApp', href: '/communication/whatsapp' },
+        { name: 'Push Message', href: '/communication/push-message' }
+      ] 
+    },
+
+    { 
+      name: 'Library', icon: Library, roles: ['admin', 'super-admin', 'student', 'teacher', 'librarian'], moduleKey: 'library',
+      submenu: [
+        { name: 'Book', href: '/library' },
+        { name: 'Book Addition', href: '/library/add-book' },
+        { name: 'Issue & Return', href: '/library/issue-return' },
+        { name: 'Report', href: '/library/report' }
+      ]
+    },
+
+    { 
+      name: 'Activity', icon: Activity, roles: ['admin', 'super-admin', 'teacher', 'student'],
+      submenu: [
+        { name: 'Trip', href: '/activity/trip' }
+      ]
+    },
+
+    { 
+      name: 'Hostel', icon: Building, roles: ['admin', 'super-admin', 'student', 'parent'],
+      submenu: [
+        { name: 'Hostel', href: '/hostel/list' },
+        { name: 'Room Allocation', href: '/hostel/allocation' }
+      ]
+    },
+
+    { name: 'Form', href: '/form', icon: FileCode, roles: ['admin', 'super-admin', 'teacher', 'student'] },
+    { 
+      name: 'Asset', icon: Boxes, roles: ['admin', 'super-admin'],
+      submenu: [
+        { name: 'Building', href: '/asset/building' }
+      ]
+    },
+
+    { 
+      name: 'Site', icon: Globe, roles: ['admin', 'super-admin'],
+      submenu: [
+        { name: 'Page', href: '/site/page' },
+        { name: 'Menu', href: '/site/menu' },
+        { name: 'Block', href: '/site/block' }
+      ]
+    },
+
+    { 
+      name: 'Recruitment', icon: UserPlus, roles: ['admin', 'super-admin'],
+      submenu: [
+        { name: 'Job Vacancy', href: '/recruitment/vacancy' },
+        { name: 'Job Application', href: '/recruitment/application' }
+      ]
+    },
+
+    { name: 'User', href: '/users', icon: Users, roles: ['admin', 'super-admin'] },
+    { name: 'Custom Field', href: '/custom-field', icon: Sliders, roles: ['admin', 'super-admin'] },
     { 
       name: 'Utility', icon: Wrench, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent', 'accountant', 'librarian'], moduleKey: 'utility',
       submenu: [
-        { name: 'Activity Log', href: '/utility/activity-log' },
+        { name: 'Activity Log', href: '/settings?tab=activity' },
         { name: 'Config', href: '/utility/config' }
       ] 
     },
     { 
-      name: 'Settings', icon: Settings, roles: ['admin', 'super-admin'],
+      name: 'Config', icon: Settings, roles: ['admin', 'super-admin'],
       submenu: [
-        { name: 'General Config', href: '/settings?tab=general' },
-        { name: 'Asset Config', href: '/settings?tab=asset' },
-        { name: 'Module Control', href: '/settings?tab=module', roles: ['super-admin'] },
-        { name: 'User Credentials', href: '/settings?tab=credentials', roles: ['super-admin'] },
-        { name: 'Role & Access', href: '/settings?tab=roles' }
+        { name: 'General Config', href: '/settings?tab=general', icon: Building },
+        { name: 'Asset Config', href: '/settings?tab=asset', icon: ImageIcon },
+        { name: 'System Config', href: '/settings?tab=system', icon: Settings },
+        { name: 'Authentication', href: '/settings?tab=auth', icon: LogIn },
+        { name: 'Notification', href: '/settings?tab=notification', icon: Bell },
+        { name: 'Mail Config', href: '/settings?tab=mail', icon: Mail },
+        { name: 'SMS Config', href: '/settings?tab=sms', icon: MessageSquare },
+        { name: 'WhatsApp Config', href: '/settings?tab=whatsapp', icon: MessageSquare },
+        { name: 'Mail Template', href: '/settings?tab=mail-template', icon: FileText },
+        { name: 'SMS Template', href: '/settings?tab=sms-template', icon: FileText },
+        { name: 'WhatsApp Template', href: '/settings?tab=whatsapp-template', icon: FileText },
+        { name: 'Push Notification Template', href: '/settings?tab=push-template', icon: FileText },
+        { name: 'Feature', href: '/settings?tab=feature', icon: List },
+        { name: 'Chat', href: '/settings?tab=chat', icon: MessageCircle },
+        { name: 'Module', href: '/settings?tab=module', roles: ['super-admin'], icon: Boxes },
+        { name: 'Social Network', href: '/settings?tab=social', icon: Share2 },
+        { name: 'Terminology', href: '/settings?tab=terminology', icon: Languages },
+        { name: 'Locale', href: '/settings?tab=locale', icon: Globe },
+        { name: 'User Credentials', href: '/settings?tab=credentials', roles: ['super-admin'], icon: Key },
+        { name: 'Role & Access', href: '/settings?tab=roles', icon: ShieldCheck },
+        { name: 'Activity Log', href: '/settings?tab=activity', icon: Activity }
       ] 
     },
+
+
   ];
+
 
 
   const navigation = allNavigation
@@ -345,10 +576,10 @@ export default function Layout() {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-30 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 flex flex-col w-[270px] bg-white dark:bg-slate-800 border-r border-gray-100 dark:border-slate-700 shadow-[0_0_15px_rgba(0,0,0,0.03)] overflow-y-auto custom-scrollbar flex-shrink-0 transition-transform duration-300`}>
+      <div className={`fixed inset-y-0 left-0 z-30 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 flex flex-col h-screen w-[270px] bg-white dark:bg-slate-800 border-r border-gray-100 dark:border-slate-700 shadow-[0_0_15px_rgba(0,0,0,0.03)] flex-shrink-0 transition-transform duration-300`}>
         
         {/* Logo Area */}
-        <div className="h-[76px] flex items-center px-6 border-b border-gray-100 dark:border-slate-700 sticky top-0 bg-white dark:bg-slate-800 z-10 transition-colors duration-300">
+        <div className="h-[74px] flex items-center px-5 border-b border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 flex-shrink-0 transition-colors duration-300">
           <Link to={`/${user.role}/dashboard`} className="flex items-center space-x-2">
             {currentSchool?.assets?.logo || currentSchool?.assets?.icon || currentSchool?.logoUrl ? (
               <img 
@@ -362,7 +593,7 @@ export default function Layout() {
               </div>
             )}
             <div className="min-w-0 flex-1">
-              <h1 className="text-[16px] font-bold text-gray-800 dark:text-white tracking-tight truncate max-w-[170px]" title={currentSchool?.name || currentSchool?.appName || 'Campus Tracker'}>
+              <h1 className="text-[15px] font-bold text-gray-800 dark:text-white tracking-tight truncate max-w-[170px]" title={currentSchool?.name || currentSchool?.appName || 'Campus Tracker'}>
                 {currentSchool?.name || currentSchool?.appName || 'Campus Tracker'}
               </h1>
               {currentSchool?.code && (
@@ -371,29 +602,28 @@ export default function Layout() {
                 </p>
               )}
             </div>
-
           </Link>
         </div>
         
         {/* User Profile Summary */}
-        <div className="p-5 border-b border-gray-100 dark:border-slate-700">
+        <div className="p-3.5 border-b border-gray-100 dark:border-slate-700 flex-shrink-0">
           <div 
             onClick={() => setShowProfileModal(true)}
-            className="flex items-center space-x-3 bg-[#f8f9fa] dark:bg-slate-700/50 p-3 rounded-xl border border-gray-100 dark:border-slate-600 transition-colors duration-300 cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700"
+            className="flex items-center space-x-3 bg-[#f8f9fa] dark:bg-slate-700/50 p-2.5 rounded-xl border border-gray-100 dark:border-slate-600 transition-colors duration-300 cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700"
           >
-            <div className="w-10 h-10 rounded-full bg-[#fbd4a3] flex items-center justify-center overflow-hidden">
+            <div className="w-9 h-9 rounded-full bg-[#fbd4a3] flex items-center justify-center overflow-hidden flex-shrink-0">
               <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=fbd4a3&color=a05400`} alt="avatar" className="w-full h-full object-cover" />
             </div>
-            <div>
-              <p className="font-semibold text-gray-800 dark:text-white text-[14px] leading-tight">{user.name}</p>
-              <p className="text-[12px] text-gray-500 dark:text-slate-400 capitalize leading-tight mt-0.5">{user.role}</p>
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold text-gray-800 dark:text-white text-[13.5px] leading-tight truncate">{user.name}</p>
+              <p className="text-[11.5px] text-gray-500 dark:text-slate-400 capitalize leading-tight mt-0.5 truncate">{user.role}</p>
             </div>
-            <ChevronRight className="w-4 h-4 ml-auto text-gray-400 dark:text-slate-500" />
+            <ChevronRight className="w-4 h-4 text-gray-400 dark:text-slate-500 flex-shrink-0" />
           </div>
         </div>
         
         {/* Navigation Menu */}
-        <div className="flex-1 py-4 pb-4">
+        <div className="flex-1 overflow-y-auto custom-scrollbar py-3 px-1">
           <ul className="space-y-0.5">
             {navigation.map((item) => {
               const isActive = location.pathname === item.href;
@@ -412,16 +642,17 @@ export default function Layout() {
         </div>
 
         {/* Sidebar Footer Logout Button */}
-        <div className="p-4 border-t border-gray-100 dark:border-slate-700 sticky bottom-0 bg-white dark:bg-slate-800 z-10 transition-colors duration-300">
+        <div className="p-3.5 border-t border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 flex-shrink-0 transition-colors duration-300">
           <button 
             onClick={logout}
-            className="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 hover:text-rose-600 dark:hover:text-rose-400 transition-colors font-medium text-[15px]"
+            className="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 hover:text-rose-600 dark:hover:text-rose-400 transition-colors font-medium text-[14.5px]"
           >
             <LogOut className="w-5 h-5 text-rose-500" strokeWidth={1.5} />
             <span>Log Out</span>
           </button>
         </div>
       </div>
+
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative z-10">
