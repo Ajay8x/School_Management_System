@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
-
+import ErrorBoundary from './components/ErrorBoundary';
 // Dashboards
 import AdminDashboard from './pages/dashboards/AdminDashboard';
 import TeacherDashboard from './pages/dashboards/TeacherDashboard';
@@ -134,21 +134,21 @@ function App() {
 
       {/* ADMIN ROUTES */}
       <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin', 'super-admin']} />}>
-        <Route element={<Layout />}>
+        <Route element={<ErrorBoundary><Layout /></ErrorBoundary>}>
           {AdminAndSuperAdminRoutes()}
         </Route>
       </Route>
 
       {/* SUPER ADMIN ROUTES */}
       <Route path="/super-admin" element={<ProtectedRoute allowedRoles={['super-admin']} />}>
-        <Route element={<Layout />}>
+        <Route element={<ErrorBoundary><Layout /></ErrorBoundary>}>
           {AdminAndSuperAdminRoutes()}
         </Route>
       </Route>
 
       {/* TEACHER ROUTES */}
       <Route path="/teacher" element={<ProtectedRoute allowedRoles={['teacher', 'super-admin']} />}>
-        <Route element={<Layout />}>
+        <Route element={<ErrorBoundary><Layout /></ErrorBoundary>}>
           <Route path="dashboard" element={<TeacherDashboard />} />
           <Route path="students" element={<Students />} />
           <Route path="classes" element={<Classes />} />
@@ -166,7 +166,7 @@ function App() {
 
       {/* STUDENT ROUTES */}
       <Route path="/student" element={<ProtectedRoute allowedRoles={['student', 'super-admin']} />}>
-        <Route element={<Layout />}>
+        <Route element={<ErrorBoundary><Layout /></ErrorBoundary>}>
           <Route path="dashboard" element={<StudentDashboard />} />
           <Route path="classes" element={<Classes />} />
           <Route path="examinations" element={<Examinations />} />
@@ -182,7 +182,7 @@ function App() {
 
       {/* PARENT ROUTES */}
       <Route path="/parent" element={<ProtectedRoute allowedRoles={['parent', 'super-admin']} />}>
-        <Route element={<Layout />}>
+        <Route element={<ErrorBoundary><Layout /></ErrorBoundary>}>
           <Route path="dashboard" element={<ParentDashboard />} />
           <Route path="examinations" element={<Examinations />} />
           <Route path="fees" element={<Fees />} />
@@ -197,7 +197,7 @@ function App() {
 
       {/* ACCOUNTANT ROUTES */}
       <Route path="/accountant" element={<ProtectedRoute allowedRoles={['accountant', 'super-admin']} />}>
-        <Route element={<Layout />}>
+        <Route element={<ErrorBoundary><Layout /></ErrorBoundary>}>
           <Route path="dashboard" element={<Placeholder title="Accountant Dashboard" />} />
           <Route path="fees" element={<Fees />} />
           <Route path="accounts" element={<Accounts />} />
@@ -208,7 +208,7 @@ function App() {
 
       {/* LIBRARIAN ROUTES */}
       <Route path="/librarian" element={<ProtectedRoute allowedRoles={['librarian', 'super-admin']} />}>
-        <Route element={<Layout />}>
+        <Route element={<ErrorBoundary><Layout /></ErrorBoundary>}>
           <Route path="dashboard" element={<Placeholder title="Librarian Dashboard" />} />
           <Route path="library" element={<Library />} />
           <Route path="utility/activity-log" element={<ActivityLog />} />

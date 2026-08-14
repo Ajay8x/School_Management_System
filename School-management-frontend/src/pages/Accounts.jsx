@@ -38,23 +38,23 @@ export default function Accounts() {
 
   const paymentMethods = ['Cash', 'Bank Transfer', 'Cheque', 'Online'];
 
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
-
-  useSchoolRefresh(fetchTransactions);
-
   const fetchTransactions = async () => {
     try {
       setLoading(true);
       const res = await API.get('/accounts');
-      setTransactions(res.data);
+      setTransactions(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error('Failed to fetch transactions');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+
+  useSchoolRefresh(fetchTransactions);
 
   const handleOpenModal = (tx = null) => {
     if (tx) {

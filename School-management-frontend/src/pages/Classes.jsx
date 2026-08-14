@@ -29,12 +29,6 @@ export default function Classes() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  useSchoolRefresh(fetchData);
-
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -42,15 +36,22 @@ export default function Classes() {
         API.get('/classes'),
         API.get('/teachers')
       ]);
-      setClasses(classesRes.data);
-      setTeachers(teachersRes.data);
+      setClasses(Array.isArray(classesRes.data) ? classesRes.data : []);
+      setTeachers(Array.isArray(teachersRes.data) ? teachersRes.data : []);
       setError('');
     } catch (err) {
-      setError('Failed to load classes and teachers data.');
+      console.error('Error fetching classes:', err);
+      setError('Failed to load classes');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useSchoolRefresh(fetchData);
 
   const handleOpenModal = (cls = null) => {
     if (cls) {
