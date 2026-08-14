@@ -284,13 +284,18 @@ export default function Layout() {
         { name: 'Config', href: '/utility/config' }
       ] 
     },
-    { name: 'Module', href: '/module-config', icon: Boxes, roles: ['super-admin'] },
-    { name: 'User Credentials', href: '/credentials', icon: Key, roles: ['super-admin'] },
-    { name: 'Role & Access', href: '/roles', icon: ShieldCheck, roles: ['admin'] },
-    { name: 'General Config', href: '/general-config', icon: Sliders, roles: ['admin', 'super-admin'] },
-    { name: 'Asset Config', href: '/asset-config', icon: ImageIcon, roles: ['admin', 'super-admin'] },
-    { name: 'Settings', href: '/settings', icon: Settings, roles: ['admin', 'super-admin'] },
+    { 
+      name: 'Settings', icon: Settings, roles: ['admin', 'super-admin'],
+      submenu: [
+        { name: 'General Config', href: '/settings?tab=general' },
+        { name: 'Asset Config', href: '/settings?tab=asset' },
+        { name: 'Module Control', href: '/settings?tab=module', roles: ['super-admin'] },
+        { name: 'User Credentials', href: '/settings?tab=credentials', roles: ['super-admin'] },
+        { name: 'Role & Access', href: '/settings?tab=roles' }
+      ] 
+    },
   ];
+
 
   const navigation = allNavigation
     .filter(item => {
@@ -308,14 +313,18 @@ export default function Layout() {
       const routePrefix = (isSuperAdmin || user.role === 'admin') ? '/admin' : `/${user.role}`;
       const itemHref = item.name === 'Dashboard' ? `/${user.role}/dashboard` : `${routePrefix}${item.href}`;
 
-      // Filter submenus if subKey is set
+      // Filter submenus based on role permissions and subKeys
       let filteredSubmenu = item.submenu;
-      if (!isSuperAdmin && item.moduleKey && item.submenu) {
+      if (item.submenu) {
         filteredSubmenu = item.submenu.filter(sub => {
-          if (!sub.subKey) return true;
-          return isModuleEnabled(item.moduleKey, sub.subKey, user.role);
+          if (sub.roles && !isSuperAdmin && !sub.roles.includes(user.role)) return false;
+          if (!isSuperAdmin && item.moduleKey && sub.subKey) {
+            return isModuleEnabled(item.moduleKey, sub.subKey, user.role);
+          }
+          return true;
         });
       }
+
 
       return {
         ...item,
