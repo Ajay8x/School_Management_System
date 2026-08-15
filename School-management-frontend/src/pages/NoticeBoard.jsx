@@ -30,24 +30,26 @@ export default function NoticeBoard() {
   const categories = ['All', 'General', 'Urgent', 'Holiday', 'Event', 'Academic'];
   const audiences = ['All', 'Students', 'Teachers', 'Parents'];
 
+  const fetchNotices = async () => {
+    try {
+      setLoading(true);
+      const res = await API.get('/notices');
+      setNotices(Array.isArray(res.data) ? res.data : []);
+      setError('');
+    } catch (err) {
+      console.error('Error fetching notices:', err);
+      setError('Failed to load notices.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchNotices();
   }, []);
 
   useSchoolRefresh(fetchNotices);
 
-  const fetchNotices = async () => {
-    try {
-      setLoading(true);
-      const res = await API.get('/notices');
-      setNotices(res.data);
-      setError('');
-    } catch (err) {
-      setError('Failed to load notices.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleOpenModal = (notice = null) => {
     if (notice) {

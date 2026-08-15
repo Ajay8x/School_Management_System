@@ -2,12 +2,14 @@ import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import API from '../../api/axios';
 import { AuthContext } from '../../context/AuthContext';
-import { Plus, Trash2, Edit, Eye, Search } from 'lucide-react';
+import { Plus, Trash2, Edit, Search } from 'lucide-react';
 
 export default function GuardiansList() {
   const { user } = useContext(AuthContext);
   const [guardians, setGuardians] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const routePrefix = (user?.role === 'super-admin' || user?.role === 'admin') ? '/admin' : `/${user?.role || 'admin'}`;
 
   useEffect(() => {
     fetchGuardians();
@@ -16,28 +18,22 @@ export default function GuardiansList() {
   const fetchGuardians = async () => {
     try {
       const res = await API.get('/guardians');
-      setGuardians(res.data);
+      setGuardians(Array.isArray(res.data) ? res.data : []);
     } catch (error) {
       console.error('Failed to fetch guardians', error);
+      setGuardians([]);
     }
   };
 
-  const deleteGuardian = async (id) => {
-    if(window.confirm('Are you sure you want to delete this guardian?')) {
-      try {
-        await API.delete(`/guardians/${id}`);
-        fetchGuardians();
-      } catch (error) {
-        console.error('Failed to delete guardian', error);
-      }
-    }
-  };
-
-  const filteredGuardians = guardians.filter(g => 
-    g.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    (g.phone && g.phone.includes(searchTerm)) ||
-    (g.relationship && g.relationship.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const safeGuardians = Array.isArray(guardians) ? guardians : [];
+  const filteredGuardians = safeGuardians.filter(g => {
+    const q = searchTerm.toLowerCase().trim();
+    if (!q) return true;
+    const name = g?.name ? String(g.name).toLowerCase() : '';
+    const phone = g?.phone ? String(g.phone) : '';
+    const rel = g?.relationship ? String(g.relationship).toLowerCase() : '';
+    return name.includes(q) || phone.includes(q) || rel.includes(q);
+  });
 
   return (
     <div>
@@ -73,32 +69,39 @@ export default function GuardiansList() {
           </thead>
           <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-100 dark:divide-slate-700 transition-colors duration-300">
             {filteredGuardians.length === 0 ? (
-              <tr><td colSpan="4" className="px-6 py-8 text-center text-gray-500 dark:text-slate-400">No guardians found matching "{searchTerm}"</td></tr>
-            ) : filteredGuardians.map((guardian) => (
-              <tr key={guardian._id} className="hover:bg-teal-50/30 dark:hover:bg-slate-700/50 transition">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center">
-                    <div className="h-10 w-10 rounded-full bg-[#faedff] dark:bg-[#b5179e]/20 flex items-center justify-center text-[#b5179e] font-bold mr-4">
-                      {guardian.name.charAt(0)}
+              <tr><td colSpan="4" className="px-6 py-8 text-center text-gray-500 dark:text-slate-400">No guardians found.</td></tr>
+            ) : filteredGuardians.map((guardian, idx) => {
+              const guardianName = guardian?.name || 'Unnamed Guardian';
+              const initial = guardianName.charAt(0).toUpperCase();
+
+              return (
+                <tr key={guardian?._id || idx} className="hover:bg-teal-50/30 dark:hover:bg-slate-700/50 transition">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <div className="h-10 w-10 rounded-full bg-[#faedff] dark:bg-[#b5179e]/20 flex items-center justify-center text-[#b5179e] font-bold mr-4">
+                        {initial}
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold text-gray-800 dark:text-white">{guardianName}</div>
+                        <div className="text-xs text-gray-500 dark:text-slate-400 mt-0.5 bg-gray-100 dark:bg-slate-700 inline-block px-2 py-0.5 rounded-md">{guardian?.relationship || 'Parent'}</div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="text-sm font-bold text-gray-800 dark:text-white">{guardian.name}</div>
-                      <div className="text-xs text-gray-500 dark:text-slate-400 mt-0.5 bg-gray-100 dark:bg-slate-700 inline-block px-2 py-0.5 rounded-md">{guardian.relationship}</div>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-700 dark:text-slate-300">{guardian.phone}</div>
-                  <div className="text-xs text-gray-500 dark:text-slate-400">{guardian.email}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-slate-400">
-                  {guardian.studentName}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <Link to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/students/edit/${guardian.studentId}`} className="text-teal-600 dark:text-teal-400 hover:text-teal-900 dark:hover:text-teal-300 mr-3 p-1.5 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-md inline-block transition-colors duration-300" title="Edit Student/Guardian"><Edit className="w-4 h-4"/></Link>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-700 dark:text-slate-300">{guardian?.phone || 'N/A'}</div>
+                    <div className="text-xs text-gray-500 dark:text-slate-400">{guardian?.email || ''}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-slate-400">
+                    {guardian?.studentName || 'N/A'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    {guardian?.studentId && (
+                      <Link to={`${routePrefix}/students/edit/${guardian.studentId}`} className="text-teal-600 dark:text-teal-400 hover:text-teal-900 dark:hover:text-teal-300 mr-3 p-1.5 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-md inline-block transition-colors duration-300" title="Edit Student/Guardian"><Edit className="w-4 h-4"/></Link>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

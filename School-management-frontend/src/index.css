@@ -44,8 +44,9 @@ body {
 }
 
 .accordion-content.open {
-  max-height: 500px;
+  max-height: 2000px;
 }
+
 
 .accordion-content.closed {
   max-height: 0px;

@@ -32,12 +32,6 @@ export default function Fees() {
   const feeTypes = ['Tuition Fee', 'Admission Fee', 'Exam Fee', 'Transport Fee', 'Library Fee', 'Other'];
   const paymentMethods = ['Cash', 'Bank Transfer', 'Cheque', 'Online'];
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  useSchoolRefresh(fetchData);
-
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -45,14 +39,22 @@ export default function Fees() {
         API.get('/fees'),
         API.get('/students')
       ]);
-      setFees(feesRes.data);
-      setStudents(studentsRes.data);
+      setFees(Array.isArray(feesRes.data) ? feesRes.data : []);
+      setStudents(Array.isArray(studentsRes.data) ? studentsRes.data : []);
+      setError('');
     } catch (err) {
-      console.error('Failed to fetch data');
+      console.error('Error fetching fee data:', err);
+      setError('Failed to load fee data.');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useSchoolRefresh(fetchData);
 
   const handleOpenModal = (fee = null) => {
     if (fee) {
