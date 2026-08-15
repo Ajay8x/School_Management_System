@@ -50,6 +50,8 @@ import Accounts from './pages/Accounts';
 import HRM from './pages/HRM';
 import NoticeBoard from './pages/NoticeBoard';
 import Event from './pages/Event';
+import CalendarManager from './pages/CalendarManager';
+import DownloadFormat from './pages/DownloadFormat';
 import Message from './pages/Message';
 import Roles from './pages/Roles';
 import Users from './pages/Users';
@@ -186,6 +188,7 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="resource/online-class" element={<Placeholder title="Online Class" />} />
     <Route path="resource/learning-material" element={<Placeholder title="Learning Material" />} />
     <Route path="resource/download" element={<Placeholder title="Download Center" />} />
+    <Route path="download-format" element={<DownloadFormat />} />
     <Route path="resource/report" element={<Placeholder title="Resource Report" />} />
 
     <Route path="transport/route" element={<Placeholder title="Transport Route" />} />
@@ -194,8 +197,10 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="transport/vehicle" element={<Placeholder title="Transport Vehicle" />} />
     <Route path="transport/report" element={<Placeholder title="Transport Report" />} />
 
-    <Route path="calendar/holiday" element={<Placeholder title="Calendar Holiday" />} />
-    <Route path="calendar/celebration" element={<Placeholder title="Calendar Celebration" />} />
+    <Route path="calendar/holiday" element={<CalendarManager defaultType="holiday" />} />
+    <Route path="calendar/celebration" element={<CalendarManager defaultType="celebration" />} />
+    <Route path="calendar/event" element={<CalendarManager defaultType="event" />} />
+    <Route path="notice-board" element={<NoticeBoard />} />
     <Route path="gallery" element={<Placeholder title="Gallery" />} />
     <Route path="inventory/vendor" element={<Placeholder title="Inventory Vendor" />} />
     <Route path="inventory/category" element={<Placeholder title="Inventory Category" />} />
@@ -281,6 +286,10 @@ function App() {
           <Route path="leaves" element={<Leaves />} />
           <Route path="notice-board" element={<NoticeBoard />} />
           <Route path="event" element={<Event />} />
+          <Route path="calendar/holiday" element={<CalendarManager defaultType="holiday" />} />
+          <Route path="calendar/celebration" element={<CalendarManager defaultType="celebration" />} />
+          <Route path="calendar/event" element={<CalendarManager defaultType="event" />} />
+          <Route path="download-format" element={<DownloadFormat />} />
           <Route path="message" element={<Message />} />
           <Route path="library" element={<Library />} />
           <Route path="utility/activity-log" element={<ActivityLog />} />
@@ -297,6 +306,10 @@ function App() {
           <Route path="attendance" element={<Attendance />} />
           <Route path="notice-board" element={<NoticeBoard />} />
           <Route path="event" element={<Event />} />
+          <Route path="calendar/holiday" element={<CalendarManager defaultType="holiday" />} />
+          <Route path="calendar/celebration" element={<CalendarManager defaultType="celebration" />} />
+          <Route path="calendar/event" element={<CalendarManager defaultType="event" />} />
+          <Route path="download-format" element={<DownloadFormat />} />
           <Route path="message" element={<Message />} />
           <Route path="library" element={<Library />} />
           <Route path="utility/activity-log" element={<ActivityLog />} />
@@ -313,6 +326,10 @@ function App() {
           <Route path="attendance" element={<Attendance />} />
           <Route path="notice-board" element={<NoticeBoard />} />
           <Route path="event" element={<Event />} />
+          <Route path="calendar/holiday" element={<CalendarManager defaultType="holiday" />} />
+          <Route path="calendar/celebration" element={<CalendarManager defaultType="celebration" />} />
+          <Route path="calendar/event" element={<CalendarManager defaultType="event" />} />
+          <Route path="download-format" element={<DownloadFormat />} />
           <Route path="message" element={<Message />} />
           <Route path="utility/activity-log" element={<ActivityLog />} />
           <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
@@ -325,6 +342,7 @@ function App() {
           <Route path="dashboard" element={<Placeholder title="Accountant Dashboard" />} />
           <Route path="fees" element={<Fees />} />
           <Route path="accounts" element={<Accounts />} />
+          <Route path="download-format" element={<DownloadFormat />} />
           <Route path="utility/activity-log" element={<ActivityLog />} />
           <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
         </Route>
@@ -335,6 +353,7 @@ function App() {
         <Route element={<ErrorBoundary><Layout /></ErrorBoundary>}>
           <Route path="dashboard" element={<Placeholder title="Librarian Dashboard" />} />
           <Route path="library" element={<Library />} />
+          <Route path="download-format" element={<DownloadFormat />} />
           <Route path="utility/activity-log" element={<ActivityLog />} />
           <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
         </Route>

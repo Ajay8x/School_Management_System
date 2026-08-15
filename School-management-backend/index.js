@@ -87,6 +87,7 @@ app.use('/api/accounts', require('./routes/accountRoutes'));
 app.use('/api/hrms', require('./routes/hrmRoutes'));
 app.use('/api/notices', require('./routes/noticeRoutes'));
 app.use('/api/events', require('./routes/eventRoutes'));
+app.use('/api/import', require('./routes/importRoutes'));
 app.use('/api/messages', require('./routes/messageRoutes'));
 app.use('/api/settings', require('./routes/settingsRoutes'));
 app.use('/api/health-records', require('./routes/healthRoutes'));

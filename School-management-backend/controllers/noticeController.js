@@ -5,7 +5,9 @@ const Notice = require('../models/Notice');
 // @access  Private
 exports.getNotices = async (req, res) => {
   try {
-    const filter = req.schoolId ? { schoolId: req.schoolId } : {};
+    const filter = req.schoolId 
+      ? { $or: [{ schoolId: req.schoolId }, { schoolId: null }, { schoolId: { $exists: false } }] } 
+      : {};
     const notices = await Notice.find(filter).sort({ date: -1 });
     res.json(notices);
   } catch (error) {

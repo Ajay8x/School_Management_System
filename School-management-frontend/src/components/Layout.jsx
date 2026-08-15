@@ -381,9 +381,10 @@ export default function Layout() {
       submenu: [
         { name: 'Holiday', href: '/calendar/holiday' },
         { name: 'Celebration', href: '/calendar/celebration' },
-        { name: 'Event', href: '/event' }
+        { name: 'Event', href: '/calendar/event' }
       ]
     },
+    { name: 'Notice Board', href: '/notice-board', icon: Bell, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'] },
     { name: 'Gallery', href: '/gallery', icon: ImageIcon, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'] },
     { 
       name: 'Inventory', icon: Package, roles: ['admin', 'super-admin', 'accountant'],
@@ -906,7 +907,7 @@ export default function Layout() {
                         No new notifications
                       </div>
                     ) : (
-                      notices.slice(0, 4).map((notice) => (
+                      notices.slice(0, 8).map((notice) => (
                         <Link 
                           key={notice._id}
                           to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/notice-board`}
@@ -918,7 +919,14 @@ export default function Layout() {
                               <ClipboardList className="w-4 h-4" />
                             </div>
                             <div className="min-w-0 flex-1">
-                              <p className="text-xs font-bold text-gray-800 dark:text-white truncate">{notice.title}</p>
+                              <div className="flex items-center justify-between">
+                                <p className="text-xs font-bold text-gray-800 dark:text-white truncate">{notice.title}</p>
+                                {notice.category && (
+                                  <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-teal-500/10 text-teal-500 uppercase">
+                                    {notice.category}
+                                  </span>
+                                )}
+                              </div>
                               <p className="text-[11px] text-gray-500 dark:text-slate-400 mt-0.5 line-clamp-2 leading-tight">{notice.content}</p>
                               <p className="text-[9px] text-gray-400 dark:text-slate-500 mt-1">{new Date(notice.date || notice.createdAt).toLocaleDateString()}</p>
                             </div>
@@ -1090,7 +1098,7 @@ export default function Layout() {
 
                     {/* Download Format */}
                     <Link 
-                      to="/resource/download"
+                      to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/download-format`}
                       onClick={() => setShowProfileDropdown(false)}
                       className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
                     >
