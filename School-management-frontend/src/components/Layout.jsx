@@ -8,7 +8,7 @@ import {
   ChevronDown, ChevronRight, CheckCircle, GraduationCap, Users, UserCheck, 
   BookOpen, FileText, CreditCard, Clock, UserPlus, FileBadge, Library, 
   Wallet, Briefcase, ClipboardList, Calendar, MessageSquare, ShieldCheck, LogOut, Key, X,
-  Home, Check, Building, Sliders, ChevronUp, Wrench, Activity, Boxes
+  Home, Check, Building, Sliders, ChevronUp, Wrench, Activity, Boxes, Image as ImageIcon
 } from 'lucide-react';
 
 // Custom Sidebar Item Component
