@@ -85,12 +85,16 @@ const SidebarItem = ({ item, isActive, onToggle, isExpanded }) => {
 
 export default function Layout() {
   const { user, loading, logout } = useContext(AuthContext);
-  const { schools, currentSchool, switchSchool, isModuleEnabled } = useContext(SchoolContext);
+  const { schools, currentSchool, switchSchool, isModuleEnabled, sessionsList, currentSession, switchSession } = useContext(SchoolContext);
   const location = useLocation();
   const [expandedMenu, setExpandedMenu] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showSchoolDropdown, setShowSchoolDropdown] = useState(false);
   const schoolDropdownRef = useRef(null);
+
+  // Session Dropdown State
+  const [showSessionDropdown, setShowSessionDropdown] = useState(false);
+  const sessionDropdownRef = useRef(null);
   
   // Search State
   const [searchQuery, setSearchQuery] = useState('');
@@ -124,6 +128,9 @@ export default function Layout() {
     const handleClickOutside = (e) => {
       if (schoolDropdownRef.current && !schoolDropdownRef.current.contains(e.target)) {
         setShowSchoolDropdown(false);
+      }
+      if (sessionDropdownRef.current && !sessionDropdownRef.current.contains(e.target)) {
+        setShowSessionDropdown(false);
       }
       if (profileDropdownRef.current && !profileDropdownRef.current.contains(e.target)) {
         setShowProfileDropdown(false);
@@ -745,6 +752,90 @@ export default function Layout() {
           {/* Topbar Right Area matching Screenshot 1 */}
           <div className="flex items-center space-x-3 md:space-x-4">
             
+            {/* Session Switcher Selector matching user screenshot */}
+            <div className="relative" ref={sessionDropdownRef}>
+              <button
+                type="button"
+                onClick={() => setShowSessionDropdown(!showSessionDropdown)}
+                className="flex items-center space-x-2 text-white hover:text-teal-300 px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700/70 transition-all font-semibold text-[13.5px] sm:text-[14.5px] tracking-tight group shadow-sm"
+              >
+                <Calendar className="w-4 h-4 text-teal-400 flex-shrink-0" />
+                <span className="truncate flex items-center gap-1">
+                  <span>Session {currentSession?.name || '2025-2026'}</span>
+                  {(currentSession?.code || currentSession?.shortCode) && (
+                    <span className="text-slate-300 font-normal">
+                      ({currentSession.code || currentSession.shortCode})
+                    </span>
+                  )}
+                </span>
+                <ChevronDown className={`w-4 h-4 text-slate-400 group-hover:text-white transition-transform duration-200 ${showSessionDropdown ? 'rotate-180 text-teal-400' : ''}`} />
+              </button>
+
+              {/* Sleek Dark Session Dropdown */}
+              {showSessionDropdown && (
+                <div className="absolute right-0 mt-2.5 w-64 bg-[#0c1324] border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-3 duration-200">
+                  <div className="p-3 border-b border-slate-800/80 flex items-center justify-between bg-[#080d19]">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-teal-400" /> Switch Session
+                    </span>
+                    <Link
+                      to="/admin/academic/session"
+                      onClick={() => setShowSessionDropdown(false)}
+                      className="text-[11px] font-semibold text-teal-400 hover:text-teal-300"
+                    >
+                      Manage
+                    </Link>
+                  </div>
+
+                  <div className="max-h-[300px] overflow-y-auto custom-scrollbar py-1">
+                    {sessionsList && sessionsList.length > 0 ? (
+                      sessionsList.map((sess) => {
+                        const isSelected = sess._id === currentSession?._id || sess.name === currentSession?.name;
+                        return (
+                          <button
+                            key={sess._id || sess.name}
+                            type="button"
+                            onClick={() => {
+                              switchSession(sess);
+                              setShowSessionDropdown(false);
+                            }}
+                            className={`w-full text-left px-4 py-2.5 flex items-center justify-between transition-colors ${
+                              isSelected
+                                ? 'bg-blue-950/40 text-blue-300 font-semibold border-l-4 border-blue-500'
+                                : 'text-slate-300 hover:bg-[#131c31] hover:text-white'
+                            }`}
+                          >
+                            <div className="min-w-0 pr-2">
+                              <p className="text-xs sm:text-sm font-semibold truncate leading-tight flex items-center gap-1.5">
+                                <span className={isSelected ? 'text-blue-200' : ''}>{sess.name}</span>
+                                {sess.code && (
+                                  <span className="text-xs text-slate-400 font-normal">({sess.code})</span>
+                                )}
+                              </p>
+                              {sess.period && (
+                                <p className="text-[11px] text-slate-400 truncate mt-0.5 opacity-80">
+                                  {sess.period}
+                                </p>
+                              )}
+                            </div>
+                            {isSelected && (
+                              <div className="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                                <Check className="w-3.5 h-3.5 text-blue-400 stroke-[3]" />
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })
+                    ) : (
+                      <div className="p-4 text-center text-xs text-slate-400">
+                        No sessions available
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* School Switcher Selector (Screenshot 1 Match) */}
             <div className="relative" ref={schoolDropdownRef}>
               <button

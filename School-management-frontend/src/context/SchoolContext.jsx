@@ -256,6 +256,42 @@ export const SchoolProvider = ({ children }) => {
   });
   const [loading, setLoading] = useState(false);
 
+  // Active Session state
+  const [sessionsList, setSessionsList] = useState([
+    { _id: 'default_sess', name: '2025-2026', code: '2025-2026' }
+  ]);
+  const [currentSession, setCurrentSession] = useState(() => {
+    const saved = localStorage.getItem('active_session');
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) { /* ignore */ }
+    }
+    return { name: '2025-2026', code: '2025-2026' };
+  });
+
+  const fetchSessions = async () => {
+    try {
+      const res = await API.get('/sessions');
+      if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+        setSessionsList(res.data);
+        const savedSession = localStorage.getItem('active_session');
+        let activeSess = null;
+        if (savedSession) {
+          try {
+            const parsed = JSON.parse(savedSession);
+            activeSess = res.data.find(s => s._id === parsed._id || s.name === parsed.name);
+          } catch (e) { /* ignore */ }
+        }
+        if (!activeSess) {
+          activeSess = res.data[0];
+        }
+        setCurrentSession(activeSess);
+        localStorage.setItem('active_session', JSON.stringify(activeSess));
+      }
+    } catch (err) {
+      console.warn('Could not fetch sessions for context:', err);
+    }
+  };
+
   const fetchSchools = async () => {
     try {
       setLoading(true);
@@ -278,6 +314,7 @@ export const SchoolProvider = ({ children }) => {
   useEffect(() => {
     if (user) {
       fetchSchools();
+      fetchSessions();
     }
   }, [user]);
 
@@ -288,6 +325,15 @@ export const SchoolProvider = ({ children }) => {
       localStorage.setItem('active_school_id', target._id);
       localStorage.setItem('active_school', JSON.stringify(target));
       window.dispatchEvent(new CustomEvent('school-switched', { detail: { schoolId: target._id, school: target } }));
+      fetchSessions();
+    }
+  };
+
+  const switchSession = (sessionObj) => {
+    if (sessionObj) {
+      setCurrentSession(sessionObj);
+      localStorage.setItem('active_session', JSON.stringify(sessionObj));
+      window.dispatchEvent(new CustomEvent('session-switched', { detail: { session: sessionObj } }));
     }
   };
 
@@ -391,6 +437,10 @@ export const SchoolProvider = ({ children }) => {
       loading,
       switchSchool,
       fetchSchools,
+      sessionsList,
+      currentSession,
+      switchSession,
+      fetchSessions,
       updateSchoolModules,
       createSchool,
       updateSchool,
