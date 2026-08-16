@@ -15,7 +15,7 @@ const seedSchools = async () => {
       console.log('Seeding initial schools...');
       const initialSchools = [
         { name: 'Demo International School', code: 'DIS001', isDefault: true, tagline: 'Empowering Young Minds', address: '123 Education Boulevard', phone: '+91 98765 43210', email: 'contact@demointernational.edu', modules: defaultModulesConfig },
-        { name: 'Campus Pilot School', code: 'CPS002', isDefault: false, tagline: 'Inspiring Future Leaders', address: '45 Knowledge Park', phone: '+91 98765 43211', email: 'info@campuspilot.edu', modules: defaultModulesConfig },
+        { name: 'CampusTracker School', code: 'CTS002', isDefault: false, tagline: 'Inspiring Future Leaders', address: '45 Knowledge Park', phone: '+91 98765 43211', email: 'info@campuspilot.edu', modules: defaultModulesConfig },
         { name: 'BPS School Bhadoi', code: 'BPS003', isDefault: false, tagline: 'Knowledge, Character, Success', address: 'Station Road, Bhadohi', phone: '+91 98765 43212', email: 'office@bpsbhadoi.org', modules: defaultModulesConfig },
         { name: 'Lions School Mirzapur', code: 'LSM004', isDefault: false, tagline: 'Service and Excellence', address: 'Civil Lines, Mirzapur', phone: '+91 98765 43213', email: 'admin@lionsmirzapur.org', modules: defaultModulesConfig },
         { name: 'Shubham Model School', code: 'SMS005', isDefault: false, tagline: 'Building Strong Foundations', address: 'Varanasi Highway', phone: '+91 98765 43214', email: 'shubhammodel@edu.org', modules: defaultModulesConfig },
