@@ -260,6 +260,10 @@ function App() {
       
       {/* Root redirect to login */}
       <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/roles" element={<Navigate to="/admin/general-config?tab=role" replace />} />
+      <Route path="/role-permission" element={<Navigate to="/admin/general-config?tab=role" replace />} />
+      <Route path="/school" element={<Navigate to="/admin/school" replace />} />
+      <Route path="/organization" element={<Navigate to="/admin/organization" replace />} />
 
       {/* ADMIN ROUTES */}
       <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin', 'super-admin']} />}>

@@ -1,74 +1,194 @@
 import { useState, useEffect, useContext } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { SchoolContext } from '../context/SchoolContext';
 import { AuthContext } from '../context/AuthContext';
-import { Building, Check, RotateCcw, Save, ShieldAlert, Plus, Globe, Sparkles, AlertCircle, Hash } from 'lucide-react';
+import { 
+  Building, ChevronRight, Home, Key, Tag, Save, RotateCcw, 
+  X, Check, AlertCircle, Sparkles, Plus, Globe, Phone, Mail,
+  ShieldCheck, Users, UserCheck, GraduationCap, Wallet, Library,
+  Search, Lock, Edit3, Trash2, ArrowUpDown, Filter, MoreVertical,
+  ChevronDown, ChevronLeft
+} from 'lucide-react';
+
+const INITIAL_ROLES_LIST = [
+  { id: '1', name: 'Principal', createdAt: 'January 29, 2025 9:33 AM' },
+  { id: '2', name: 'Vice Principal', createdAt: 'February 1, 2025 8:09 PM' },
+  { id: '3', name: 'Manager', createdAt: 'January 28, 2025 9:33 AM' },
+  { id: '4', name: 'Accountant', createdAt: 'January 29, 2025 9:33 AM' },
+  { id: '5', name: 'Staff', createdAt: 'January 28, 2025 9:33 AM' },
+  { id: '6', name: 'Attendance Assistant', createdAt: 'January 29, 2025 9:33 AM' },
+  { id: '7', name: 'Exam Incharge', createdAt: 'January 29, 2025 9:33 AM' },
+  { id: '8', name: 'Guardian', createdAt: 'January 29, 2025 9:33 AM' },
+  { id: '9', name: 'Hostel Incharge', createdAt: 'January 29, 2025 9:33 AM' },
+  { id: '10', name: 'Inventory Incharge', createdAt: 'January 29, 2025 9:33 AM' },
+  { id: '11', name: 'Librarian', createdAt: 'January 28, 2025 9:33 AM' },
+  { id: '12', name: 'Mess Incharge', createdAt: 'January 29, 2025 9:33 AM' },
+  { id: '13', name: 'Observer', createdAt: 'November 15, 2025 1:28 PM' },
+  { id: '14', name: 'Receptionist', createdAt: 'January 28, 2025 9:33 AM' },
+  { id: '15', name: 'Student', createdAt: 'January 29, 2025 9:33 AM' },
+  { id: '16', name: 'Transport Incharge', createdAt: 'January 29, 2025 9:33 AM' },
+  { id: '17', name: 'User', createdAt: 'January 29, 2025 9:33 AM' }
+];
+
+const MODULE_PERMISSIONS_SCHEMA = [
+  { key: 'reception', name: 'Reception & Visitors', actions: ['view', 'create', 'edit', 'delete'] },
+  { key: 'academic', name: 'Academic & Courses', actions: ['view', 'create', 'edit', 'delete'] },
+  { key: 'student', name: 'Student Records', actions: ['view', 'create', 'edit', 'delete'] },
+  { key: 'finance', name: 'Finance & Fee Collection', actions: ['view', 'create', 'edit', 'delete', 'export'] },
+  { key: 'exam', name: 'Examinations & Marks', actions: ['view', 'create', 'edit', 'delete', 'export'] },
+  { key: 'employee', name: 'Employee & HRMS', actions: ['view', 'create', 'edit', 'delete'] },
+  { key: 'resource', name: 'Resource & Assignments', actions: ['view', 'create', 'edit', 'delete'] },
+  { key: 'transport', name: 'Transport & Vehicles', actions: ['view', 'create', 'edit', 'delete'] },
+  { key: 'inventory', name: 'Inventory & Store', actions: ['view', 'create', 'edit', 'delete'] },
+  { key: 'config', name: 'System Settings & Config', actions: ['view', 'edit'] },
+];
 
 export default function GeneralConfig() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { currentSchool, schools, updateSchool, createSchool, switchSchool } = useContext(SchoolContext);
   const { user } = useContext(AuthContext);
 
   const isSuperAdmin = user?.role === 'super-admin';
+  const activeSchoolName = currentSchool?.name || currentSchool?.appName || 'Demo International School';
 
-  // Form State
+  // Sub-navigation active state ('general' | 'role' | 'permission')
+  const initialSubTab = searchParams.get('tab') || 'general';
+  const [activeSubTab, setActiveSubTab] = useState(initialSubTab);
+
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['general', 'role', 'permission'].includes(tabParam)) {
+      setActiveSubTab(tabParam);
+    }
+  }, [searchParams]);
+
+  const handleSubTabChange = (tabKey) => {
+    setActiveSubTab(tabKey);
+    setSearchParams({ tab: tabKey });
+  };
+
+  // General Form State
   const [formData, setFormData] = useState({
-    appName: '',
-    name: '',
-    code: '',
-    description: '',
-    metaAuthor: '',
-    metaDescription: '',
-    metaKeywords: '',
-    addressLine1: '',
+    name: 'Campus Tracker International School',
+    title1: '',
+    title2: '',
+    title3: '',
+    addressLine1: 'BLW Newada, Sunderpur',
     addressLine2: '',
-    city: '',
-    state: '',
-    zipcode: '',
-    country: '',
-    email: '',
-    phone: '',
+    city: 'Varanasi',
+    state: 'Uttar Pradesh',
+    zipcode: '21005',
+    country: 'India',
+    email: 'campustracker@gmail.com',
+    phone: '919935332556',
     fax: '',
-    website: '',
-    financialYearCode: ''
+    website: 'https://www.campustracker.in',
+    identifiers: [
+      { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }
+    ],
+    inchargeDetails: [
+      { title: 'Principal', name: 'Harshit Tiwari', email: 'harshit@gmail.com', contactNumber: '8996584215' },
+      { title: 'Vice Principal', name: 'Vikas Pandey', email: 'vikas@gmail.com', contactNumber: '7619889628' },
+      { title: 'Co-Ordinator', name: 'Aman Pandey', email: 'aman@gmail.com', contactNumber: '8996584215' },
+      { title: '', name: '', email: '', contactNumber: '' },
+      { title: '', name: '', email: '', contactNumber: '' }
+    ]
   });
+
+  // Roles Table State
+  const [rolesList, setRolesList] = useState(INITIAL_ROLES_LIST);
+  const [selectedRoleForMatrix, setSelectedRoleForMatrix] = useState(INITIAL_ROLES_LIST[0]);
+  const [rolePermissionsState, setRolePermissionsState] = useState(() => {
+    const initialPerms = {};
+    INITIAL_ROLES_LIST.forEach(role => {
+      initialPerms[role.id] = {};
+      MODULE_PERMISSIONS_SCHEMA.forEach(mod => {
+        initialPerms[role.id][mod.key] = {
+          view: true,
+          create: true,
+          edit: true,
+          delete: role.name === 'Super Admin' || role.name === 'Principal' || role.name === 'Vice Principal' || role.name === 'Manager',
+          export: role.name === 'Accountant' || role.name === 'Manager' || role.name === 'Principal' || role.name === 'Vice Principal'
+        };
+      });
+    });
+    return initialPerms;
+  });
+  const [showAddRoleModal, setShowAddRoleModal] = useState(false);
+  const [newRoleName, setNewRoleName] = useState('');
+  const [sortField, setSortField] = useState('name');
+  const [sortOrder, setSortOrder] = useState('asc'); // 'asc' | 'desc'
+  const [showFilterBar, setShowFilterBar] = useState(false);
+  const [filterSearchQuery, setFilterSearchQuery] = useState('');
+  const [perPage, setPerPage] = useState('25');
+
+  const activeRole = selectedRoleForMatrix || rolesList[0] || INITIAL_ROLES_LIST[0];
+
+  // Auto scroll permission table to active clicked role column
+  useEffect(() => {
+    if (activeSubTab === 'permission' && activeRole?.id) {
+      const timer = setTimeout(() => {
+        const el = document.getElementById(`role-col-header-${activeRole.id}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [activeSubTab, activeRole]);
 
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [showOnboardModal, setShowOnboardModal] = useState(false);
   const [newSchoolData, setNewSchoolData] = useState({
-    appName: '',
-    name: '',
-    code: '',
-    website: '',
-    email: '',
-    phone: '',
-    city: '',
-    country: 'India'
+    appName: '', name: '', code: '', website: '', email: '', phone: '', city: '', country: 'India'
   });
   const [onboarding, setOnboarding] = useState(false);
 
-  // Populate form with active school configuration
+  // Initialize permissions matrix state for all roles
+  useEffect(() => {
+    const initialPerms = {};
+    rolesList.forEach(role => {
+      initialPerms[role.id] = {};
+      MODULE_PERMISSIONS_SCHEMA.forEach(mod => {
+        initialPerms[role.id][mod.key] = {
+          view: true,
+          create: true,
+          edit: true,
+          delete: role.name === 'Super Admin' || role.name === 'Principal' || role.name === 'Manager',
+          export: role.name === 'Accountant' || role.name === 'Manager' || role.name === 'Principal'
+        };
+      });
+    });
+    setRolePermissionsState(initialPerms);
+  }, [rolesList]);
+
+  // Populate general form from active school context
   useEffect(() => {
     if (currentSchool) {
-      setFormData({
-        appName: currentSchool.appName || currentSchool.name || 'Campus Pilot',
-        name: currentSchool.name || 'Campus Pilot School',
-        code: currentSchool.code || '',
-        description: currentSchool.description || 'Innovative Partner',
-        metaAuthor: currentSchool.metaAuthor || currentSchool.appName || 'CampusPilot',
-        metaDescription: currentSchool.metaDescription || `Application by ${currentSchool.appName || 'campuspilot'}`,
-        metaKeywords: currentSchool.metaKeywords || (currentSchool.appName || 'campuspilot').toLowerCase().replace(/\s+/g, ''),
-        addressLine1: currentSchool.addressLine1 || currentSchool.address || 'Campus Pilot Campus',
+      setFormData(prev => ({
+        ...prev,
+        name: currentSchool.name || 'Campus Tracker International School',
+        title1: currentSchool.title1 || '',
+        title2: currentSchool.title2 || '',
+        title3: currentSchool.title3 || '',
+        addressLine1: currentSchool.addressLine1 || currentSchool.address || 'BLW Newada, Sunderpur',
         addressLine2: currentSchool.addressLine2 || '',
-        city: currentSchool.city || '',
-        state: currentSchool.state || '',
-        zipcode: currentSchool.zipcode || '',
+        city: currentSchool.city || 'Varanasi',
+        state: currentSchool.state || 'Uttar Pradesh',
+        zipcode: currentSchool.zipcode || '21005',
         country: currentSchool.country || 'India',
-        email: currentSchool.email || '',
-        phone: currentSchool.phone || '',
+        email: currentSchool.email || 'campustracker@gmail.com',
+        phone: currentSchool.phone || '919935332556',
         fax: currentSchool.fax || '',
-        website: currentSchool.website || '',
-        financialYearCode: currentSchool.financialYearCode || '2025-2026'
-      });
+        website: currentSchool.website || 'https://www.campustracker.in',
+        identifiers: currentSchool.identifiers && currentSchool.identifiers.length === 5 
+          ? currentSchool.identifiers 
+          : prev.identifiers,
+        inchargeDetails: currentSchool.inchargeDetails && currentSchool.inchargeDetails.length === 5 
+          ? currentSchool.inchargeDetails 
+          : prev.inchargeDetails
+      }));
     }
   }, [currentSchool]);
 
@@ -77,53 +197,67 @@ export default function GeneralConfig() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleIdentifierChange = (index, field, value) => {
+    setFormData(prev => {
+      const updated = [...prev.identifiers];
+      updated[index] = { ...updated[index], [field]: value };
+      return { ...prev, identifiers: updated };
+    });
+  };
+
+  const handleInchargeChange = (index, field, value) => {
+    setFormData(prev => {
+      const updated = [...prev.inchargeDetails];
+      updated[index] = { ...updated[index], [field]: value };
+      return { ...prev, inchargeDetails: updated };
+    });
+  };
+
   const handleReset = () => {
     if (currentSchool) {
       setFormData({
-        appName: currentSchool.appName || currentSchool.name || 'Campus Pilot',
-        name: currentSchool.name || 'Campus Pilot School',
-        code: currentSchool.code || '',
-        description: currentSchool.description || 'Innovative Partner',
-        metaAuthor: currentSchool.metaAuthor || '',
-        metaDescription: currentSchool.metaDescription || '',
-        metaKeywords: currentSchool.metaKeywords || '',
-        addressLine1: currentSchool.addressLine1 || currentSchool.address || '',
+        name: currentSchool.name || 'Campus Tracker International School',
+        title1: currentSchool.title1 || '',
+        title2: currentSchool.title2 || '',
+        title3: currentSchool.title3 || '',
+        addressLine1: currentSchool.addressLine1 || 'BLW Newada, Sunderpur',
         addressLine2: currentSchool.addressLine2 || '',
-        city: currentSchool.city || '',
-        state: currentSchool.state || '',
-        zipcode: currentSchool.zipcode || '',
-        country: currentSchool.country || '',
-        email: currentSchool.email || '',
-        phone: currentSchool.phone || '',
+        city: currentSchool.city || 'Varanasi',
+        state: currentSchool.state || 'Uttar Pradesh',
+        zipcode: currentSchool.zipcode || '21005',
+        country: currentSchool.country || 'India',
+        email: currentSchool.email || 'campustracker@gmail.com',
+        phone: currentSchool.phone || '919935332556',
         fax: currentSchool.fax || '',
-        website: currentSchool.website || '',
-        financialYearCode: currentSchool.financialYearCode || ''
+        website: currentSchool.website || 'https://www.campustracker.in',
+        identifiers: [
+          { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }
+        ],
+        inchargeDetails: [
+          { title: 'Principal', name: 'Harshit Tiwari', email: 'harshit@gmail.com', contactNumber: '8996584215' },
+          { title: 'Vice Principal', name: 'Vikas Pandey', email: 'vikas@gmail.com', contactNumber: '7619889628' },
+          { title: 'Co-Ordinator', name: 'Aman Pandey', email: 'aman@gmail.com', contactNumber: '8996584215' },
+          { title: '', name: '', email: '', contactNumber: '' },
+          { title: '', name: '', email: '', contactNumber: '' }
+        ]
       });
-      setMessage({ type: 'info', text: 'Form has been reset to current school settings.' });
+      setMessage({ type: 'info', text: 'General configuration reset to initial values.' });
       setTimeout(() => setMessage({ type: '', text: '' }), 3000);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isSuperAdmin) {
-      setMessage({ type: 'error', text: 'Permission denied: Only Super Admin can change General Configuration.' });
-      return;
-    }
-
     try {
       setSaving(true);
       setMessage({ type: '', text: '' });
 
       const updatedPayload = {
         ...currentSchool,
-        name: formData.name || formData.appName,
-        appName: formData.appName,
-        code: formData.code,
-        description: formData.description,
-        metaAuthor: formData.metaAuthor,
-        metaDescription: formData.metaDescription,
-        metaKeywords: formData.metaKeywords,
+        name: formData.name,
+        title1: formData.title1,
+        title2: formData.title2,
+        title3: formData.title3,
         addressLine1: formData.addressLine1,
         addressLine2: formData.addressLine2,
         city: formData.city,
@@ -135,15 +269,13 @@ export default function GeneralConfig() {
         phone: formData.phone,
         fax: formData.fax,
         website: formData.website,
-        financialYearCode: formData.financialYearCode
+        identifiers: formData.identifiers,
+        inchargeDetails: formData.inchargeDetails
       };
 
       await updateSchool(currentSchool._id, updatedPayload);
-
-      // Update page document title immediately
-      document.title = `${formData.name} (${formData.code || 'CODE'}) | ${formData.appName}`;
-
-      setMessage({ type: 'success', text: 'General Configuration saved successfully! School name and code updated across system.' });
+      document.title = `${formData.name} | Campus Tracker`;
+      setMessage({ type: 'success', text: 'General Configuration saved successfully!' });
       setTimeout(() => setMessage({ type: '', text: '' }), 4000);
     } catch (err) {
       console.error('Error saving configuration:', err);
@@ -151,6 +283,63 @@ export default function GeneralConfig() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleAddRoleSubmit = (e) => {
+    e.preventDefault();
+    if (!newRoleName.trim()) return;
+
+    const now = new Date();
+    const dateFormatted = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + ' ' + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+
+    const newRoleObj = {
+      id: String(Date.now()),
+      name: newRoleName.trim(),
+      createdAt: dateFormatted
+    };
+
+    setRolesList([...rolesList, newRoleObj]);
+    setShowAddRoleModal(false);
+    setNewRoleName('');
+    setMessage({ type: 'success', text: `New role "${newRoleObj.name}" added successfully!` });
+    setTimeout(() => setMessage({ type: '', text: '' }), 4000);
+  };
+
+  const toggleSort = (field) => {
+    if (sortField === field) {
+      setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+  };
+
+  const sortedAndFilteredRoles = [...rolesList]
+    .filter(r => r.name.toLowerCase().includes(filterSearchQuery.toLowerCase()))
+    .sort((a, b) => {
+      let valA = a[sortField].toLowerCase();
+      let valB = b[sortField].toLowerCase();
+      if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+      if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+  const togglePermission = (roleId, moduleKey, action) => {
+    setRolePermissionsState(prev => ({
+      ...prev,
+      [roleId]: {
+        ...prev[roleId],
+        [moduleKey]: {
+          ...prev[roleId]?.[moduleKey],
+          [action]: !prev[roleId]?.[moduleKey]?.[action]
+        }
+      }
+    }));
+  };
+
+  const handleSavePermissions = () => {
+    setMessage({ type: 'success', text: `Permissions for role "${selectedRoleForMatrix.name}" saved successfully!` });
+    setTimeout(() => setMessage({ type: '', text: '' }), 4000);
   };
 
   const handleOnboardSchool = async (e) => {
@@ -167,20 +356,11 @@ export default function GeneralConfig() {
       });
 
       setShowOnboardModal(false);
-      setNewSchoolData({
-        appName: '',
-        name: '',
-        code: '',
-        website: '',
-        email: '',
-        phone: '',
-        city: '',
-        country: 'India'
-      });
+      setNewSchoolData({ appName: '', name: '', code: '', website: '', email: '', phone: '', city: '', country: 'India' });
 
       if (created) {
         switchSchool(created);
-        setMessage({ type: 'success', text: `New school "${created.name}" onboarded and set active successfully!` });
+        setMessage({ type: 'success', text: `New school "${created.name}" onboarded successfully!` });
       }
     } catch (err) {
       console.error('Onboard error:', err);
@@ -191,48 +371,62 @@ export default function GeneralConfig() {
   };
 
   return (
-    <div className="space-y-6 pb-12">
-      {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-gray-200/70 dark:border-slate-700/80 shadow-sm">
+    <div className="space-y-6 pb-12 font-sans">
+      
+      {/* Top Breadcrumb & Actions Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-1">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-gray-800 dark:text-white tracking-tight">General Configuration</h1>
-            <span className="px-2.5 py-0.5 text-xs font-semibold bg-teal-50 dark:bg-teal-950 text-teal-600 dark:text-teal-400 border border-teal-200 dark:border-teal-800 rounded-full">
-              System Wide
+          <nav aria-label="Breadcrumb" className="flex items-center space-x-2 text-xs text-gray-500 dark:text-slate-400">
+            <a href="/dashboard" className="flex items-center hover:text-teal-600 dark:hover:text-teal-400 transition">
+              <Home className="w-3.5 h-3.5 mr-1" /> Dashboard
+            </a>
+            <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+            <a href="/schools" className="hover:text-teal-600 dark:hover:text-teal-400 transition">
+              School
+            </a>
+            <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+            <span className="font-semibold text-gray-700 dark:text-slate-200 truncate max-w-[150px]">
+              {activeSchoolName}
             </span>
-          </div>
-          <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
-            Configure active school identity, name, unique code, contact parameters, and meta fields.
-          </p>
+            <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+            <span className="hover:text-teal-600 dark:hover:text-teal-400 transition">
+              Config
+            </span>
+            <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+            <span className="font-bold text-teal-600 dark:text-teal-400 capitalize">
+              {activeSubTab === 'role' ? 'Role' : activeSubTab}
+            </span>
+          </nav>
+          <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mt-1 capitalize">
+            {activeSubTab === 'role' ? 'Role' : activeSubTab}
+          </h1>
         </div>
 
-        {/* Super Admin Actions */}
+        {/* Super Admin School Switcher */}
         {isSuperAdmin && (
           <div className="flex items-center gap-2 flex-wrap">
-            <div className="relative">
-              <select
-                value={currentSchool?._id || ''}
-                onChange={(e) => {
-                  const selected = schools.find(s => s._id === e.target.value);
-                  if (selected) switchSchool(selected);
-                }}
-                className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-slate-100 border border-gray-200 dark:border-slate-600 outline-none cursor-pointer focus:ring-2 focus:ring-teal-500"
-              >
-                {schools.map(school => (
-                  <option key={school._id} value={school._id}>
-                    {school.name || school.appName} {school.code ? `(${school.code})` : ''}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <select
+              value={currentSchool?._id || ''}
+              onChange={(e) => {
+                const selected = schools.find(s => s._id === e.target.value);
+                if (selected) switchSchool(selected);
+              }}
+              className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-slate-800 text-gray-800 dark:text-slate-100 border border-gray-200 dark:border-slate-700 shadow-sm outline-none cursor-pointer focus:ring-2 focus:ring-teal-500"
+            >
+              {schools.map(school => (
+                <option key={school._id} value={school._id}>
+                  {school.name || school.appName} {school.code ? `(${school.code})` : ''}
+                </option>
+              ))}
+            </select>
 
             <button
               type="button"
               onClick={() => setShowOnboardModal(true)}
-              className="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl shadow transition flex items-center gap-1.5"
+              className="px-4 py-2 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl shadow transition flex items-center gap-1.5"
             >
               <Plus className="w-4 h-4" />
-              Onboard New School
+              Onboard School
             </button>
           </div>
         )}
@@ -255,230 +449,766 @@ export default function GeneralConfig() {
         </div>
       )}
 
-      {/* Main Configuration Form */}
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200/70 dark:border-slate-700/80 shadow-sm p-6 sm:p-8 space-y-8">
+      {/* Layout Grid: Config Sidebar + Config Form */}
+      <div className="grid grid-cols-12 gap-6">
         
-        {/* Section 1: School Identity & Code */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider flex items-center gap-2 border-b border-gray-100 dark:border-slate-700 pb-2">
-            <Building className="w-4 h-4" /> School Identity & Code
-          </h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">School Name *</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                disabled={!isSuperAdmin}
-                placeholder="e.g. Demo International School"
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">School Code *</label>
-              <input
-                type="text"
-                name="code"
-                value={formData.code}
-                onChange={handleChange}
-                disabled={!isSuperAdmin}
-                placeholder="e.g. DIS001"
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50 uppercase font-mono font-bold"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">App / System Title</label>
-              <input
-                type="text"
-                name="appName"
-                value={formData.appName}
-                onChange={handleChange}
-                disabled={!isSuperAdmin}
-                placeholder="Campus Pilot"
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Description / Tagline</label>
-              <input
-                type="text"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                disabled={!isSuperAdmin}
-                placeholder="Innovative Partner"
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Financial Year Code</label>
-              <input
-                type="text"
-                name="financialYearCode"
-                value={formData.financialYearCode}
-                onChange={handleChange}
-                disabled={!isSuperAdmin}
-                placeholder="2025-2026"
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Section 2: Contact Details */}
-        <div className="space-y-4 pt-4 border-t border-gray-100 dark:border-slate-700">
-          <h3 className="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider flex items-center gap-2 border-b border-gray-100 dark:border-slate-700 pb-2">
-            <Globe className="w-4 h-4" /> Contact & Address Information
-          </h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Address Line 1</label>
-              <input
-                type="text"
-                name="addressLine1"
-                value={formData.addressLine1}
-                onChange={handleChange}
-                disabled={!isSuperAdmin}
-                placeholder="Campus Address Line 1"
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-              />
-            </div>
-            <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Address Line 2</label>
-              <input
-                type="text"
-                name="addressLine2"
-                value={formData.addressLine2}
-                onChange={handleChange}
-                disabled={!isSuperAdmin}
-                placeholder="Campus Address Line 2"
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">City</label>
-              <input
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                disabled={!isSuperAdmin}
-                placeholder="City"
-                className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-              />
-            </div>
-            <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">State</label>
-              <input
-                type="text"
-                name="state"
-                value={formData.state}
-                onChange={handleChange}
-                disabled={!isSuperAdmin}
-                placeholder="State"
-                className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-              />
-            </div>
-            <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Zipcode</label>
-              <input
-                type="text"
-                name="zipcode"
-                value={formData.zipcode}
-                onChange={handleChange}
-                disabled={!isSuperAdmin}
-                placeholder="Pincode"
-                className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-              />
-            </div>
-            <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Country</label>
-              <input
-                type="text"
-                name="country"
-                value={formData.country}
-                onChange={handleChange}
-                disabled={!isSuperAdmin}
-                placeholder="India"
-                className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Official Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                disabled={!isSuperAdmin}
-                placeholder="email@school.com"
-                className="w-full px-3.5 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-              />
-            </div>
-            <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Phone Number</label>
-              <input
-                type="text"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                disabled={!isSuperAdmin}
-                placeholder="+91 9876543210"
-                className="w-full px-3.5 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-              />
-            </div>
-            <div>
-              <label className="block text-[13px] font-semibold text-gray-700 dark:text-slate-300 mb-1.5">Website</label>
-              <input
-                type="text"
-                name="website"
-                value={formData.website}
-                onChange={handleChange}
-                disabled={!isSuperAdmin}
-                placeholder="https://school.edu"
-                className="w-full px-3.5 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Section 3: Action Buttons */}
-        {isSuperAdmin && (
-          <div className="pt-6 border-t border-gray-100 dark:border-slate-700 flex items-center justify-end gap-3">
+        {/* Config Sidebar Navigation */}
+        <aside className="col-span-12 md:col-span-3 lg:col-span-2">
+          <nav className="bg-slate-950 dark:bg-slate-900 p-2 rounded-2xl shadow-md flex flex-row overflow-x-auto gap-2 md:flex-col md:space-y-1 md:gap-0 custom-scrollbar">
             <button
               type="button"
-              onClick={handleReset}
-              className="px-5 py-2.5 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-xl text-sm font-semibold transition flex items-center gap-2"
+              onClick={() => handleSubTabChange('general')}
+              className={`flex-1 md:w-full flex items-center justify-center md:justify-start space-x-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition whitespace-nowrap ${
+                activeSubTab === 'general'
+                  ? 'bg-teal-500 text-white shadow-sm'
+                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+              }`}
             >
-              <RotateCcw className="w-4 h-4" /> Reset
+              <Building className="w-4 h-4 flex-shrink-0" />
+              <span>General</span>
             </button>
+
             <button
-              type="submit"
-              disabled={saving}
-              className="px-6 py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-xl text-sm font-semibold shadow-md transition flex items-center gap-2 disabled:opacity-50"
+              type="button"
+              onClick={() => handleSubTabChange('role')}
+              className={`flex-1 md:w-full flex items-center justify-center md:justify-start space-x-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition whitespace-nowrap ${
+                activeSubTab === 'role'
+                  ? 'bg-teal-500 text-white shadow-sm'
+                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+              }`}
             >
-              <Save className="w-4 h-4" />
-              {saving ? 'Saving...' : 'Save Configuration'}
+              <Tag className="w-4 h-4 flex-shrink-0" />
+              <span>Role</span>
             </button>
+
+            <button
+              type="button"
+              onClick={() => handleSubTabChange('permission')}
+              className={`flex-1 md:w-full flex items-center justify-center md:justify-start space-x-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition whitespace-nowrap ${
+                activeSubTab === 'permission'
+                  ? 'bg-teal-500 text-white shadow-sm'
+                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <Key className="w-4 h-4 flex-shrink-0" />
+              <span>Permission</span>
+            </button>
+          </nav>
+        </aside>
+
+        {/* Main Content Area */}
+        <main className="col-span-12 md:col-span-9 lg:col-span-10 space-y-6">
+          
+          {/* TAB 1: GENERAL CONFIGURATION */}
+          {activeSubTab === 'general' && (
+            <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200/80 dark:border-slate-700/80 shadow-sm overflow-hidden">
+              
+              <div className="p-6 sm:p-8 space-y-8">
+                
+                {/* SECTION 1: ABOUT */}
+                <div className="space-y-4">
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">About</h2>
+                    <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">This about will be displayed publicly.</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div className="col-span-2 sm:col-span-1">
+                      <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Name</label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder="Name"
+                        className="w-full px-3.5 py-2 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                      />
+                    </div>
+
+                    <div className="col-span-2 sm:col-span-1">
+                      <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Title 1</label>
+                      <input
+                        type="text"
+                        name="title1"
+                        value={formData.title1}
+                        onChange={handleChange}
+                        placeholder="Title 1"
+                        className="w-full px-3.5 py-2 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                      />
+                    </div>
+
+                    <div className="col-span-2 sm:col-span-1">
+                      <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Title 2</label>
+                      <input
+                        type="text"
+                        name="title2"
+                        value={formData.title2}
+                        onChange={handleChange}
+                        placeholder="Title 2"
+                        className="w-full px-3.5 py-2 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                      />
+                    </div>
+
+                    <div className="col-span-2 sm:col-span-1">
+                      <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Title 3</label>
+                      <input
+                        type="text"
+                        name="title3"
+                        value={formData.title3}
+                        onChange={handleChange}
+                        placeholder="Title 3"
+                        className="w-full px-3.5 py-2 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* SECTION 2: ADDRESS */}
+                <div className="space-y-4 pt-6 border-t border-gray-100 dark:border-slate-700">
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Address</h2>
+                    <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">This address will be displayed publicly.</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Address Line 1</label>
+                      <input
+                        type="text"
+                        name="addressLine1"
+                        value={formData.addressLine1}
+                        onChange={handleChange}
+                        placeholder="Address Line 1"
+                        className="w-full px-3.5 py-2 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Address Line 2</label>
+                      <input
+                        type="text"
+                        name="addressLine2"
+                        value={formData.addressLine2}
+                        onChange={handleChange}
+                        placeholder="Address Line 2"
+                        className="w-full px-3.5 py-2 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">City</label>
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        placeholder="City"
+                        className="w-full px-3.5 py-2 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">State</label>
+                      <input
+                        type="text"
+                        name="state"
+                        value={formData.state}
+                        onChange={handleChange}
+                        placeholder="State"
+                        className="w-full px-3.5 py-2 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Zipcode</label>
+                      <input
+                        type="text"
+                        name="zipcode"
+                        value={formData.zipcode}
+                        onChange={handleChange}
+                        placeholder="Zipcode"
+                        className="w-full px-3.5 py-2 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Country</label>
+                      <input
+                        type="text"
+                        name="country"
+                        value={formData.country}
+                        onChange={handleChange}
+                        placeholder="Country"
+                        className="w-full px-3.5 py-2 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* SECTION 3: CONTACT DETAILS */}
+                <div className="space-y-4 pt-6 border-t border-gray-100 dark:border-slate-700">
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Contact Details</h2>
+                    <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">This contact details will be displayed publicly.</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Email</label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="Email"
+                        className="w-full px-3.5 py-2 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Phone</label>
+                      <input
+                        type="text"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        placeholder="Phone"
+                        className="w-full px-3.5 py-2 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Fax</label>
+                      <input
+                        type="text"
+                        name="fax"
+                        value={formData.fax}
+                        onChange={handleChange}
+                        placeholder="Fax"
+                        className="w-full px-3.5 py-2 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Website</label>
+                      <input
+                        type="text"
+                        name="website"
+                        value={formData.website}
+                        onChange={handleChange}
+                        placeholder="Website"
+                        className="w-full px-3.5 py-2 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* SECTION 4: IDENTIFIER */}
+                <div className="space-y-4 pt-6 border-t border-gray-100 dark:border-slate-700">
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Identifier</h2>
+                    <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">This identifier will be used to identify the school in the system.</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    {formData.identifiers.map((item, idx) => (
+                      <fieldset key={idx} className="rounded-xl border border-gray-300 dark:border-slate-700 p-4 relative">
+                        <legend className="ml-2 px-2 py-0.5 text-xs font-bold text-gray-800 dark:text-slate-200 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800">
+                          {idx + 1}.
+                        </legend>
+                        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                          <div>
+                            <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Label</label>
+                            <input
+                              type="text"
+                              value={item.label}
+                              onChange={(e) => handleIdentifierChange(idx, 'label', e.target.value)}
+                              placeholder="Label"
+                              className="w-full px-3 py-1.5 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Value</label>
+                            <input
+                              type="text"
+                              value={item.value}
+                              onChange={(e) => handleIdentifierChange(idx, 'value', e.target.value)}
+                              placeholder="Value"
+                              className="w-full px-3 py-1.5 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                            />
+                          </div>
+                        </div>
+                      </fieldset>
+                    ))}
+                  </div>
+                </div>
+
+                {/* SECTION 5: INCHARGE DETAILS */}
+                <div className="space-y-4 pt-6 border-t border-gray-100 dark:border-slate-700">
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Incharge Details</h2>
+                    <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">This incharge details will be displayed publicly.</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    {formData.inchargeDetails.map((item, idx) => (
+                      <fieldset key={idx} className="rounded-xl border border-gray-300 dark:border-slate-700 p-4 relative">
+                        <legend className="ml-2 px-2 py-0.5 text-xs font-bold text-gray-800 dark:text-slate-200 border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800">
+                          {idx + 1}.
+                        </legend>
+                        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                          <div>
+                            <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Title</label>
+                            <input
+                              type="text"
+                              value={item.title}
+                              onChange={(e) => handleInchargeChange(idx, 'title', e.target.value)}
+                              placeholder="Title"
+                              className="w-full px-3 py-1.5 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Name</label>
+                            <input
+                              type="text"
+                              value={item.name}
+                              onChange={(e) => handleInchargeChange(idx, 'name', e.target.value)}
+                              placeholder="Name"
+                              className="w-full px-3 py-1.5 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Email</label>
+                            <input
+                              type="email"
+                              value={item.email}
+                              onChange={(e) => handleInchargeChange(idx, 'email', e.target.value)}
+                              placeholder="Email"
+                              className="w-full px-3 py-1.5 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Contact Number</label>
+                            <input
+                              type="text"
+                              value={item.contactNumber}
+                              onChange={(e) => handleInchargeChange(idx, 'contactNumber', e.target.value)}
+                              placeholder="Contact Number"
+                              className="w-full px-3 py-1.5 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
+                            />
+                          </div>
+                        </div>
+                      </fieldset>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Form Action Footer Bar */}
+              <div className="bg-gray-50 dark:bg-slate-900/60 px-6 py-4 border-t border-gray-200/80 dark:border-slate-700/80 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="px-4 py-2 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  Reset
+                </button>
+
+                <div className="flex items-center space-x-3">
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    className="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold shadow transition"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className="px-6 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1.5 disabled:opacity-50"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    <span>{saving ? 'Saving...' : 'Save'}</span>
+                  </button>
+                </div>
+              </div>
+
+            </form>
+          )}
+
+          {/* TAB 2: ROLE MANAGEMENT CONFIGURATION TABLE MATCHING SCREENSHOT */}
+          {activeSubTab === 'role' && (
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200/80 dark:border-slate-700/80 shadow-sm overflow-hidden p-6 space-y-6">
+              
+              {/* Top Header Action Bar */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Role</h2>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddRoleModal(true)}
+                    className="px-4 py-2 bg-white dark:bg-slate-700 text-gray-800 dark:text-slate-100 border border-gray-200 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-600 rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-1.5"
+                  >
+                    Add Role
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowFilterBar(!showFilterBar)}
+                    className={`p-2 rounded-xl border text-gray-600 dark:text-slate-300 transition ${
+                      showFilterBar 
+                        ? 'bg-teal-50 dark:bg-teal-950/60 border-teal-500 text-teal-600' 
+                        : 'bg-white dark:bg-slate-700 border-gray-200 dark:border-slate-600 hover:bg-gray-50'
+                    }`}
+                    title="Toggle Filter"
+                  >
+                    <Filter className="w-4 h-4" />
+                  </button>
+
+                  <button
+                    type="button"
+                    className="p-2 rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-600 dark:text-slate-300 hover:bg-gray-50 transition"
+                    title="Options"
+                  >
+                    <MoreVertical className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Filter Search Bar */}
+              {showFilterBar && (
+                <div className="p-3 bg-gray-50 dark:bg-slate-900/60 rounded-xl border border-gray-200/80 dark:border-slate-700/80 flex items-center gap-3 animate-in fade-in duration-200">
+                  <Search className="w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search roles by name..."
+                    value={filterSearchQuery}
+                    onChange={(e) => setFilterSearchQuery(e.target.value)}
+                    className="w-full bg-transparent text-xs text-gray-800 dark:text-slate-100 outline-none placeholder-gray-400"
+                  />
+                  {filterSearchQuery && (
+                    <button onClick={() => setFilterSearchQuery('')} className="text-gray-400 hover:text-gray-600 text-xs">✕</button>
+                  )}
+                </div>
+              )}
+
+              {/* Table Area */}
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm border-collapse">
+                  <thead>
+                    <tr className="border-b border-gray-200 dark:border-slate-700 text-xs font-bold text-gray-500 dark:text-slate-400 tracking-wider">
+                      <th 
+                        className="py-3 px-4 cursor-pointer hover:text-teal-600 dark:hover:text-teal-400 transition"
+                        onClick={() => toggleSort('name')}
+                      >
+                        <div className="flex items-center gap-1.5">
+                          <span>NAME</span>
+                          <ArrowUpDown className="w-3.5 h-3.5 opacity-60" />
+                        </div>
+                      </th>
+
+                      <th 
+                        className="py-3 px-4 cursor-pointer hover:text-teal-600 dark:hover:text-teal-400 transition"
+                        onClick={() => toggleSort('createdAt')}
+                      >
+                        <div className="flex items-center gap-1.5">
+                          <span>CREATED AT</span>
+                          <ArrowUpDown className="w-3.5 h-3.5 opacity-60" />
+                        </div>
+                      </th>
+
+                      <th className="py-3 px-4 w-12 text-right"></th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 dark:divide-slate-700/60 text-xs text-gray-800 dark:text-slate-200">
+                    {sortedAndFilteredRoles.map((role) => (
+                      <tr 
+                        key={role.id}
+                        className="hover:bg-gray-50/70 dark:hover:bg-slate-700/40 transition group"
+                      >
+                        <td 
+                          className="py-3.5 px-4 font-semibold text-gray-900 dark:text-slate-100 cursor-pointer hover:text-teal-600 dark:hover:text-teal-400"
+                          onClick={() => {
+                            const found = rolesList.find(r => r.id === role.id);
+                            if (found) setSelectedRoleForMatrix(found);
+                            handleSubTabChange('permission');
+                          }}
+                        >
+                          {role.name}
+                        </td>
+
+                        <td className="py-3.5 px-4 text-gray-500 dark:text-slate-400 font-medium">
+                          {role.createdAt}
+                        </td>
+
+                        <td className="py-3.5 px-4 text-right">
+                          <button 
+                            type="button" 
+                            className="p-1 rounded text-gray-400 hover:text-gray-600 dark:hover:text-white transition"
+                            title="Actions"
+                          >
+                            <MoreVertical className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Pagination & Summary Footer */}
+              <div className="pt-4 border-t border-gray-100 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs text-gray-500 dark:text-slate-400">
+                <div>
+                  Showing 1 to {sortedAndFilteredRoles.length} of {rolesList.length} results
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1">
+                    <select
+                      value={perPage}
+                      onChange={(e) => setPerPage(e.target.value)}
+                      className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 text-gray-700 dark:text-slate-200 outline-none cursor-pointer"
+                    >
+                      <option value="25">25 per page</option>
+                      <option value="50">50 per page</option>
+                      <option value="100">100 per page</option>
+                    </select>
+                  </div>
+
+                  <div className="flex items-center space-x-1">
+                    <button type="button" className="p-1.5 rounded-lg border border-gray-200 dark:border-slate-700 text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 disabled:opacity-40" disabled>
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <span className="px-3 py-1 bg-slate-900 text-white dark:bg-teal-500 rounded-lg text-xs font-bold">1</span>
+                    <button type="button" className="p-1.5 rounded-lg border border-gray-200 dark:border-slate-700 text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 disabled:opacity-40" disabled>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          )}
+
+          {/* TAB 3: PERMISSIONS MATRIX CONFIGURATION MATCHING HTML */}
+          {activeSubTab === 'permission' && (
+            <div className="bg-white dark:bg-slate-800 sm:rounded-lg border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden">
+              
+              {/* Top Action Header Bar */}
+              <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900 dark:text-white">Assign Permission</h2>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">Assign role wise permission across all system modules.</p>
+                </div>
+
+                <div className="flex items-center gap-3 flex-wrap">
+                  <input 
+                    type="text" 
+                    placeholder="Search permission action..." 
+                    value={filterSearchQuery}
+                    onChange={(e) => setFilterSearchQuery(e.target.value)}
+                    className="w-full sm:w-64 rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs text-gray-700 dark:text-slate-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowFilterBar(!showFilterBar)}
+                    className="p-2 rounded-xl border border-gray-300 dark:border-slate-600 text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition"
+                    title="Filter"
+                  >
+                    <Filter className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    className="px-4 py-2 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl shadow transition"
+                  >
+                    User wise Permission
+                  </button>
+                </div>
+              </div>
+
+              {/* Permissions Matrix Table - Role Columns x Permission Rows */}
+              <div className="relative overflow-x-auto custom-scrollbar">
+                <table className="w-full text-left text-sm border-collapse min-w-max">
+                  <thead className="bg-gray-100 dark:bg-slate-900/90 text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-slate-300">
+                    <tr>
+                      <th className="sticky left-0 bg-gray-100 dark:bg-slate-900 px-6 py-4 border-b border-r border-gray-200 dark:border-slate-700 z-20 font-extrabold min-w-[200px] shadow-sm">
+                        Permission
+                      </th>
+                      {rolesList.map(role => {
+                        const isTarget = activeRole?.id === role.id;
+                        return (
+                          <th 
+                            key={role.id} 
+                            id={`role-col-header-${role.id}`}
+                            className={`px-5 py-4 border-b border-r border-gray-200 dark:border-slate-700 text-center font-extrabold whitespace-nowrap min-w-[160px] tracking-wide transition-all ${
+                              isTarget
+                                ? 'bg-teal-500 text-white shadow-md border-x-2 border-teal-600'
+                                : 'bg-gray-100 dark:bg-slate-900 text-gray-700 dark:text-slate-300'
+                            }`}
+                          >
+                            <div className="flex flex-col items-center justify-center gap-0.5">
+                              <span>{role.name}</span>
+                              {isTarget && (
+                                <span className="px-2 py-0.5 text-[9px] uppercase font-black tracking-widest bg-white/20 text-white rounded-full">
+                                  Selected Role
+                                </span>
+                              )}
+                            </div>
+                          </th>
+                        );
+                      })}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-slate-700 text-sm text-gray-700 dark:text-slate-200">
+                    {[
+                      { key: 'login:action', name: 'login:action' },
+                      { key: 'profile:update', name: 'profile:update' },
+                      { key: 'password:update', name: 'password:update' },
+                      { key: 'post:config', name: 'post:config' },
+                      { key: 'post:read', name: 'post:read' },
+                      { key: 'post:create', name: 'post:create' },
+                      { key: 'post:edit', name: 'post:edit' },
+                      { key: 'post:delete', name: 'post:delete' },
+                      { key: 'post:comment', name: 'post:comment' },
+                      { key: 'access:reports', name: 'access:reports' },
+                      { key: 'academic:view', name: 'academic:view' },
+                      { key: 'student:manage', name: 'student:manage' },
+                      { key: 'finance:collect', name: 'finance:collect' },
+                      { key: 'exam:entry', name: 'exam:entry' }
+                    ].filter(item => item.name.toLowerCase().includes(filterSearchQuery.toLowerCase()))
+                    .map((permRow) => (
+                      <tr key={permRow.key} className="hover:bg-teal-50/40 dark:hover:bg-slate-700/40 transition">
+                        <td className="sticky left-0 bg-white dark:bg-slate-800 py-3.5 px-6 font-mono text-xs font-bold text-gray-900 dark:text-slate-100 z-10 border-r border-gray-200 dark:border-slate-700 shadow-sm whitespace-nowrap min-w-[200px]">
+                          {permRow.name}
+                        </td>
+
+                        {rolesList.map(role => {
+                          const isTarget = activeRole?.id === role.id;
+                          const isChecked = rolePermissionsState[role.id]?.[permRow.key] !== false;
+                          return (
+                            <td 
+                              key={role.id} 
+                              className={`py-3.5 px-5 text-center border-r min-w-[160px] transition-colors ${
+                                isTarget
+                                  ? 'bg-teal-50/80 dark:bg-teal-950/40 border-x-2 border-teal-500/40 font-bold'
+                                  : 'border-gray-100 dark:border-slate-700/40'
+                              }`}
+                            >
+                              <div className="flex items-center justify-center">
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={() => {
+                                    setRolePermissionsState(prev => ({
+                                      ...prev,
+                                      [role.id]: {
+                                        ...prev[role.id],
+                                        [permRow.key]: !isChecked
+                                      }
+                                    }));
+                                  }}
+                                  className="w-4 h-4 text-teal-600 rounded border-gray-300 dark:border-slate-600 focus:ring-teal-500 cursor-pointer transition-transform hover:scale-110"
+                                />
+                              </div>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Footer Buttons */}
+              <div className="bg-gray-50 dark:bg-slate-900/60 px-6 py-4 border-t border-gray-200 dark:border-slate-700 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setMessage({ type: 'info', text: 'Permissions matrix reset to default.' })}
+                  className="px-4 py-2 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-xl text-xs font-bold transition"
+                >
+                  Reset
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleSavePermissions}
+                  className="px-6 py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1.5"
+                >
+                  <Save className="w-4 h-4" /> Save Permissions
+                </button>
+              </div>
+
+            </div>
+          )}
+
+        </main>
+      </div>
+
+      {/* Add Role Modal */}
+      {showAddRoleModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700 max-w-md w-full p-6 space-y-6">
+            <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-700 pb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-xl bg-teal-50 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 flex items-center justify-center font-bold">
+                  <Tag className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-800 dark:text-white text-lg">Add Role</h3>
+                  <p className="text-xs text-gray-500 dark:text-slate-400">Define a new system designation role</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddRoleModal(false)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-white text-lg font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleAddRoleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Role Name *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Exam Incharge"
+                  value={newRoleName}
+                  onChange={(e) => setNewRoleName(e.target.value)}
+                  className="w-full px-4 py-2 text-sm border border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+
+              <div className="pt-4 flex justify-end gap-3 border-t border-gray-100 dark:border-slate-700">
+                <button
+                  type="button"
+                  onClick={() => setShowAddRoleModal(false)}
+                  className="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-xl transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl shadow transition"
+                >
+                  Save Role
+                </button>
+              </div>
+            </form>
           </div>
-        )}
-      </form>
+        </div>
+      )}
 
       {/* Onboard New School Modal */}
       {showOnboardModal && (
@@ -540,52 +1270,6 @@ export default function GeneralConfig() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Website URL</label>
-                  <input
-                    type="text"
-                    placeholder="https://apexschool.edu"
-                    value={newSchoolData.website}
-                    onChange={(e) => setNewSchoolData({ ...newSchoolData, website: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-teal-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Contact Phone</label>
-                  <input
-                    type="text"
-                    placeholder="+91 9876543210"
-                    value={newSchoolData.phone}
-                    onChange={(e) => setNewSchoolData({ ...newSchoolData, phone: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-teal-500"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Email</label>
-                  <input
-                    type="email"
-                    placeholder="admin@apexschool.edu"
-                    value={newSchoolData.email}
-                    onChange={(e) => setNewSchoolData({ ...newSchoolData, email: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-teal-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">City</label>
-                  <input
-                    type="text"
-                    placeholder="New Delhi"
-                    value={newSchoolData.city}
-                    onChange={(e) => setNewSchoolData({ ...newSchoolData, city: e.target.value })}
-                    className="w-full px-3 py-2 text-xs border border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-teal-500"
-                  />
-                </div>
-              </div>
-
               <div className="pt-4 flex justify-end gap-3 border-t border-gray-100 dark:border-slate-700">
                 <button
                   type="button"
@@ -606,6 +1290,7 @@ export default function GeneralConfig() {
           </div>
         </div>
       )}
+
     </div>
   );
 }

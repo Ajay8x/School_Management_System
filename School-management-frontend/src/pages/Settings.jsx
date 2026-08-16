@@ -36,6 +36,7 @@ export default function Settings({ initialTab = 'general' }) {
 
   const tabsList = [
     { id: 'general', label: 'General Config', icon: Sliders },
+    { id: 'roles', label: 'Role & Permission', icon: ShieldCheck },
     { id: 'asset', label: 'Asset Config', icon: ImageIcon },
     { id: 'system', label: 'System Config', icon: SettingsIcon },
     { id: 'auth', label: 'Authentication', icon: LogIn },
@@ -54,7 +55,6 @@ export default function Settings({ initialTab = 'general' }) {
     { id: 'terminology', label: 'Terminology', icon: Languages },
     { id: 'locale', label: 'Locale', icon: Globe },
     { id: 'credentials', label: 'User Credentials', icon: Key, superAdminOnly: true },
-    { id: 'roles', label: 'Role & Access', icon: ShieldCheck },
     { id: 'activity', label: 'Activity Log', icon: Activity }
   ];
 
@@ -76,7 +76,7 @@ export default function Settings({ initialTab = 'general' }) {
       <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl border border-gray-100 dark:border-slate-700/80 shadow-sm flex items-center gap-1.5 overflow-x-auto custom-scrollbar">
         {visibleTabs.map(tab => {
           const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
+          const isActive = activeTab === tab.id || (tab.id === 'roles' && ['role', 'permission'].includes(activeTab));
           return (
             <button
               key={tab.id}
@@ -96,11 +96,10 @@ export default function Settings({ initialTab = 'general' }) {
 
       {/* Active Tab View */}
       <div className="animate-in fade-in duration-200">
-        {activeTab === 'general' && <GeneralConfig />}
+        {(activeTab === 'general' || activeTab === 'roles' || activeTab === 'role' || activeTab === 'permission') && <GeneralConfig />}
         {activeTab === 'asset' && <AssetConfig />}
         {activeTab === 'module' && <ModuleConfig />}
         {activeTab === 'credentials' && <UserCredentials />}
-        {activeTab === 'roles' && <Roles />}
         {activeTab === 'activity' && <ActivityLog />}
         
         {/* Placeholder Views for New Config Subitems */}

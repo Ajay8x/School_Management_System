@@ -1001,7 +1001,7 @@ export default function Layout() {
 
                     {/* Role & Permission */}
                     <Link 
-                      to={isSuperAdmin || user.role === 'admin' ? '/roles' : '/settings?tab=roles'}
+                      to={isSuperAdmin || user.role === 'admin' ? '/admin/general-config?tab=role' : '/settings?tab=roles'}
                       onClick={() => setShowProfileDropdown(false)}
                       className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
                     >

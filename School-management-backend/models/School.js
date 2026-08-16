@@ -264,6 +264,11 @@ const schoolSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  title1: { type: String, default: '' },
+  title2: { type: String, default: '' },
+  title3: { type: String, default: '' },
+  identifiers: { type: mongoose.Schema.Types.Mixed, default: [] },
+  inchargeDetails: { type: mongoose.Schema.Types.Mixed, default: [] },
   logoUrl: {
     type: String,
     default: ''
