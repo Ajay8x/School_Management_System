@@ -55,9 +55,9 @@ export default function Login() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl mb-4">
             <School className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight">CampusPilot</h1>
+          <h1 className="text-3xl font-black text-white tracking-tight">Campus Pilot</h1>
           <p className="text-white/50 text-sm mt-1 flex items-center justify-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5" /> School Management System
+            <Sparkles className="w-3.5 h-3.5" /> Campus Pilot Portal
           </p>
         </div>
 
@@ -135,7 +135,7 @@ export default function Login() {
 
         {/* Footer */}
         <p className="text-center text-white/20 text-xs mt-6">
-          © {new Date().getFullYear()} CampusPilot — Secure School Management
+          © {new Date().getFullYear()} Campus Pilot — Secure Campus Management
         </p>
       </div>
     </div>

@@ -144,7 +144,7 @@ export default function Reports() {
           </tbody>
         </table>
         <div class="footer">
-          Confidential Document • School Management System • Campus Pilot
+          Confidential Document • Campus Pilot
         </div>
       </body>
       </html>

@@ -397,7 +397,7 @@ export default function StudentProfile() {
           </div>
           
           <div className="py-4 text-center text-xs text-gray-400">
-            Campus Tracker
+            Campus Pilot
           </div>
         </div>
       </div>

@@ -26,7 +26,7 @@ export default function UserCredentials() {
   };
 
   const handleResetPassword = async (userId, name) => {
-    if (!window.confirm(`Are you sure you want to reset the password for ${name} to their default Serial Number?`)) {
+    if (!window.confirm(`Are you sure you want to reset the password for ${name} to default (123456 / Serial Number)?`)) {
       return;
     }
 
@@ -96,7 +96,7 @@ export default function UserCredentials() {
           Security Notice
         </h3>
         <p className="text-amber-700 dark:text-amber-400/80 text-sm">
-          Passwords are encrypted using one-way hashing algorithms. We can only show the <strong>Default Password</strong> (Serial Number) here. If a user changes their password, you will not be able to see it. If they forget it, you can reset it back to the default password.
+          The default password is <strong>123456</strong> (or Serial Number). Users can change their own password after logging in. Passwords are encrypted using one-way hashing algorithms. If a user changes their password, you will not be able to see it. If they forget it, you can reset it back to the default password.
         </p>
       </div>
 
@@ -149,13 +149,13 @@ export default function UserCredentials() {
                     </td>
                     <td className="px-6 py-4">
                       <span className="font-mono bg-gray-100 dark:bg-slate-700 px-2 py-1 rounded text-sm text-gray-800 dark:text-slate-200">
-                        {u.serialNumber || 'N/A'}
+                        {u.serialNumber || '123456'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => handleResetPassword(u._id, u.name)}
-                        disabled={resettingId === u._id || !u.serialNumber}
+                        disabled={resettingId === u._id}
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
                         {resettingId === u._id ? (

@@ -91,15 +91,12 @@ exports.resetUserPassword = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    if (!user.serialNumber) {
-      return res.status(400).json({ message: 'User does not have a serial number to reset to' });
-    }
-
-    // Set password to serialNumber
-    user.password = user.serialNumber;
+    // Set password to serialNumber or default password (123456)
+    const defaultPassword = user.serialNumber || process.env.DEFAULT_PASSWORD || '123456';
+    user.password = defaultPassword;
     await user.save();
 
-    res.json({ message: 'Password reset to default successfully' });
+    res.json({ message: `Password reset to default (${defaultPassword}) successfully` });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

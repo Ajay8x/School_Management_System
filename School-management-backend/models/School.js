@@ -189,7 +189,7 @@ const schoolSchema = new mongoose.Schema({
   },
   appName: {
     type: String,
-    default: 'Campus Tracker',
+    default: 'Campus Pilot',
     trim: true
   },
   code: {

@@ -116,7 +116,7 @@ export default function HealthRecord() {
         </div>
 
         <div className="mt-8 text-center text-xs text-gray-500">
-          Campus Tracker
+          Campus Pilot
         </div>
       </div>
     </div>

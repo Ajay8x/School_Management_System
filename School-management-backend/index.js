@@ -98,7 +98,7 @@ app.use('/api/organizations', require('./routes/organizationRoutes'));
 
 // Basic route
 app.get('/', (req, res) => {
-  res.send('School Management API is running...');
+  res.send('Campus Pilot API is running...');
 });
 
 const PORT = process.env.PORT || 5000;

@@ -50,14 +50,14 @@ export default function GeneralConfig() {
   useEffect(() => {
     if (currentSchool) {
       setFormData({
-        appName: currentSchool.appName || currentSchool.name || 'Campus Tracker',
-        name: currentSchool.name || 'Campus Tracker School',
+        appName: currentSchool.appName || currentSchool.name || 'Campus Pilot',
+        name: currentSchool.name || 'Campus Pilot School',
         code: currentSchool.code || '',
         description: currentSchool.description || 'Innovative Partner',
-        metaAuthor: currentSchool.metaAuthor || currentSchool.appName || 'CampusTracker',
-        metaDescription: currentSchool.metaDescription || `Application by ${currentSchool.appName || 'campustracker'}`,
-        metaKeywords: currentSchool.metaKeywords || (currentSchool.appName || 'campustracker').toLowerCase().replace(/\s+/g, ''),
-        addressLine1: currentSchool.addressLine1 || currentSchool.address || 'Campus Tracker Campus',
+        metaAuthor: currentSchool.metaAuthor || currentSchool.appName || 'CampusPilot',
+        metaDescription: currentSchool.metaDescription || `Application by ${currentSchool.appName || 'campuspilot'}`,
+        metaKeywords: currentSchool.metaKeywords || (currentSchool.appName || 'campuspilot').toLowerCase().replace(/\s+/g, ''),
+        addressLine1: currentSchool.addressLine1 || currentSchool.address || 'Campus Pilot Campus',
         addressLine2: currentSchool.addressLine2 || '',
         city: currentSchool.city || '',
         state: currentSchool.state || '',
@@ -80,8 +80,8 @@ export default function GeneralConfig() {
   const handleReset = () => {
     if (currentSchool) {
       setFormData({
-        appName: currentSchool.appName || currentSchool.name || 'Campus Tracker',
-        name: currentSchool.name || 'Campus Tracker School',
+        appName: currentSchool.appName || currentSchool.name || 'Campus Pilot',
+        name: currentSchool.name || 'Campus Pilot School',
         code: currentSchool.code || '',
         description: currentSchool.description || 'Innovative Partner',
         metaAuthor: currentSchool.metaAuthor || '',
@@ -299,7 +299,7 @@ export default function GeneralConfig() {
                 value={formData.appName}
                 onChange={handleChange}
                 disabled={!isSuperAdmin}
-                placeholder="Campus Tracker"
+                placeholder="Campus Pilot"
                 className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 outline-none transition disabled:bg-gray-50 dark:disabled:bg-slate-800/50"
               />
             </div>
@@ -532,7 +532,7 @@ export default function GeneralConfig() {
                   <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">App / System Name</label>
                   <input
                     type="text"
-                    placeholder="e.g. Campus Tracker"
+                    placeholder="e.g. Campus Pilot"
                     value={newSchoolData.appName}
                     onChange={(e) => setNewSchoolData({ ...newSchoolData, appName: e.target.value })}
                     className="w-full px-3 py-2 text-xs border border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-teal-500"

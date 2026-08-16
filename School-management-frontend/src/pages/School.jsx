@@ -325,7 +325,7 @@ export default function School({ initialView = 'list' }) {
                         {/* USER */}
                         <td className="py-4 px-4">
                           <div className="text-xs text-gray-800 dark:text-slate-200 font-semibold">
-                            {school.adminName || 'Admin'} <span className="text-gray-500 font-normal">({school.email || 'admin@campustracker.in'})</span>
+                            {school.adminName || 'Admin'} <span className="text-gray-500 font-normal">({school.email || 'admin@campuspilot.in'})</span>
                           </div>
                           <div className="text-[11px] font-bold uppercase text-gray-400 dark:text-slate-400 tracking-wider mt-0.5">
                             ADMIN

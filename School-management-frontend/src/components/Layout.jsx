@@ -171,8 +171,8 @@ export default function Layout() {
 
   useEffect(() => {
     if (currentSchool) {
-      const siteTitle = currentSchool.appName || currentSchool.name || 'Campus Tracker';
-      document.title = `${siteTitle} | School Management System`;
+      const siteTitle = currentSchool.appName || currentSchool.name || 'Campus Pilot';
+      document.title = `${siteTitle} | Campus Pilot`;
     }
   }, [currentSchool]);
 
@@ -602,8 +602,8 @@ export default function Layout() {
               </div>
             )}
             <div className="min-w-0 flex-1">
-              <h1 className="text-[15px] font-bold text-gray-800 dark:text-white tracking-tight truncate max-w-[170px]" title={currentSchool?.name || currentSchool?.appName || 'Campus Tracker'}>
-                {currentSchool?.name || currentSchool?.appName || 'Campus Tracker'}
+              <h1 className="text-[15px] font-bold text-gray-800 dark:text-white tracking-tight truncate max-w-[170px]" title={currentSchool?.name || currentSchool?.appName || 'Campus Pilot'}>
+                {currentSchool?.name || currentSchool?.appName || 'Campus Pilot'}
               </h1>
               {currentSchool?.code && (
                 <p className="text-[10px] font-bold text-teal-600 dark:text-teal-400 tracking-wider truncate">
@@ -753,7 +753,7 @@ export default function Layout() {
               >
                 <Building className="w-4 h-4 text-teal-400 flex-shrink-0" />
                 <span className="max-w-[180px] sm:max-w-[240px] md:max-w-[320px] truncate flex items-center gap-1.5">
-                  <span className="truncate">{currentSchool?.name || currentSchool?.appName || 'Campus Tracker'}</span>
+                  <span className="truncate">{currentSchool?.name || currentSchool?.appName || 'Campus Pilot'}</span>
                   {currentSchool?.code && (
                     <span className="px-1.5 py-0.5 text-[10px] font-extrabold bg-teal-500/20 text-teal-300 rounded border border-teal-500/40 flex-shrink-0">
                       {currentSchool.code}
@@ -955,7 +955,7 @@ export default function Layout() {
                       {user.email}
                     </p>
                     <p className="text-xs text-teal-600 dark:text-teal-400 font-semibold truncate mt-0.5">
-                      {currentSchool?.name || currentSchool?.appName || 'Campus Tracker'}
+                      {currentSchool?.name || currentSchool?.appName || 'Campus Pilot'}
                     </p>
                   </div>
 

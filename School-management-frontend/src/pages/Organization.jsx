@@ -441,9 +441,9 @@ export default function Organization({ initialView = 'list' }) {
         )}
       </div>
 
-      {/* Campus Tracker Footer Branding */}
+      {/* Campus Pilot Footer Branding */}
       <div className="mt-8 text-center text-xs font-semibold text-gray-500 dark:text-slate-400 py-4">
-        Campus pilot
+        Campus Pilot
       </div>
     </div>
   );
