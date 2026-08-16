@@ -212,7 +212,7 @@ const DEFAULT_SCHOOLS = [
   },
   { 
     _id: 'school_2', 
-    name: 'CampusTracker School', 
+    name: 'Campus Pilot School', 
     appName: 'Campus Pilot',
     description: 'Innovative Partner',
     metaAuthor: 'CampusPilot',

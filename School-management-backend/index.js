@@ -94,6 +94,9 @@ app.use('/api/health-records', require('./routes/healthRoutes'));
 app.use('/api/reception', require('./routes/receptionRoutes'));
 app.use('/api/schools', require('./routes/schoolRoutes'));
 app.use('/api/activity-logs', require('./routes/activityLogRoutes'));
+app.use('/api/departments', require('./routes/departmentRoutes'));
+app.use('/api/programs', require('./routes/programRoutes'));
+app.use('/api/sessions', require('./routes/sessionRoutes'));
 app.use('/api/organizations', require('./routes/organizationRoutes'));
 
 

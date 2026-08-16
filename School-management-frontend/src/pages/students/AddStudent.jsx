@@ -45,8 +45,24 @@ export default function AddStudent() {
     relation: ''
   });
 
+  const [programsList, setProgramsList] = useState([]);
+
+  useEffect(() => {
+    API.get('/programs')
+      .then(res => setProgramsList(Array.isArray(res.data) ? res.data : []))
+      .catch(err => console.error('Failed to load programs in AddStudent:', err));
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (name === 'course' && value) {
+      const selectedProg = programsList.find(p => p.name === value || p._id === value);
+      if (selectedProg && selectedProg.enableRegistration === false) {
+        setError(`Registration is currently disabled for program "${selectedProg.name}".`);
+      } else {
+        setError('');
+      }
+    }
     setFormData(prev => {
       const updated = { ...prev, [name]: value };
       if (['firstName', 'lastName'].includes(name)) {
@@ -211,9 +227,14 @@ export default function AddStudent() {
                   </select>
                 </div>
                 <div>
-                  <label className={labelClass}>Select Course</label>
+                  <label className={labelClass}>Select Course / Program</label>
                   <select name="course" value={formData.course} onChange={handleChange} className={inputClass}>
-                    <option value="">Select Course</option>
+                    <option value="">Select Course / Program</option>
+                    {programsList.map(p => (
+                      <option key={p._id} value={p.name} disabled={p.enableRegistration === false}>
+                        {p.name} {p.enableRegistration === false ? '(Registration Closed)' : ''}
+                      </option>
+                    ))}
                     <option value="Science">Science</option>
                     <option value="Commerce">Commerce</option>
                     <option value="Arts">Arts</option>

@@ -56,6 +56,9 @@ import Message from './pages/Message';
 import Roles from './pages/Roles';
 import Users from './pages/Users';
 import Settings from './pages/Settings';
+import Department from './pages/Department';
+import Program from './pages/Program';
+import Session from './pages/Session';
 import Placeholder from './components/Placeholder';
 import UserCredentials from './pages/super-admin/UserCredentials';
 import ModuleConfig from './pages/super-admin/ModuleConfig';
@@ -139,9 +142,9 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="helpdesk/faq" element={<Placeholder title="Helpdesk FAQ" />} />
     <Route path="helpdesk/ticket" element={<Placeholder title="Helpdesk Ticket" />} />
 
-    <Route path="academic/department" element={<Placeholder title="Academic Department" />} />
-    <Route path="academic/program" element={<Placeholder title="Academic Program" />} />
-    <Route path="academic/session" element={<Placeholder title="Academic Session" />} />
+    <Route path="academic/department" element={<Department />} />
+    <Route path="academic/program" element={<Program />} />
+    <Route path="academic/session" element={<Session />} />
     <Route path="academic/period" element={<Placeholder title="Class Period" />} />
     <Route path="academic/division" element={<Placeholder title="Division" />} />
     <Route path="academic/batch" element={<Placeholder title="Academic Batch" />} />
@@ -176,7 +179,7 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="exam/marksheet" element={<Placeholder title="Marksheet & Report Card" />} />
     <Route path="exam/report" element={<Placeholder title="Exam Analytics Report" />} />
 
-    <Route path="employee/department" element={<Placeholder title="Department" />} />
+    <Route path="employee/department" element={<Department />} />
     <Route path="employee/designation" element={<Placeholder title="Designation" />} />
     <Route path="employee/payroll" element={<Placeholder title="Payroll" />} />
     <Route path="employee/edit-request" element={<Placeholder title="Employee Edit Request" />} />

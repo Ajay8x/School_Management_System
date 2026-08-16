@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 /**
  * School Middleware
  * Reads X-School-ID header from the request and attaches to req.schoolId.
@@ -5,7 +7,11 @@
  */
 const schoolMiddleware = (req, res, next) => {
   const schoolId = req.headers['x-school-id'];
-  req.schoolId = schoolId || null;
+  if (schoolId && mongoose.Types.ObjectId.isValid(schoolId)) {
+    req.schoolId = schoolId;
+  } else {
+    req.schoolId = null;
+  }
   next();
 };
 

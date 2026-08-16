@@ -36,6 +36,26 @@ exports.createStudent = async (req, res) => {
   try {
     const { password, ...studentData } = req.body;
 
+    // Check if registration is enabled for the selected program/course
+    const programQuery = studentData.program || studentData.course;
+    if (programQuery) {
+      const Program = require('../models/Program');
+      const mongoose = require('mongoose');
+      const matchedProgram = await Program.findOne({
+        $or: [
+          { _id: mongoose.Types.ObjectId.isValid(programQuery) ? programQuery : null },
+          { name: { $regex: new RegExp(`^${programQuery}$`, 'i') } },
+          { code: { $regex: new RegExp(`^${programQuery}$`, 'i') } }
+        ]
+      });
+
+      if (matchedProgram && matchedProgram.enableRegistration === false) {
+        return res.status(400).json({ 
+          message: `Registration is currently closed for program "${matchedProgram.name}".` 
+        });
+      }
+    }
+
     // Generate serial number
     const count = await Student.countDocuments();
     const serialNumber = `STU-${1001 + count}`;
