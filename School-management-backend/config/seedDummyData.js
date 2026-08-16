@@ -101,6 +101,63 @@ const seedDummyData = async () => {
       { title: 'Upcoming Parent-Teacher Meeting', content: 'A reminder that the PTM is scheduled for next Friday.', date: new Date(), role: 'all' }
     ]);
 
+    // 6. Seed Events, Holidays, and Celebrations
+    const EventModel = require('../models/Event');
+    await EventModel.insertMany([
+      {
+        title: 'Independence Day Celebration',
+        type: 'celebration',
+        description: 'Flag hoisting ceremony followed by cultural performances by students.',
+        date: new Date('2026-08-15'),
+        location: 'Main School Auditorium',
+        targetAudience: 'all',
+        status: 'ongoing',
+        organizer: 'Cultural Committee'
+      },
+      {
+        title: 'Annual Sports Day 2026',
+        type: 'event',
+        description: 'Track and field events, relay races, and award distribution.',
+        date: new Date('2026-09-10'),
+        endDate: new Date('2026-09-12'),
+        location: 'School Sports Ground',
+        targetAudience: 'all',
+        status: 'upcoming',
+        organizer: 'Sports Department'
+      },
+      {
+        title: 'Mahatma Gandhi Jayanti',
+        type: 'holiday',
+        description: 'National holiday observing Gandhi Jayanti. School remains closed.',
+        date: new Date('2026-10-02'),
+        location: 'N/A',
+        targetAudience: 'all',
+        status: 'upcoming',
+        organizer: 'Administration'
+      },
+      {
+        title: 'Teacher\'s Day Celebration',
+        type: 'celebration',
+        description: 'Special student-led performances honoring teachers and educators.',
+        date: new Date('2026-09-05'),
+        location: 'School Auditorium',
+        targetAudience: 'teachers',
+        status: 'upcoming',
+        organizer: 'Student Council'
+      },
+      {
+        title: 'Science Fair & Innovation Expo',
+        type: 'event',
+        description: 'Inter-school science competition and robotics project showcase.',
+        date: new Date('2026-11-14'),
+        location: 'Science Block',
+        targetAudience: 'students',
+        status: 'upcoming',
+        organizer: 'Science Department'
+      }
+    ]);
+
+
     console.log('Dummy data seeded successfully.');
   } catch (error) {
     console.error('Error seeding dummy data:', error);
