@@ -69,7 +69,7 @@ export default function GeneralConfig() {
 
   // General Form State
   const [formData, setFormData] = useState({
-    name: 'Campus Tracker International School',
+    name: 'Campus Pilot International School',
     title1: '',
     title2: '',
     title3: '',
@@ -79,10 +79,10 @@ export default function GeneralConfig() {
     state: 'Uttar Pradesh',
     zipcode: '21005',
     country: 'India',
-    email: 'campustracker@gmail.com',
+    email: 'campuspilot@gmail.com',
     phone: '919935332556',
     fax: '',
-    website: 'https://www.campustracker.in',
+    website: 'https://www.campuspilot.in',
     identifiers: [
       { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }
     ],
@@ -168,7 +168,7 @@ export default function GeneralConfig() {
     if (currentSchool) {
       setFormData(prev => ({
         ...prev,
-        name: currentSchool.name || 'Campus Tracker International School',
+        name: currentSchool.name || 'Campus Pilot International School',
         title1: currentSchool.title1 || '',
         title2: currentSchool.title2 || '',
         title3: currentSchool.title3 || '',
@@ -178,10 +178,10 @@ export default function GeneralConfig() {
         state: currentSchool.state || 'Uttar Pradesh',
         zipcode: currentSchool.zipcode || '21005',
         country: currentSchool.country || 'India',
-        email: currentSchool.email || 'campustracker@gmail.com',
+        email: currentSchool.email || 'campuspilot@gmail.com',
         phone: currentSchool.phone || '919935332556',
         fax: currentSchool.fax || '',
-        website: currentSchool.website || 'https://www.campustracker.in',
+        website: currentSchool.website || 'https://www.campuspilot.in',
         identifiers: currentSchool.identifiers && currentSchool.identifiers.length === 5 
           ? currentSchool.identifiers 
           : prev.identifiers,
@@ -216,7 +216,7 @@ export default function GeneralConfig() {
   const handleReset = () => {
     if (currentSchool) {
       setFormData({
-        name: currentSchool.name || 'Campus Tracker International School',
+        name: currentSchool.name || 'Campus Pilot International School',
         title1: currentSchool.title1 || '',
         title2: currentSchool.title2 || '',
         title3: currentSchool.title3 || '',
@@ -226,10 +226,10 @@ export default function GeneralConfig() {
         state: currentSchool.state || 'Uttar Pradesh',
         zipcode: currentSchool.zipcode || '21005',
         country: currentSchool.country || 'India',
-        email: currentSchool.email || 'campustracker@gmail.com',
+        email: currentSchool.email || 'campuspilot@gmail.com',
         phone: currentSchool.phone || '919935332556',
         fax: currentSchool.fax || '',
-        website: currentSchool.website || 'https://www.campustracker.in',
+        website: currentSchool.website || 'https://www.campuspilot.in',
         identifiers: [
           { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }
         ],
@@ -274,7 +274,7 @@ export default function GeneralConfig() {
       };
 
       await updateSchool(currentSchool._id, updatedPayload);
-      document.title = `${formData.name} | Campus Tracker`;
+      document.title = `${formData.name} | Campus Pilot`;
       setMessage({ type: 'success', text: 'General Configuration saved successfully!' });
       setTimeout(() => setMessage({ type: '', text: '' }), 4000);
     } catch (err) {
