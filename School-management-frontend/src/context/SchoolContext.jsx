@@ -334,6 +334,20 @@ export const DEFAULT_MODULES_CONFIG = {
     roles: { ...rolesTemplate },
     submodules: {
     }
+  },
+  config: {
+    enabled: true,
+    title: 'Config',
+    roles: { ...rolesTemplate },
+    submodules: {
+    }
+  },
+  utility: {
+    enabled: true,
+    title: 'Utility',
+    roles: { ...rolesTemplate },
+    submodules: {
+    }
   }
 };
 
