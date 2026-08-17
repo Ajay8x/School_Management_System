@@ -87,10 +87,6 @@ export default function Users() {
 
   const handleAddUser = async (e) => {
     e.preventDefault();
-    if (newUser.password && newUser.password !== newUser.confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
     setAddingUser(true);
     try {
       const payload = { ...newUser };
@@ -460,16 +456,7 @@ export default function Users() {
                   placeholder="Leave blank for default"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Confirm Password</label>
-                <input
-                  type="password"
-                  value={newUser.confirmPassword}
-                  onChange={(e) => setNewUser({ ...newUser, confirmPassword: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
-                  placeholder="Re-enter password"
-                />
-              </div>
+
               <div className="pt-4 flex justify-end gap-3">
                 <button
                   type="button"
