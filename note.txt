@@ -4,10 +4,8 @@ password = [1234561]
 
 
 
-Frontend admin id password 
-admin@gmail.com
-123456
-
-Frontend super admin id password 
-super@gmail.com
-123456
+ADMIN_EMAIL=admin@school.com
+ADMIN_PASSWORD=admin123
+SUPER_ADMIN_EMAIL=superadmin@school.com
+SUPER_ADMIN_PASSWORD=superadmin123
+DEFAULT_PASSWORD=123456
