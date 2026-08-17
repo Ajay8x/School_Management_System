@@ -343,28 +343,17 @@ function App() {
         </Route>
       </Route>
 
-      {/* ACCOUNTANT ROUTES */}
-      <Route path="/accountant" element={<ProtectedRoute allowedRoles={['accountant', 'super-admin']} />}>
-        <Route element={<ErrorBoundary><Layout /></ErrorBoundary>}>
-          <Route path="dashboard" element={<Placeholder title="Accountant Dashboard" />} />
-          <Route path="fees" element={<Fees />} />
-          <Route path="accounts" element={<Accounts />} />
-          <Route path="download-format" element={<DownloadFormat />} />
-          <Route path="utility/activity-log" element={<ActivityLog />} />
-          <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
-        </Route>
-      </Route>
-
-      {/* LIBRARIAN ROUTES */}
-      <Route path="/librarian" element={<ProtectedRoute allowedRoles={['librarian', 'super-admin']} />}>
-        <Route element={<ErrorBoundary><Layout /></ErrorBoundary>}>
-          <Route path="dashboard" element={<Placeholder title="Librarian Dashboard" />} />
-          <Route path="library" element={<Library />} />
-          <Route path="download-format" element={<DownloadFormat />} />
-          <Route path="utility/activity-log" element={<ActivityLog />} />
-          <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
-        </Route>
-      </Route>
+      {/* ADDITIONAL ROLES ROUTES */}
+      {['accountant', 'attendance assistant', 'exam incharge', 'guardian', 'hostel incharge', 'inventory incharge', 'librarian', 'manager', 'mess incharge', 'observer', 'principal', 'receptionist', 'staff', 'transport incharge', 'user', 'vice principal'].map(role => {
+        const pathBase = role.toLowerCase().replace(/\s+/g, '-');
+        return (
+          <Route key={role} path={`/${pathBase}`} element={<ProtectedRoute allowedRoles={[role, 'super-admin', role.replace(/\s+/g, '-'), role.toLowerCase()]} />}>
+            <Route element={<ErrorBoundary><Layout /></ErrorBoundary>}>
+              {AdminAndSuperAdminRoutes()}
+            </Route>
+          </Route>
+        );
+      })}
 
       {/* Catch-all route for unknown paths */}
       <Route path="*" element={<NotFound />} />

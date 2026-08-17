@@ -16,8 +16,11 @@ export default function ProtectedRoute({ allowedRoles }) {
 
   // If role is provided and user role doesn't match, redirect to unauthorized/dashboard
   // Super admin always has full access to all protected routes
-  if (allowedRoles && user.role !== 'super-admin' && !allowedRoles.includes(user.role)) {
-    return <Navigate to={`/${user.role}/dashboard`} replace />;
+  if (allowedRoles && user.role !== 'super-admin') {
+    const isAllowed = allowedRoles.some(r => r.toLowerCase() === user.role.toLowerCase());
+    if (!isAllowed) {
+      return <Navigate to={`/${user.role.toLowerCase().replace(/\s+/g, '-')}/dashboard`} replace />;
+    }
   }
 
   // Render child routes

@@ -27,7 +27,8 @@ export default function Login() {
     setLoading(true);
     try {
       const userData = await login(email, password);
-      navigate(`/${userData.role}/dashboard`);
+      const formattedRole = userData.role.toLowerCase().replace(/\s+/g, '-');
+      navigate(`/${formattedRole}/dashboard`);
     } catch (err) {
       setError(err.response?.data?.message || 'Authentication failed. Please try again.');
     } finally {
