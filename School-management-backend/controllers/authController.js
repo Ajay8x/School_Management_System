@@ -36,7 +36,7 @@ exports.registerUser = async (req, res) => {
       await logActivity({
         req,
         user,
-        activity: 'User updated.'
+        activity: `Registered new user: ${user.name}`
       });
 
       res.status(201).json({
@@ -213,7 +213,7 @@ exports.changePassword = async (req, res) => {
     await logActivity({
       req,
       user,
-      activity: 'User updated.'
+      activity: 'Changed password'
     });
 
     res.json({ message: 'Password updated successfully' });

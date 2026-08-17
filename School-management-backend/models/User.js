@@ -23,7 +23,12 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['super-admin', 'admin', 'teacher', 'student', 'parent', 'accountant', 'librarian'],
+    enum: [
+      'super-admin', 'admin', 'accountant', 'librarian',
+      'attendance-assistant', 'exam-incharge', 'guardian', 'hostel-incharge', 
+      'inventory-incharge', 'manager', 'mess-incharge', 'observer', 'principal', 
+      'receptionist', 'staff', 'transport-incharge', 'user', 'vice-principal', 'student'
+    ],
     default: 'student'
   },
   serialNumber: {
@@ -44,7 +49,7 @@ const userSchema = new mongoose.Schema({
 });
 
 // Encrypt password using bcrypt before saving
-userSchema.pre('save', async function() {
+userSchema.pre('save', async function () {
   if (!this.isModified('password')) {
     return;
   }
@@ -54,7 +59,7 @@ userSchema.pre('save', async function() {
 });
 
 // Match user entered password to hashed password in database
-userSchema.methods.matchPassword = async function(enteredPassword) {
+userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

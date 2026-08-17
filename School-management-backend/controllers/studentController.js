@@ -1,5 +1,6 @@
 const Student = require('../models/Student');
 const User = require('../models/User');
+const { logActivity } = require('../utils/logActivity');
 
 // @desc    Get all students
 // @route   GET /api/students
@@ -90,6 +91,8 @@ exports.createStudent = async (req, res) => {
       serialNumber: serialNumber
     });
 
+    await logActivity({ req, user: req.user, activity: `Admitted new student: ${student.name || student.firstName}` });
+
     res.status(201).json({ ...student.toObject(), loginEmail, serialNumber, defaultPassword: !password });
   } catch (error) {
     console.error('Student Creation Error:', error);
@@ -109,6 +112,7 @@ exports.updateStudent = async (req, res) => {
     if (!student) {
       return res.status(404).json({ message: 'Student not found' });
     }
+    await logActivity({ req, user: req.user, activity: `Updated student: ${student.name || student.firstName}` });
     res.json(student);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -129,6 +133,8 @@ exports.deleteStudent = async (req, res) => {
       return res.status(404).json({ message: 'Student not found' });
     }
     
+    await logActivity({ req, user: req.user, activity: `Deleted student: ${student.name || student.firstName}` });
+
     console.log('Backend: Student deleted successfully:', req.params.id);
     res.json({ message: 'Student removed' });
   } catch (error) {

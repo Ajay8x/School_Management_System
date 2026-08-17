@@ -1,5 +1,6 @@
 const Teacher = require('../models/Teacher');
 const User = require('../models/User');
+const { logActivity } = require('../utils/logActivity');
 
 // @desc    Get all teachers
 // @route   GET /api/teachers
@@ -67,6 +68,8 @@ exports.createTeacher = async (req, res) => {
       serialNumber: serialNumber
     });
 
+    await logActivity({ req, user: req.user, activity: `Onboarded new teacher: ${teacher.name}` });
+
     res.status(201).json({ ...teacher.toObject(), serialNumber, defaultPassword: true });
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -85,6 +88,7 @@ exports.updateTeacher = async (req, res) => {
     if (!teacher) {
       return res.status(404).json({ message: 'Teacher not found' });
     }
+    await logActivity({ req, user: req.user, activity: `Updated teacher: ${teacher.name}` });
     res.json(teacher);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -101,6 +105,7 @@ exports.deleteTeacher = async (req, res) => {
       return res.status(404).json({ message: 'Teacher not found' });
     }
     await teacher.deleteOne();
+    await logActivity({ req, user: req.user, activity: `Deleted teacher: ${teacher.name}` });
     res.json({ message: 'Teacher removed' });
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });

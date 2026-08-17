@@ -1,4 +1,5 @@
 const Student = require('../models/Student');
+const { logActivity } = require('../utils/logActivity');
 
 // @desc    Get all guardians (Aggregated from Student collection)
 // @route   GET /api/guardians
@@ -58,6 +59,7 @@ exports.getGuardian = async (req, res) => {
 exports.createGuardian = async (req, res) => {
   try {
     const guardian = await Guardian.create(req.body);
+    await logActivity({ req, user: req.user, activity: `Created new guardian` });
     res.status(201).json(guardian);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -76,6 +78,7 @@ exports.updateGuardian = async (req, res) => {
     if (!guardian) {
       return res.status(404).json({ message: 'Guardian not found' });
     }
+    await logActivity({ req, user: req.user, activity: `Updated guardian details` });
     res.json(guardian);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -92,6 +95,7 @@ exports.deleteGuardian = async (req, res) => {
       return res.status(404).json({ message: 'Guardian not found' });
     }
     await guardian.deleteOne();
+    await logActivity({ req, user: req.user, activity: `Deleted guardian` });
     res.json({ message: 'Guardian removed' });
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });

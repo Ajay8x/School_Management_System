@@ -1,5 +1,5 @@
 const Event = require('../models/Event');
-const ActivityLog = require('../models/ActivityLog');
+const { logActivity } = require('../utils/logActivity');
 
 exports.getEvents = async (req, res) => {
   try {
@@ -37,13 +37,7 @@ exports.createEvent = async (req, res) => {
 
     // Audit Log
     if (req.user) {
-      await ActivityLog.create({
-        user: req.user._id,
-        userName: req.user.name || 'System User',
-        userEmail: req.user.email,
-        userRole: req.user.role || 'admin',
-        activity: `Created ${item.type}: ${item.title}`
-      }).catch(err => console.error("Failed to log activity:", err));
+      await logActivity({ req, user: req.user, activity: `Created ${item.type}: ${item.title}` });
     }
 
     res.status(201).json(item);
@@ -64,13 +58,7 @@ exports.updateEvent = async (req, res) => {
 
     // Audit Log
     if (req.user) {
-      await ActivityLog.create({
-        user: req.user._id,
-        userName: req.user.name || 'System User',
-        userEmail: req.user.email,
-        userRole: req.user.role || 'admin',
-        activity: `Updated ${item.type}: ${item.title}`
-      }).catch(err => console.error("Failed to log activity:", err));
+      await logActivity({ req, user: req.user, activity: `Updated ${item.type}: ${item.title}` });
     }
 
     res.json(item);
@@ -87,13 +75,7 @@ exports.deleteEvent = async (req, res) => {
 
     // Audit Log
     if (req.user) {
-      await ActivityLog.create({
-        user: req.user._id,
-        userName: req.user.name || 'System User',
-        userEmail: req.user.email,
-        userRole: req.user.role || 'admin',
-        activity: `Deleted ${item.type}: ${item.title}`
-      }).catch(err => console.error("Failed to log activity:", err));
+      await logActivity({ req, user: req.user, activity: `Deleted ${item.type}: ${item.title}` });
     }
 
     res.json({ message: 'Event deleted successfully' });

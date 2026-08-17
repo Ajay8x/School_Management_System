@@ -104,7 +104,7 @@ export default function Layout() {
 
   // Change Password State
   const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [passwordForm, setPasswordForm] = useState({ oldPassword: '', newPassword: '' });
+  const [passwordForm, setPasswordForm] = useState({ oldPassword: '', newPassword: '', confirmPassword: '' });
   const [passwordStatus, setPasswordStatus] = useState({ loading: false, error: '', success: '' });
 
   // Dark mode state
@@ -213,10 +213,16 @@ export default function Layout() {
       return;
     }
 
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordStatus({ loading: false, error: 'New passwords do not match', success: '' });
+      return;
+    }
+
     try {
-      const res = await API.put('/auth/change-password', passwordForm);
+      const payload = { oldPassword: passwordForm.oldPassword, newPassword: passwordForm.newPassword };
+      const res = await API.put('/auth/change-password', payload);
       setPasswordStatus({ loading: false, error: '', success: res.data.message || 'Password changed successfully' });
-      setPasswordForm({ oldPassword: '', newPassword: '' });
+      setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
       setTimeout(() => setShowPasswordModal(false), 2000);
     } catch (err) {
       setPasswordStatus({ loading: false, error: err.response?.data?.message || 'Failed to change password', success: '' });
@@ -562,28 +568,6 @@ export default function Layout() {
 
       // Module enabled check (hides menu item if super-admin turned off module for this role or school)
       if (!isSuperAdmin && item.moduleKey) {
-        // Read viewAccessConfig from localStorage (GeneralConfig creates this)
-        const viewKey = `viewAccessConfig_${currentSchool?._id || 'default'}`;
-        const savedViewAccess = localStorage.getItem(viewKey);
-        if (savedViewAccess) {
-          try {
-            const parsed = JSON.parse(savedViewAccess);
-            // Map user.role to GeneralConfig Role IDs (Admin -> Manager (3) or Principal (1), Teacher -> Staff (5), Student -> Student (15))
-            let mappedRoleId = '17'; // User default
-            if (user.role === 'admin') mappedRoleId = '1';
-            else if (user.role === 'teacher') mappedRoleId = '5';
-            else if (user.role === 'accountant') mappedRoleId = '4';
-            else if (user.role === 'student') mappedRoleId = '15';
-            else if (user.role === 'parent') mappedRoleId = '8'; // Guardian
-
-            // If it's explicitly set to false, hide it.
-            if (parsed[mappedRoleId] && parsed[mappedRoleId][item.moduleKey] === false) {
-              return false;
-            }
-          } catch (err) {
-            console.error("Error parsing viewAccessConfig", err);
-          }
-        }
 
         return isModuleEnabled(item.moduleKey, null, user.role);
       }
@@ -1300,6 +1284,16 @@ export default function Layout() {
                   required
                   value={passwordForm.newPassword}
                   onChange={(e) => setPasswordForm({...passwordForm, newPassword: e.target.value})}
+                  className="w-full px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-lg bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-slate-200 focus:ring-2 focus:ring-teal-500 outline-none transition-colors"
+                />
+              </div>
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Confirm New Password</label>
+                <input 
+                  type="password"
+                  required
+                  value={passwordForm.confirmPassword}
+                  onChange={(e) => setPasswordForm({...passwordForm, confirmPassword: e.target.value})}
                   className="w-full px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-lg bg-gray-50 dark:bg-slate-900 text-gray-800 dark:text-slate-200 focus:ring-2 focus:ring-teal-500 outline-none transition-colors"
                 />
               </div>

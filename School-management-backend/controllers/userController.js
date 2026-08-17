@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const { logActivity } = require('../utils/logActivity');
 
 // @desc    Get all users with their roles
 // @route   GET /api/users
@@ -30,6 +31,7 @@ exports.updateUserRole = async (req, res) => {
 
       user.role = req.body.role || user.role;
       const updatedUser = await user.save();
+      await logActivity({ req, user: req.user, activity: `Updated user role for ${updatedUser.name} to ${updatedUser.role}` });
       res.json({
         _id: updatedUser._id,
         name: updatedUser.name,
@@ -60,6 +62,7 @@ exports.deleteUser = async (req, res) => {
       }
       
       await User.deleteOne({ _id: user._id });
+      await logActivity({ req, user: req.user, activity: `Deleted user: ${user.name}` });
       res.json({ message: 'User removed' });
     } else {
       res.status(404).json({ message: 'User not found' });
@@ -95,6 +98,7 @@ exports.resetUserPassword = async (req, res) => {
     const defaultPassword = user.serialNumber || process.env.DEFAULT_PASSWORD || '123456';
     user.password = defaultPassword;
     await user.save();
+    await logActivity({ req, user: req.user, activity: `Reset password for user: ${user.name}` });
 
     res.json({ message: `Password reset to default (${defaultPassword}) successfully` });
   } catch (error) {

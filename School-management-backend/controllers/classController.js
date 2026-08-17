@@ -1,4 +1,5 @@
 const Class = require('../models/Class');
+const { logActivity } = require('../utils/logActivity');
 
 // @desc    Get all classes
 // @route   GET /api/classes
@@ -36,6 +37,7 @@ exports.createClass = async (req, res) => {
     const classData = { ...req.body };
     if (req.schoolId) classData.schoolId = req.schoolId;
     const classItem = await Class.create(classData);
+    await logActivity({ req, user: req.user, activity: `Created new class/course: ${classItem.name}` });
     res.status(201).json(classItem);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -54,6 +56,7 @@ exports.updateClass = async (req, res) => {
     if (!classItem) {
       return res.status(404).json({ message: 'Class not found' });
     }
+    await logActivity({ req, user: req.user, activity: `Updated class/course: ${classItem.name}` });
     res.json(classItem);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -70,6 +73,7 @@ exports.deleteClass = async (req, res) => {
       return res.status(404).json({ message: 'Class not found' });
     }
     await classItem.deleteOne();
+    await logActivity({ req, user: req.user, activity: `Deleted class/course: ${classItem.name}` });
     res.json({ message: 'Class removed' });
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });

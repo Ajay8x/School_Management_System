@@ -1,4 +1,5 @@
 const Notice = require('../models/Notice');
+const { logActivity } = require('../utils/logActivity');
 
 // @desc    Get all notices
 // @route   GET /api/notices
@@ -38,6 +39,7 @@ exports.createNotice = async (req, res) => {
     const noticeData = { ...req.body };
     if (req.schoolId) noticeData.schoolId = req.schoolId;
     const notice = await Notice.create(noticeData);
+    await logActivity({ req, user: req.user, activity: `Created new notice: ${notice.title}` });
     res.status(201).json(notice);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -56,6 +58,7 @@ exports.updateNotice = async (req, res) => {
     if (!notice) {
       return res.status(404).json({ message: 'Notice not found' });
     }
+    await logActivity({ req, user: req.user, activity: `Updated notice: ${notice.title}` });
     res.json(notice);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -72,6 +75,7 @@ exports.deleteNotice = async (req, res) => {
       return res.status(404).json({ message: 'Notice not found' });
     }
     await notice.deleteOne();
+    await logActivity({ req, user: req.user, activity: `Deleted notice: ${notice.title}` });
     res.json({ message: 'Notice removed' });
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });

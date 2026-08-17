@@ -1,6 +1,7 @@
 const Fee = require('../models/Fee');
 const Student = require('../models/Student');
 const Account = require('../models/Account');
+const { logActivity } = require('../utils/logActivity');
 
 // @desc    Get all fee records
 // @route   GET /api/fees
@@ -46,6 +47,8 @@ exports.createFee = async (req, res) => {
       });
     }
     
+    await logActivity({ req, user: req.user, activity: `Recorded fee payment: ${fee.feeType} for amount ${fee.paidAmount}` });
+
     res.status(201).json(fee);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -77,6 +80,8 @@ exports.updateFee = async (req, res) => {
       });
     }
 
+    await logActivity({ req, user: req.user, activity: `Updated fee record: ${fee.feeType}` });
+
     res.json(fee);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -92,6 +97,7 @@ exports.deleteFee = async (req, res) => {
     if (!fee) {
       return res.status(404).json({ message: 'Fee record not found' });
     }
+    await logActivity({ req, user: req.user, activity: `Deleted fee record: ${fee.feeType}` });
     res.json({ message: 'Fee record removed' });
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });

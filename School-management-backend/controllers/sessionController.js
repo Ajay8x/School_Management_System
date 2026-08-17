@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Session = require('../models/Session');
 const School = require('../models/School');
+const { logActivity } = require('../utils/logActivity');
 
 // Helper to check valid Mongoose ObjectId
 const isValidId = (id) => id && mongoose.Types.ObjectId.isValid(id) && id !== 'null' && id !== 'undefined' && id !== '';
@@ -78,6 +79,9 @@ exports.createSession = async (req, res) => {
     }
 
     const session = await Session.create(sessionData);
+
+    await logActivity({ req, user: req.user, activity: `Created new session: ${session.name}` });
+
     return res.status(201).json(session);
   } catch (error) {
     console.error('Error creating session:', error);
@@ -105,15 +109,15 @@ exports.updateSession = async (req, res) => {
     const session = await Session.findByIdAndUpdate(
       req.params.id, 
       updateData, 
-      {
-        returnDocument: 'after',
-        runValidators: true
-      }
+      { new: true, runValidators: true }
     );
 
     if (!session) {
       return res.status(404).json({ message: 'Session not found' });
     }
+
+    await logActivity({ req, user: req.user, activity: `Updated session: ${session.name}` });
+
     return res.json(session);
   } catch (error) {
     console.error('Error updating session:', error);
@@ -133,8 +137,11 @@ exports.deleteSession = async (req, res) => {
     if (!session) {
       return res.status(404).json({ message: 'Session not found' });
     }
-    await session.deleteOne();
-    return res.json({ message: 'Session removed successfully' });
+    await Session.findByIdAndDelete(req.params.id);
+
+    await logActivity({ req, user: req.user, activity: `Deleted session: ${session.name}` });
+
+    return res.json({ message: 'Session deleted successfully' });
   } catch (error) {
     console.error('Error deleting session:', error);
     return res.status(500).json({ message: 'Server Error' });

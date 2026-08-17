@@ -1,4 +1,5 @@
 const Attendance = require('../models/Attendance');
+const { logActivity } = require('../utils/logActivity');
 
 // Fetch attendance for a specific class on a specific date
 exports.getAttendanceByClassAndDate = async (req, res) => {
@@ -65,6 +66,8 @@ exports.bulkSaveAttendance = async (req, res) => {
     if (bulkOps.length > 0) {
       await Attendance.bulkWrite(bulkOps);
     }
+    
+    await logActivity({ req, user: req.user, activity: `Saved attendance for class ${className} on ${date}` });
 
     res.status(200).json({ message: 'Attendance saved successfully' });
   } catch (error) {

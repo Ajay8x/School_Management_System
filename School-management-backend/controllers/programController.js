@@ -3,6 +3,7 @@ const Program = require('../models/Program');
 const Department = require('../models/Department');
 const Teacher = require('../models/Teacher');
 const School = require('../models/School');
+const { logActivity } = require('../utils/logActivity');
 
 // Helper to check valid Mongoose ObjectId
 const isValidId = (id) => id && mongoose.Types.ObjectId.isValid(id) && id !== 'null' && id !== 'undefined' && id !== '';
@@ -84,6 +85,8 @@ exports.createProgram = async (req, res) => {
       .populate('department', 'name code')
       .populate('incharge', 'name employeeId subject email contact');
       
+    await logActivity({ req, user: req.user, activity: `Created new program: ${program.name}` });
+
     return res.status(201).json(populated);
   } catch (error) {
     console.error('Error creating program:', error);
@@ -124,6 +127,7 @@ exports.updateProgram = async (req, res) => {
     if (!program) {
       return res.status(404).json({ message: 'Program not found' });
     }
+    await logActivity({ req, user: req.user, activity: `Updated program: ${program.name}` });
     return res.json(program);
   } catch (error) {
     console.error('Error updating program:', error);
@@ -144,6 +148,7 @@ exports.deleteProgram = async (req, res) => {
       return res.status(404).json({ message: 'Program not found' });
     }
     await program.deleteOne();
+    await logActivity({ req, user: req.user, activity: `Deleted program: ${program.name}` });
     return res.json({ message: 'Program removed successfully' });
   } catch (error) {
     console.error('Error deleting program:', error);

@@ -1,4 +1,5 @@
 const Department = require('../models/Department');
+const { logActivity } = require('../utils/logActivity');
 
 // @desc    Get all departments
 // @route   GET /api/departments
@@ -38,6 +39,7 @@ exports.createDepartment = async (req, res) => {
     if (req.schoolId) deptData.school = req.schoolId;
     const department = await Department.create(deptData);
     const populated = await Department.findById(department._id).populate('incharge', 'name employeeId subject email contact');
+    await logActivity({ req, user: req.user, activity: `Created new department: ${department.name}` });
     res.status(201).json(populated);
   } catch (error) {
     console.error('Error creating department:', error);
@@ -58,6 +60,7 @@ exports.updateDepartment = async (req, res) => {
     if (!department) {
       return res.status(404).json({ message: 'Department not found' });
     }
+    await logActivity({ req, user: req.user, activity: `Updated department: ${department.name}` });
     res.json(department);
   } catch (error) {
     res.status(400).json({ message: error.message || 'Failed to update department' });
@@ -74,6 +77,7 @@ exports.deleteDepartment = async (req, res) => {
       return res.status(404).json({ message: 'Department not found' });
     }
     await department.deleteOne();
+    await logActivity({ req, user: req.user, activity: `Deleted department: ${department.name}` });
     res.json({ message: 'Department removed successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });

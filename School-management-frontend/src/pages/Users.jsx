@@ -1,21 +1,32 @@
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import API from '../api/axios';
-import { 
-  ShieldCheck, Users as UsersIcon, UserCog, Search, Filter, 
+import {
+  ShieldCheck, Users as UsersIcon, UserCog, Search, Filter,
   MoreVertical, Edit, Trash2, ShieldAlert,
   ChevronRight, RefreshCw, X,
   GraduationCap, UserCheck, Wallet, Library
 } from 'lucide-react';
 
 const ROLE_CONFIG = {
-  'super-admin': { label: 'Super Admin', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', icon: ShieldCheck },
-  'admin': { label: 'Admin', color: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400', icon: ShieldCheck },
-  'teacher': { label: 'Teacher', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', icon: UsersIcon },
-  'student': { label: 'Student', color: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400', icon: GraduationCap },
-  'parent': { label: 'Parent', color: 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400', icon: UserCheck },
   'accountant': { label: 'Accountant', color: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400', icon: Wallet },
+  'attendance-assistant': { label: 'Attendance Assistant', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', icon: UsersIcon },
+  'exam-incharge': { label: 'Exam Incharge', color: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400', icon: UsersIcon },
+  'guardian': { label: 'Guardian', color: 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400', icon: UserCheck },
+  'hostel-incharge': { label: 'Hostel Incharge', color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400', icon: UsersIcon },
+  'inventory-incharge': { label: 'Inventory Incharge', color: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400', icon: UsersIcon },
   'librarian': { label: 'Librarian', color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400', icon: Library },
+  'manager': { label: 'Manager', color: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400', icon: ShieldCheck },
+  'mess-incharge': { label: 'Mess Incharge', color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400', icon: UsersIcon },
+  'observer': { label: 'Observer', color: 'bg-slate-100 text-slate-700 dark:bg-slate-900/30 dark:text-slate-400', icon: UsersIcon },
+  'principal': { label: 'Principal', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', icon: ShieldCheck },
+  'receptionist': { label: 'Receptionist', color: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400', icon: UsersIcon },
+  'staff': { label: 'Staff', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', icon: UsersIcon },
+  'student': { label: 'Student', color: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400', icon: GraduationCap },
+  'transport-incharge': { label: 'Transport Incharge', color: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400', icon: UsersIcon },
+  'user': { label: 'User', color: 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400', icon: UsersIcon },
+  'vice-principal': { label: 'Vice Principal', color: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400', icon: ShieldCheck },
+  'admin': { label: 'Admin', color: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400', icon: ShieldCheck },
 };
 
 export default function Users() {
@@ -71,19 +82,24 @@ export default function Users() {
   };
 
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newUser, setNewUser] = useState({ name: '', email: '', role: 'student', password: '' });
+  const [newUser, setNewUser] = useState({ name: '', email: '', role: 'student', password: '', confirmPassword: '' });
   const [addingUser, setAddingUser] = useState(false);
 
   const handleAddUser = async (e) => {
     e.preventDefault();
+    if (newUser.password && newUser.password !== newUser.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
     setAddingUser(true);
     try {
       const payload = { ...newUser };
       if (!payload.password) delete payload.password; // backend might use default if empty or we can leave it
+      delete payload.confirmPassword;
       await API.post('/auth/register', payload);
       alert('User added successfully');
       setShowAddModal(false);
-      setNewUser({ name: '', email: '', role: 'student', password: '' });
+      setNewUser({ name: '', email: '', role: 'student', password: '', confirmPassword: '' });
       fetchUsers();
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to add user');
@@ -93,8 +109,8 @@ export default function Users() {
   };
 
   const filteredUsers = users.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          user.email.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesRole = selectedRole === 'All' || user.role === selectedRole;
     return matchesSearch && matchesRole;
   });
@@ -135,7 +151,7 @@ export default function Users() {
         </div>
         <div className="flex gap-2">
           {currentUser?.role === 'super-admin' && (
-            <button 
+            <button
               onClick={() => setShowAddModal(true)}
               className="flex items-center gap-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-xl text-sm font-medium transition-all shadow-sm"
             >
@@ -143,7 +159,7 @@ export default function Users() {
               Add User
             </button>
           )}
-          <button 
+          <button
             onClick={fetchUsers}
             className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all shadow-sm"
           >
@@ -158,7 +174,7 @@ export default function Users() {
         {Object.entries(ROLE_CONFIG).map(([id, config]) => {
           const RoleIcon = config.icon;
           return (
-            <div 
+            <div
               key={id}
               className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow cursor-default group"
             >
@@ -178,18 +194,18 @@ export default function Users() {
         <div className="p-6 border-b border-gray-100 dark:border-slate-700 flex flex-col md:flex-row gap-4 justify-between bg-gray-50/50 dark:bg-slate-800/50">
           <div className="relative flex-1 max-w-md group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-teal-500 transition-colors" />
-            <input 
-              type="text" 
-              placeholder="Search users by name or email..." 
+            <input
+              type="text"
+              placeholder="Search users by name or email..."
               className="w-full pl-11 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
             />
           </div>
-          
+
           <div className="flex items-center gap-3">
             <Filter className="w-4 h-4 text-gray-400" />
-            <select 
+            <select
               className="px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all text-gray-600 dark:text-slate-300"
               value={selectedRole}
               onChange={(e) => { setSelectedRole(e.target.value); setCurrentPage(1); }}
@@ -249,14 +265,14 @@ export default function Users() {
                           <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             {user.role !== 'super-admin' && (
                               <>
-                                <button 
+                                <button
                                   onClick={() => setEditingUser(user)}
                                   className="p-2 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg transition-colors"
                                   title="Change Role"
                                 >
                                   <Edit className="w-4.5 h-4.5" />
                                 </button>
-                                <button 
+                                <button
                                   onClick={() => handleDeleteUser(user._id)}
                                   className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-lg transition-colors"
                                   title="Delete User"
@@ -291,16 +307,15 @@ export default function Users() {
               >
                 <ChevronRight className="w-4 h-4 rotate-180" />
               </button>
-              
+
               {[...Array(totalPages)].map((_, i) => (
                 <button
                   key={i + 1}
                   onClick={() => handlePageChange(i + 1)}
-                  className={`w-9 h-9 rounded-lg text-sm font-bold transition-all ${
-                    currentPage === i + 1
+                  className={`w-9 h-9 rounded-lg text-sm font-bold transition-all ${currentPage === i + 1
                       ? 'bg-teal-500 text-white shadow-lg shadow-teal-500/30'
                       : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-slate-700'
-                  }`}
+                    }`}
                 >
                   {i + 1}
                 </button>
@@ -331,7 +346,7 @@ export default function Users() {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             <div className="p-8">
               <div className="flex items-center gap-4 mb-8 p-4 bg-gray-50 dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-700">
                 <div className="w-12 h-12 rounded-full bg-teal-500 flex items-center justify-center text-white font-bold text-xl">
@@ -352,11 +367,10 @@ export default function Users() {
                       key={id}
                       onClick={() => handleUpdateRole(editingUser._id, id)}
                       disabled={updating}
-                      className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all ${
-                        editingUser.role === id 
-                          ? 'border-teal-500 bg-teal-50/50 dark:bg-teal-900/20' 
+                      className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all ${editingUser.role === id
+                          ? 'border-teal-500 bg-teal-50/50 dark:bg-teal-900/20'
                           : 'border-gray-100 dark:border-slate-700 hover:border-teal-200 dark:hover:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700/50'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-3">
                         <div className={`p-2 rounded-lg ${config.color.split(' ')[0]}`}>
@@ -371,18 +385,18 @@ export default function Users() {
                 })}
               </div>
             </div>
-            
+
             <div className="p-6 bg-gray-50/50 dark:bg-slate-800/50 border-t border-gray-100 dark:border-slate-700 flex justify-end gap-3">
-               <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 text-xs font-medium mr-auto italic">
-                  <ShieldAlert className="w-3.5 h-3.5" />
-                  Updating will change system permissions immediately.
-               </div>
-               <button 
+              <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 text-xs font-medium mr-auto italic">
+                <ShieldAlert className="w-3.5 h-3.5" />
+                Updating will change system permissions immediately.
+              </div>
+              <button
                 onClick={() => setEditingUser(null)}
                 className="px-6 py-2.5 text-sm font-bold text-gray-500 hover:text-gray-700 transition-colors"
-               >
-                 Cancel
-               </button>
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
@@ -400,35 +414,35 @@ export default function Users() {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
+
             <form onSubmit={handleAddUser} className="p-8 space-y-4">
               <div>
                 <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Full Name</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   required
                   value={newUser.name}
-                  onChange={(e) => setNewUser({...newUser, name: e.target.value})}
+                  onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
                   className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                   placeholder="John Doe"
                 />
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Email Address</label>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   required
                   value={newUser.email}
-                  onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                  onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
                   className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                   placeholder="john@example.com"
                 />
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Role</label>
-                <select 
+                <select
                   value={newUser.role}
-                  onChange={(e) => setNewUser({...newUser, role: e.target.value})}
+                  onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
                   className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                 >
                   {Object.entries(ROLE_CONFIG).map(([id, config]) => (
@@ -438,30 +452,40 @@ export default function Users() {
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Password (Optional)</label>
-                <input 
+                <input
                   type="password"
                   value={newUser.password}
-                  onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                  onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
                   className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                   placeholder="Leave blank for default"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Confirm Password</label>
+                <input
+                  type="password"
+                  value={newUser.confirmPassword}
+                  onChange={(e) => setNewUser({ ...newUser, confirmPassword: e.target.value })}
+                  className="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
+                  placeholder="Re-enter password"
+                />
+              </div>
               <div className="pt-4 flex justify-end gap-3">
-                 <button 
+                <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
                   className="px-6 py-2.5 text-sm font-bold text-gray-500 hover:text-gray-700 transition-colors"
-                 >
-                   Cancel
-                 </button>
-                 <button 
+                >
+                  Cancel
+                </button>
+                <button
                   type="submit"
                   disabled={addingUser}
                   className="px-6 py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-xl text-sm font-bold transition-all disabled:opacity-50 flex items-center gap-2"
-                 >
-                   {addingUser && <RefreshCw className="w-4 h-4 animate-spin" />}
-                   Add User
-                 </button>
+                >
+                  {addingUser && <RefreshCw className="w-4 h-4 animate-spin" />}
+                  Add User
+                </button>
               </div>
             </form>
           </div>

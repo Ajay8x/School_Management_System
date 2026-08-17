@@ -1,5 +1,6 @@
 const School = require('../models/School');
 const { defaultModulesConfig } = require('../models/School');
+const { logActivity } = require('../utils/logActivity');
 
 // @desc    Get all schools
 // @route   GET /api/schools
@@ -74,6 +75,8 @@ exports.createSchool = async (req, res) => {
       modules: modules || defaultModulesConfig
     });
 
+    await logActivity({ req, user: req.user, activity: `Created new school: ${school.name}` });
+
     res.status(201).json(school);
   } catch (error) {
     console.error('Error creating school:', error);
@@ -96,6 +99,8 @@ exports.updateSchool = async (req, res) => {
       { $set: req.body },
       { new: true, runValidators: true }
     );
+
+    await logActivity({ req, user: req.user, activity: `Updated school: ${updated.name}` });
 
     res.json(updated);
   } catch (error) {
@@ -122,6 +127,8 @@ exports.updateSchoolModules = async (req, res) => {
     school.modules = modules;
     await school.save();
 
+    await logActivity({ req, user: req.user, activity: `Updated module configuration for school: ${school.name}` });
+
     res.json({ message: 'Module configuration updated successfully', modules: school.modules });
   } catch (error) {
     console.error('Error updating school modules:', error);
@@ -140,6 +147,9 @@ exports.deleteSchool = async (req, res) => {
     }
 
     await School.findByIdAndDelete(req.params.id);
+
+    await logActivity({ req, user: req.user, activity: `Deleted school: ${school.name}` });
+
     res.json({ message: 'School deleted successfully' });
   } catch (error) {
     console.error('Error deleting school:', error);
