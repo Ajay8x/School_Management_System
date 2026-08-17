@@ -269,12 +269,24 @@ export default function ModuleConfig() {
               className="bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm font-bold text-teal-600 dark:text-teal-400 focus:ring-2 focus:ring-teal-500 outline-none"
             >
               <option value="all">All Roles (School Default)</option>
-              <option value="admin">Admin</option>
-              <option value="teacher">Teacher</option>
-              <option value="student">Student</option>
-              <option value="parent">Guardian / Parent</option>
-              <option value="accountant">Accountant</option>
-              <option value="librarian">Librarian</option>
+              <option value="Accountant">Accountant</option>
+              <option value="Attendance Assistant">Attendance Assistant</option>
+              <option value="Exam Incharge">Exam Incharge</option>
+              <option value="Guardian">Guardian</option>
+              <option value="Hostel Incharge">Hostel Incharge</option>
+              <option value="Inventory Incharge">Inventory Incharge</option>
+              <option value="Librarian">Librarian</option>
+              <option value="Manager">Manager</option>
+              <option value="Mess Incharge">Mess Incharge</option>
+              <option value="Observer">Observer</option>
+              <option value="Principal">Principal</option>
+              <option value="Receptionist">Receptionist</option>
+              <option value="Staff">Staff</option>
+              <option value="Student">Student</option>
+              <option value="Transport Incharge">Transport Incharge</option>
+              <option value="User">User</option>
+              <option value="Vice Principal">Vice Principal</option>
+              <option value="Admin">Admin</option>
             </select>
           </div>
         </div>
