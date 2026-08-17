@@ -99,6 +99,10 @@ app.use('/api/activity-logs', require('./routes/activityLogRoutes'));
 app.use('/api/departments', require('./routes/departmentRoutes'));
 app.use('/api/programs', require('./routes/programRoutes'));
 app.use('/api/sessions', require('./routes/sessionRoutes'));
+app.use('/api/periods', require('./routes/periodRoutes'));
+app.use('/api/divisions', require('./routes/divisionRoutes'));
+app.use('/api/courses', require('./routes/courseRoutes'));
+app.use('/api/batches', require('./routes/batchRoutes'));
 app.use('/api/organizations', require('./routes/organizationRoutes'));
 
 

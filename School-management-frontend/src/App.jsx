@@ -59,6 +59,10 @@ import Settings from './pages/Settings';
 import Department from './pages/Department';
 import Program from './pages/Program';
 import Session from './pages/Session';
+import Period from './pages/Period';
+import Division from './pages/Division';
+import Course from './pages/Course';
+import Batch from './pages/Batch';
 import Placeholder from './components/Placeholder';
 import UserCredentials from './pages/super-admin/UserCredentials';
 import ModuleConfig from './pages/super-admin/ModuleConfig';
@@ -102,7 +106,7 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="guardians/edit/:id" element={<EditGuardian />} />
     <Route path="guardians/:id" element={<GuardianDetails />} />
 
-    <Route path="classes" element={<Classes />} />
+    <Route path="classes" element={<Course />} />
     <Route path="examinations" element={<Examinations />} />
     <Route path="fees" element={<Fees />} />
     <Route path="attendance" element={<Attendance />} />
@@ -145,9 +149,12 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="academic/department" element={<Department />} />
     <Route path="academic/program" element={<Program />} />
     <Route path="academic/session" element={<Session />} />
-    <Route path="academic/period" element={<Placeholder title="Class Period" />} />
-    <Route path="academic/division" element={<Placeholder title="Division" />} />
-    <Route path="academic/batch" element={<Placeholder title="Academic Batch" />} />
+    <Route path="academic/period" element={<Period />} />
+    <Route path="academic/division" element={<Division />} />
+    <Route path="academic/course" element={<Course />} />
+    <Route path="academic/courses" element={<Course />} />
+    <Route path="academic/batch" element={<Batch />} />
+    <Route path="academic/batches" element={<Batch />} />
     <Route path="academic/routine" element={<Placeholder title="Timetable / Class Routine" />} />
     <Route path="academic/section" element={<Placeholder title="Section" />} />
     <Route path="academic/subject" element={<Placeholder title="Subject" />} />

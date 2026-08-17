@@ -279,7 +279,7 @@ export default function Layout() {
         { name: 'Session', href: '/academic/session' },
         { name: 'Period', href: '/academic/period' },
         { name: 'Division', href: '/academic/division' },
-        { name: 'Course', href: '/classes' },
+        { name: 'Course', href: '/academic/course' },
         { name: 'Batch', href: '/academic/batch' },
         { name: 'Subject', href: '/academic/subject' },
         { name: 'Class Timing', href: '/academic/class-timing' },
