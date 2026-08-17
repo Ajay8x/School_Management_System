@@ -4,175 +4,335 @@ import { AuthContext } from './AuthContext';
 
 export const SchoolContext = createContext();
 
-// All 14 categories matching exact system architecture & screenshot specifications
+const rolesTemplate = { 
+  Admin: true, Accountant: false, 'Attendance Assistant': false, 'Exam Incharge': false,
+  Guardian: false, 'Hostel Incharge': false, 'Inventory Incharge': false, Librarian: false,
+  Manager: false, 'Mess Incharge': false, Observer: false, Principal: false, Receptionist: false,
+  Staff: false, Student: false, 'Transport Incharge': false, User: false, 'Vice Principal': false 
+};
+
+
 export const DEFAULT_MODULES_CONFIG = {
   reception: {
     enabled: true,
     title: 'Reception',
-    roles: { admin: true, teacher: true, student: false, parent: false, accountant: false, librarian: false },
+    roles: { ...rolesTemplate },
     submodules: {
-      enquiry: { name: 'Enquiry', enabled: true, roles: { admin: true, teacher: true, student: false, parent: false } },
-      visitorLog: { name: 'Visitor Log', enabled: true, roles: { admin: true, teacher: false, student: false, parent: false } },
-      gatePass: { name: 'Gate Pass', enabled: true, roles: { admin: true, teacher: true, student: false, parent: false } },
-      complaint: { name: 'Complaint', enabled: true, roles: { admin: true, teacher: true, student: true, parent: true } },
-      callLog: { name: 'Call Log', enabled: false, roles: { admin: true, teacher: false, student: false, parent: false } },
-      correspondence: { name: 'Correspondence', enabled: true, roles: { admin: true, teacher: false, student: false, parent: false } }
-    }
-  },
-  academic: {
-    enabled: true,
-    title: 'Academic',
-    roles: { admin: true, teacher: true, student: true, parent: true, accountant: false, librarian: false },
-    submodules: {
-      department: { name: 'Department', enabled: true, roles: { admin: true, teacher: true, student: false } },
-      program: { name: 'Program', enabled: true, roles: { admin: true, teacher: true, student: false } },
-      period: { name: 'Period', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      session: { name: 'Session', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      division: { name: 'Division', enabled: true, roles: { admin: true, teacher: true, student: false } },
-      course: { name: 'Course', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      batch: { name: 'Batch', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      subject: { name: 'Subject', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      classTiming: { name: 'Class Timing', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      timetable: { name: 'Timetable', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      bookList: { name: 'Book list', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      certificate: { name: 'Certificate', enabled: true, roles: { admin: true, teacher: false, student: false } },
-      idCard: { name: 'ID Card', enabled: true, roles: { admin: true, teacher: true, student: true } }
-    }
-  },
-  student: {
-    enabled: true,
-    title: 'Student',
-    roles: { admin: true, teacher: true, student: true, parent: true, accountant: false, librarian: false },
-    submodules: {
-      registration: { name: 'Registration', enabled: true, roles: { admin: true, teacher: false, student: false } },
-      rollNumber: { name: 'Roll Number', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      healthRecord: { name: 'Health Record', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      electiveSubject: { name: 'Elective Subject', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      attendance: { name: 'Attendance', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      feeAllocation: { name: 'Fee Allocation', enabled: true, roles: { admin: true, teacher: false, student: false } },
-      promotion: { name: 'Promotion', enabled: true, roles: { admin: true, teacher: false, student: false } },
-      editRequest: { name: 'Edit Request', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      leaveRequest: { name: 'Leave Request', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      transferRequest: { name: 'Transfer Request', enabled: true, roles: { admin: true, teacher: false, student: false } },
-      transfer: { name: 'Transfer', enabled: true, roles: { admin: true, teacher: false, student: false } },
-      alumni: { name: 'Alumni', enabled: true, roles: { admin: true, teacher: false, student: false } },
-      report: { name: 'Report', enabled: true, roles: { admin: true, teacher: true, student: false } }
-    }
-  },
-  finance: {
-    enabled: true,
-    title: 'Finance',
-    roles: { admin: true, teacher: false, student: false, parent: true, accountant: true, librarian: false },
-    submodules: {
-      paymentMethod: { name: 'Payment Method', enabled: true, roles: { admin: true, accountant: true } },
-      feeGroup: { name: 'Fee Group', enabled: true, roles: { admin: true, accountant: true } },
-      feeHead: { name: 'Fee Head', enabled: true, roles: { admin: true, accountant: true } },
-      feeComponent: { name: 'Fee Component', enabled: true, roles: { admin: true, accountant: true } },
-      feeConcession: { name: 'Fee Concession', enabled: true, roles: { admin: true, accountant: true } },
-      feeStructure: { name: 'Fee Structure', enabled: true, roles: { admin: true, accountant: true } },
-      ledgerType: { name: 'Ledger Type', enabled: true, roles: { admin: true, accountant: true } },
-      ledger: { name: 'Ledger', enabled: true, roles: { admin: true, accountant: true } },
-      tax: { name: 'Tax', enabled: true, roles: { admin: true, accountant: true } },
-      transaction: { name: 'Transaction', enabled: true, roles: { admin: true, accountant: true } },
-      receipt: { name: 'Receipt', enabled: true, roles: { admin: true, parent: true, accountant: true } },
-      report: { name: 'Report', enabled: true, roles: { admin: true, accountant: true } }
-    }
-  },
-  exam: {
-    enabled: true,
-    title: 'Exam',
-    roles: { admin: true, teacher: true, student: true, parent: true, accountant: false, librarian: false },
-    submodules: {
-      examTerm: { name: 'Exam Term', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      examGrade: { name: 'Exam Grade', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      examAssessment: { name: 'Exam Assessment', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      observationParameter: { name: 'Observation Parameter', enabled: true, roles: { admin: true, teacher: true } },
-      competencyParameter: { name: 'Competency Parameter', enabled: true, roles: { admin: true, teacher: true } },
-      examSchedule: { name: 'Exam Schedule', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      examForm: { name: 'Exam Form', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      report: { name: 'Report', enabled: true, roles: { admin: true, teacher: true, student: true } }
-    }
-  },
-  employee: {
-    enabled: true,
-    title: 'Employee',
-    roles: { admin: true, teacher: true, student: false, parent: false, accountant: true, librarian: false },
-    submodules: {
-      department: { name: 'Department', enabled: true, roles: { admin: true } },
-      designation: { name: 'Designation', enabled: true, roles: { admin: true } },
-      attendance: { name: 'Attendance', enabled: true, roles: { admin: true, teacher: true } },
-      leave: { name: 'Leave', enabled: true, roles: { admin: true, teacher: true } },
-      payroll: { name: 'Payroll', enabled: true, roles: { admin: true, accountant: true } },
-      editRequest: { name: 'Edit Request', enabled: true, roles: { admin: true, teacher: true } }
-    }
-  },
-  resource: {
-    enabled: true,
-    title: 'Resource',
-    roles: { admin: true, teacher: true, student: true, parent: true, accountant: false, librarian: true },
-    submodules: {
-      bookList: { name: 'Book List', enabled: true, roles: { admin: true, teacher: true, student: true, librarian: true } },
-      studentDiary: { name: 'Student Diary', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      assignment: { name: 'Assignment', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      lessonPlan: { name: 'Lesson Plan', enabled: true, roles: { admin: true, teacher: true } },
-      syllabus: { name: 'Syllabus', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      onlineClass: { name: 'Online Class', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      learningMaterial: { name: 'Learning Material', enabled: true, roles: { admin: true, teacher: true, student: true } },
-      download: { name: 'Download', enabled: true, roles: { admin: true, teacher: true, student: true } }
+      enquiry: { name: 'Enquiry', enabled: true, roles: { ...rolesTemplate } },
+      visitorLog: { name: 'Visitor Log', enabled: true, roles: { ...rolesTemplate } },
+      gatePass: { name: 'Gate Pass', enabled: true, roles: { ...rolesTemplate } },
+      complaint: { name: 'Complaint', enabled: true, roles: { ...rolesTemplate } },
+      callLog: { name: 'Call Log', enabled: true, roles: { ...rolesTemplate } },
+      correspondence: { name: 'Correspondence', enabled: true, roles: { ...rolesTemplate } }
     }
   },
   store: {
     enabled: true,
     title: 'Store',
-    roles: { admin: true, teacher: false, student: false, parent: false, accountant: true, librarian: false },
+    roles: { ...rolesTemplate },
     submodules: {
-      sale: { name: 'store.sale.sale', enabled: true, roles: { admin: true, accountant: true } }
+      storeSaleSale: { name: 'store.sale.sale', enabled: true, roles: { ...rolesTemplate } }
     }
   },
   blog: {
     enabled: true,
     title: 'Blog',
-    roles: { admin: true, teacher: true, student: true, parent: true },
-    submodules: {}
+    roles: { ...rolesTemplate },
+    submodules: {
+    }
   },
   news: {
     enabled: true,
     title: 'News',
-    roles: { admin: true, teacher: true, student: true, parent: true },
-    submodules: {}
+    roles: { ...rolesTemplate },
+    submodules: {
+    }
   },
   task: {
     enabled: true,
     title: 'Task',
-    roles: { admin: true, teacher: true, student: true },
-    submodules: {}
+    roles: { ...rolesTemplate },
+    submodules: {
+    }
   },
   helpdesk: {
     enabled: true,
     title: 'Helpdesk',
-    roles: { admin: true, teacher: true, student: true, parent: true },
+    roles: { ...rolesTemplate },
     submodules: {
-      faq: { name: 'FAQ', enabled: true, roles: { admin: true, teacher: true, student: true, parent: true } },
-      ticket: { name: 'Ticket', enabled: true, roles: { admin: true, teacher: true, student: true, parent: true } }
+      fAQ: { name: 'FAQ', enabled: true, roles: { ...rolesTemplate } },
+      ticket: { name: 'Ticket', enabled: true, roles: { ...rolesTemplate } }
     }
   },
-  utility: {
+  academic: {
     enabled: true,
-    title: 'Utility',
-    roles: { admin: true, teacher: true, student: true, parent: true, accountant: true, librarian: true },
+    title: 'Academic',
+    roles: { ...rolesTemplate },
     submodules: {
-      activityLog: { name: 'Activity Log', enabled: true, roles: { admin: true, teacher: true, student: true, parent: true, accountant: true, librarian: true } },
-      config: { name: 'Config', enabled: true, roles: { admin: true, teacher: true } }
+      department: { name: 'Department', enabled: true, roles: { ...rolesTemplate } },
+      program: { name: 'Program', enabled: true, roles: { ...rolesTemplate } },
+      period: { name: 'Period', enabled: true, roles: { ...rolesTemplate } },
+      session: { name: 'Session', enabled: true, roles: { ...rolesTemplate } },
+      division: { name: 'Division', enabled: true, roles: { ...rolesTemplate } },
+      course: { name: 'Course', enabled: true, roles: { ...rolesTemplate } },
+      batch: { name: 'Batch', enabled: true, roles: { ...rolesTemplate } },
+      subject: { name: 'Subject', enabled: true, roles: { ...rolesTemplate } },
+      classTiming: { name: 'Class Timing', enabled: true, roles: { ...rolesTemplate } },
+      timetable: { name: 'Timetable', enabled: true, roles: { ...rolesTemplate } },
+      bookList: { name: 'Book list', enabled: true, roles: { ...rolesTemplate } },
+      certificate: { name: 'Certificate', enabled: true, roles: { ...rolesTemplate } },
+      iDCard: { name: 'ID Card', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  student: {
+    enabled: true,
+    title: 'Student',
+    roles: { ...rolesTemplate },
+    submodules: {
+      registration: { name: 'Registration', enabled: true, roles: { ...rolesTemplate } },
+      rollNumber: { name: 'Roll Number', enabled: true, roles: { ...rolesTemplate } },
+      healthRecord: { name: 'Health Record', enabled: true, roles: { ...rolesTemplate } },
+      electiveSubject: { name: 'Elective Subject', enabled: true, roles: { ...rolesTemplate } },
+      attendance: { name: 'Attendance', enabled: true, roles: { ...rolesTemplate } },
+      feeAllocation: { name: 'Fee Allocation', enabled: true, roles: { ...rolesTemplate } },
+      promotion: { name: 'Promotion', enabled: true, roles: { ...rolesTemplate } },
+      editRequest: { name: 'Edit Request', enabled: true, roles: { ...rolesTemplate } },
+      leaveRequest: { name: 'Leave Request', enabled: true, roles: { ...rolesTemplate } },
+      transferRequest: { name: 'Transfer Request', enabled: true, roles: { ...rolesTemplate } },
+      transfer: { name: 'Transfer', enabled: true, roles: { ...rolesTemplate } },
+      alumni: { name: 'Alumni', enabled: true, roles: { ...rolesTemplate } },
+      report: { name: 'Report', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  finance: {
+    enabled: true,
+    title: 'Finance',
+    roles: { ...rolesTemplate },
+    submodules: {
+      paymentMethod: { name: 'Payment Method', enabled: true, roles: { ...rolesTemplate } },
+      feeGroup: { name: 'Fee Group', enabled: true, roles: { ...rolesTemplate } },
+      feeHead: { name: 'Fee Head', enabled: true, roles: { ...rolesTemplate } },
+      feeComponent: { name: 'Fee Component', enabled: true, roles: { ...rolesTemplate } },
+      feeConcession: { name: 'Fee Concession', enabled: true, roles: { ...rolesTemplate } },
+      feeStructure: { name: 'Fee Structure', enabled: true, roles: { ...rolesTemplate } },
+      ledgerType: { name: 'Ledger Type', enabled: true, roles: { ...rolesTemplate } },
+      ledger: { name: 'Ledger', enabled: true, roles: { ...rolesTemplate } },
+      tax: { name: 'Tax', enabled: true, roles: { ...rolesTemplate } },
+      transaction: { name: 'Transaction', enabled: true, roles: { ...rolesTemplate } },
+      receipt: { name: 'Receipt', enabled: true, roles: { ...rolesTemplate } },
+      report: { name: 'Report', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  exam: {
+    enabled: true,
+    title: 'Exam',
+    roles: { ...rolesTemplate },
+    submodules: {
+      examTerm: { name: 'Exam Term', enabled: true, roles: { ...rolesTemplate } },
+      examGrade: { name: 'Exam Grade', enabled: true, roles: { ...rolesTemplate } },
+      examAssessment: { name: 'Exam Assessment', enabled: true, roles: { ...rolesTemplate } },
+      observationParameter: { name: 'Observation Parameter', enabled: true, roles: { ...rolesTemplate } },
+      competencyParameter: { name: 'Competency Parameter', enabled: true, roles: { ...rolesTemplate } },
+      examSchedule: { name: 'Exam Schedule', enabled: true, roles: { ...rolesTemplate } },
+      examForm: { name: 'Exam Form', enabled: true, roles: { ...rolesTemplate } },
+      report: { name: 'Report', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  employee: {
+    enabled: true,
+    title: 'Employee',
+    roles: { ...rolesTemplate },
+    submodules: {
+      department: { name: 'Department', enabled: true, roles: { ...rolesTemplate } },
+      designation: { name: 'Designation', enabled: true, roles: { ...rolesTemplate } },
+      attendance: { name: 'Attendance', enabled: true, roles: { ...rolesTemplate } },
+      leave: { name: 'Leave', enabled: true, roles: { ...rolesTemplate } },
+      payroll: { name: 'Payroll', enabled: true, roles: { ...rolesTemplate } },
+      editRequest: { name: 'Edit Request', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  resource: {
+    enabled: true,
+    title: 'Resource',
+    roles: { ...rolesTemplate },
+    submodules: {
+      bookList: { name: 'Book List', enabled: true, roles: { ...rolesTemplate } },
+      studentDiary: { name: 'Student Diary', enabled: true, roles: { ...rolesTemplate } },
+      assignment: { name: 'Assignment', enabled: true, roles: { ...rolesTemplate } },
+      lessonPlan: { name: 'Lesson Plan', enabled: true, roles: { ...rolesTemplate } },
+      syllabus: { name: 'Syllabus', enabled: true, roles: { ...rolesTemplate } },
+      onlineClass: { name: 'Online Class', enabled: true, roles: { ...rolesTemplate } },
+      learningMaterial: { name: 'Learning Material', enabled: true, roles: { ...rolesTemplate } },
+      download: { name: 'Download', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  transport: {
+    enabled: true,
+    title: 'Transport',
+    roles: { ...rolesTemplate },
+    submodules: {
+      transportRoute: { name: 'Transport Route', enabled: true, roles: { ...rolesTemplate } },
+      transportCircle: { name: 'Transport Circle', enabled: true, roles: { ...rolesTemplate } },
+      transportFee: { name: 'Transport Fee', enabled: true, roles: { ...rolesTemplate } },
+      vehicle: { name: 'Vehicle', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  calendar: {
+    enabled: true,
+    title: 'Calendar',
+    roles: { ...rolesTemplate },
+    submodules: {
+      holiday: { name: 'Holiday', enabled: true, roles: { ...rolesTemplate } },
+      celebration: { name: 'Celebration', enabled: true, roles: { ...rolesTemplate } },
+      event: { name: 'Event', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  gallery: {
+    enabled: true,
+    title: 'Gallery',
+    roles: { ...rolesTemplate },
+    submodules: {
+    }
+  },
+  discipline: {
+    enabled: true,
+    title: 'Discipline',
+    roles: { ...rolesTemplate },
+    submodules: {
+      incident: { name: 'Incident', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  guardian: {
+    enabled: true,
+    title: 'Guardian',
+    roles: { ...rolesTemplate },
+    submodules: {
+    }
+  },
+  approval: {
+    enabled: true,
+    title: 'Approval',
+    roles: { ...rolesTemplate },
+    submodules: {
+      type: { name: 'Type', enabled: true, roles: { ...rolesTemplate } },
+      request: { name: 'Request', enabled: true, roles: { ...rolesTemplate } },
+      pendingRequests: { name: 'Pending Requests', enabled: true, roles: { ...rolesTemplate } },
+      processedRequests: { name: 'Processed Requests', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  contact: {
+    enabled: true,
+    title: 'Contact',
+    roles: { ...rolesTemplate },
+    submodules: {
+    }
+  },
+  mess: {
+    enabled: true,
+    title: 'Mess',
+    roles: { ...rolesTemplate },
+    submodules: {
+      menu: { name: 'Menu', enabled: true, roles: { ...rolesTemplate } },
+      meal: { name: 'Meal', enabled: true, roles: { ...rolesTemplate } },
+      mealLog: { name: 'Meal Log', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  inventory: {
+    enabled: true,
+    title: 'Inventory',
+    roles: { ...rolesTemplate },
+    submodules: {
+      stockCategory: { name: 'Stock Category', enabled: true, roles: { ...rolesTemplate } },
+      stockItem: { name: 'Stock Item', enabled: true, roles: { ...rolesTemplate } },
+      stockRequisition: { name: 'Stock Requisition', enabled: true, roles: { ...rolesTemplate } },
+      stockPurchase: { name: 'Stock Purchase', enabled: true, roles: { ...rolesTemplate } },
+      stockTransfer: { name: 'Stock Transfer', enabled: true, roles: { ...rolesTemplate } },
+      stockAdjustment: { name: 'Stock Adjustment', enabled: true, roles: { ...rolesTemplate } }
     }
   },
   communication: {
     enabled: true,
     title: 'Communication',
-    roles: { admin: true, teacher: true, student: true, parent: true },
+    roles: { ...rolesTemplate },
     submodules: {
-      noticeBoard: { name: 'Notice Board', enabled: true, roles: { admin: true, teacher: true, student: true, parent: true } },
-      event: { name: 'Event', enabled: true, roles: { admin: true, teacher: true, student: true, parent: true } },
-      message: { name: 'Message', enabled: true, roles: { admin: true, teacher: true, student: true, parent: true } }
+      announcement: { name: 'Announcement', enabled: true, roles: { ...rolesTemplate } },
+      email: { name: 'Email', enabled: true, roles: { ...rolesTemplate } },
+      sMS: { name: 'SMS', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  library: {
+    enabled: true,
+    title: 'Library',
+    roles: { ...rolesTemplate },
+    submodules: {
+      book: { name: 'Book', enabled: true, roles: { ...rolesTemplate } },
+      bookAddition: { name: 'Book Addition', enabled: true, roles: { ...rolesTemplate } },
+      transaction: { name: 'Transaction', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  activity: {
+    enabled: true,
+    title: 'Activity',
+    roles: { ...rolesTemplate },
+    submodules: {
+      trip: { name: 'Trip', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  hostel: {
+    enabled: true,
+    title: 'Hostel',
+    roles: { ...rolesTemplate },
+    submodules: {
+      hostel: { name: 'Hostel', enabled: true, roles: { ...rolesTemplate } },
+      roomAllocation: { name: 'Room Allocation', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  form: {
+    enabled: true,
+    title: 'Form',
+    roles: { ...rolesTemplate },
+    submodules: {
+    }
+  },
+  asset: {
+    enabled: true,
+    title: 'Asset',
+    roles: { ...rolesTemplate },
+    submodules: {
+      building: { name: 'Building', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  site: {
+    enabled: true,
+    title: 'Site',
+    roles: { ...rolesTemplate },
+    submodules: {
+      page: { name: 'Page', enabled: true, roles: { ...rolesTemplate } },
+      menu: { name: 'Menu', enabled: true, roles: { ...rolesTemplate } },
+      block: { name: 'Block', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  recruitment: {
+    enabled: true,
+    title: 'Recruitment',
+    roles: { ...rolesTemplate },
+    submodules: {
+      jobVacancy: { name: 'Job Vacancy', enabled: true, roles: { ...rolesTemplate } },
+      jobApplication: { name: 'Job Application', enabled: true, roles: { ...rolesTemplate } }
+    }
+  },
+  customField: {
+    enabled: true,
+    title: 'Custom Field',
+    roles: { ...rolesTemplate },
+    submodules: {
+    }
+  },
+  user: {
+    enabled: true,
+    title: 'User',
+    roles: { ...rolesTemplate },
+    submodules: {
     }
   }
 };

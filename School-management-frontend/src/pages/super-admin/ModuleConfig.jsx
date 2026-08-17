@@ -17,7 +17,6 @@ export default function ModuleConfig() {
   } = useContext(SchoolContext);
 
   const [selectedSchoolId, setSelectedSchoolId] = useState('');
-  const [selectedRole, setSelectedRole] = useState('all'); // 'all', 'admin', 'teacher', 'student', 'parent', 'accountant', 'librarian'
   const [modulesState, setModulesState] = useState(DEFAULT_MODULES_CONFIG);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -72,18 +71,12 @@ export default function ModuleConfig() {
       const targetMod = next[moduleKey];
       if (!targetMod) return prev;
 
-      if (selectedRole === 'all') {
-        const newStatus = !targetMod.enabled;
-        targetMod.enabled = newStatus;
-        if (targetMod.submodules) {
-          Object.keys(targetMod.submodules).forEach(subKey => {
-            targetMod.submodules[subKey].enabled = newStatus;
-          });
-        }
-      } else {
-        if (!targetMod.roles) targetMod.roles = {};
-        const currentRoleState = targetMod.roles[selectedRole] !== false;
-        targetMod.roles[selectedRole] = !currentRoleState;
+      const newStatus = !targetMod.enabled;
+      targetMod.enabled = newStatus;
+      if (targetMod.submodules) {
+        Object.keys(targetMod.submodules).forEach(subKey => {
+          targetMod.submodules[subKey].enabled = newStatus;
+        });
       }
 
       return next;
@@ -97,14 +90,7 @@ export default function ModuleConfig() {
       const targetSub = next[moduleKey]?.submodules?.[subKey];
       if (!targetSub) return prev;
 
-      if (selectedRole === 'all') {
-        targetSub.enabled = !targetSub.enabled;
-      } else {
-        if (!targetSub.roles) targetSub.roles = {};
-        const currentRoleState = targetSub.roles[selectedRole] !== false;
-        targetSub.roles[selectedRole] = !currentRoleState;
-      }
-
+      targetSub.enabled = !targetSub.enabled;
       return next;
     });
   };
@@ -113,22 +99,11 @@ export default function ModuleConfig() {
     setModulesState(prev => {
       const next = JSON.parse(JSON.stringify(prev));
       Object.keys(next).forEach(modKey => {
-        if (selectedRole === 'all') {
-          next[modKey].enabled = true;
-          if (next[modKey].submodules) {
-            Object.keys(next[modKey].submodules).forEach(subKey => {
-              next[modKey].submodules[subKey].enabled = true;
-            });
-          }
-        } else {
-          if (!next[modKey].roles) next[modKey].roles = {};
-          next[modKey].roles[selectedRole] = true;
-          if (next[modKey].submodules) {
-            Object.keys(next[modKey].submodules).forEach(subKey => {
-              if (!next[modKey].submodules[subKey].roles) next[modKey].submodules[subKey].roles = {};
-              next[modKey].submodules[subKey].roles[selectedRole] = true;
-            });
-          }
+        next[modKey].enabled = true;
+        if (next[modKey].submodules) {
+          Object.keys(next[modKey].submodules).forEach(subKey => {
+            next[modKey].submodules[subKey].enabled = true;
+          });
         }
       });
       return next;
@@ -139,22 +114,11 @@ export default function ModuleConfig() {
     setModulesState(prev => {
       const next = JSON.parse(JSON.stringify(prev));
       Object.keys(next).forEach(modKey => {
-        if (selectedRole === 'all') {
-          next[modKey].enabled = false;
-          if (next[modKey].submodules) {
-            Object.keys(next[modKey].submodules).forEach(subKey => {
-              next[modKey].submodules[subKey].enabled = false;
-            });
-          }
-        } else {
-          if (!next[modKey].roles) next[modKey].roles = {};
-          next[modKey].roles[selectedRole] = false;
-          if (next[modKey].submodules) {
-            Object.keys(next[modKey].submodules).forEach(subKey => {
-              if (!next[modKey].submodules[subKey].roles) next[modKey].submodules[subKey].roles = {};
-              next[modKey].submodules[subKey].roles[selectedRole] = false;
-            });
-          }
+        next[modKey].enabled = false;
+        if (next[modKey].submodules) {
+          Object.keys(next[modKey].submodules).forEach(subKey => {
+            next[modKey].submodules[subKey].enabled = false;
+          });
         }
       });
       return next;
@@ -189,18 +153,12 @@ export default function ModuleConfig() {
 
   // Check if main module is active for selected view
   const isModActive = (mod) => {
-    if (selectedRole === 'all') {
-      return mod.enabled !== false;
-    }
-    return mod.enabled !== false && mod.roles?.[selectedRole] !== false;
+    return mod.enabled !== false;
   };
 
   // Check if submodule is active for selected view
   const isSubActive = (sub) => {
-    if (selectedRole === 'all') {
-      return sub.enabled !== false;
-    }
-    return sub.enabled !== false && sub.roles?.[selectedRole] !== false;
+    return sub.enabled !== false;
   };
 
   return (
@@ -219,7 +177,7 @@ export default function ModuleConfig() {
         <div className="flex items-center gap-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 p-4 rounded-xl animate-in fade-in">
           <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
           <p className="text-sm font-semibold">
-            Module permissions updated successfully for {activeSchoolObj?.name} {selectedRole !== 'all' ? `(${selectedRole.toUpperCase()} Role)` : ''}!
+            Module permissions updated successfully for {activeSchoolObj?.name}!
           </p>
         </div>
       )}
@@ -254,39 +212,6 @@ export default function ModuleConfig() {
                   {s.name} {s.code ? `(${s.code})` : ''}
                 </option>
               ))}
-            </select>
-          </div>
-
-          {/* Target Role Filter */}
-          <div className="flex items-center space-x-2">
-            <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider whitespace-nowrap flex items-center gap-1.5">
-              <UserCheck className="w-4 h-4 text-teal-500" />
-              Configuring For Role:
-            </label>
-            <select
-              value={selectedRole}
-              onChange={(e) => setSelectedRole(e.target.value)}
-              className="bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm font-bold text-teal-600 dark:text-teal-400 focus:ring-2 focus:ring-teal-500 outline-none"
-            >
-              <option value="all">All Roles (School Default)</option>
-              <option value="Accountant">Accountant</option>
-              <option value="Attendance Assistant">Attendance Assistant</option>
-              <option value="Exam Incharge">Exam Incharge</option>
-              <option value="Guardian">Guardian</option>
-              <option value="Hostel Incharge">Hostel Incharge</option>
-              <option value="Inventory Incharge">Inventory Incharge</option>
-              <option value="Librarian">Librarian</option>
-              <option value="Manager">Manager</option>
-              <option value="Mess Incharge">Mess Incharge</option>
-              <option value="Observer">Observer</option>
-              <option value="Principal">Principal</option>
-              <option value="Receptionist">Receptionist</option>
-              <option value="Staff">Staff</option>
-              <option value="Student">Student</option>
-              <option value="Transport Incharge">Transport Incharge</option>
-              <option value="User">User</option>
-              <option value="Vice Principal">Vice Principal</option>
-              <option value="Admin">Admin</option>
             </select>
           </div>
         </div>
@@ -412,11 +337,7 @@ export default function ModuleConfig() {
       <div className="sticky bottom-4 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-xl border border-gray-200 dark:border-slate-700 flex items-center justify-between z-20">
         <div className="text-sm text-gray-600 dark:text-slate-300">
           Target School: <span className="font-bold text-teal-600 dark:text-teal-400">{activeSchoolObj?.name}</span>
-          {selectedRole !== 'all' && (
-            <span className="ml-2 font-semibold text-gray-500">
-              (Role: <span className="text-teal-500 uppercase">{selectedRole}</span>)
-            </span>
-          )}
+
         </div>
         <button
           type="button"

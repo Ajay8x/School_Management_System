@@ -8,9 +8,54 @@ const defaultModulesConfig = {
       visitorLog: true,
       gatePass: true,
       complaint: true,
-      correspondence: true,
       callLog: true,
-      query: true
+      correspondence: true
+    }
+  },
+  store: {
+    enabled: true,
+    submodules: {
+      storeSaleSale: true
+    }
+  },
+  blog: {
+    enabled: true,
+    submodules: {
+    }
+  },
+  news: {
+    enabled: true,
+    submodules: {
+    }
+  },
+  task: {
+    enabled: true,
+    submodules: {
+    }
+  },
+  helpdesk: {
+    enabled: true,
+    submodules: {
+      fAQ: true,
+      ticket: true
+    }
+  },
+  academic: {
+    enabled: true,
+    submodules: {
+      department: true,
+      program: true,
+      period: true,
+      session: true,
+      division: true,
+      course: true,
+      batch: true,
+      subject: true,
+      classTiming: true,
+      timetable: true,
+      bookList: true,
+      certificate: true,
+      iDCard: true
     }
   },
   student: {
@@ -18,15 +63,12 @@ const defaultModulesConfig = {
     submodules: {
       registration: true,
       rollNumber: true,
-      photo: true,
       healthRecord: true,
       electiveSubject: true,
       attendance: true,
       feeAllocation: true,
-      serviceAllocation: true,
       promotion: true,
       editRequest: true,
-      serviceRequest: true,
       leaveRequest: true,
       transferRequest: true,
       transfer: true,
@@ -34,47 +76,18 @@ const defaultModulesConfig = {
       report: true
     }
   },
-  teachers: {
-    enabled: true,
-    submodules: {
-      teacherList: true,
-      addTeacher: true
-    }
-  },
-  guardians: {
-    enabled: true,
-    submodules: {
-      guardianList: true,
-      addGuardian: true
-    }
-  },
-  academic: {
-    enabled: true,
-    submodules: {
-      classRoutine: true,
-      section: true,
-      subject: true,
-      classGroup: true,
-      syllabus: true,
-      classAssign: true,
-      teacherAllocation: true,
-      bookList: true,
-      certificate: true,
-      allLevel: true
-    }
-  },
   finance: {
     enabled: true,
     submodules: {
       paymentMethod: true,
-      feeType: true,
       feeGroup: true,
+      feeHead: true,
       feeComponent: true,
-      fineGeneration: true,
-      feeAllocation: true,
+      feeConcession: true,
+      feeStructure: true,
       ledgerType: true,
       ledger: true,
-      fee: true,
+      tax: true,
       transaction: true,
       receipt: true,
       report: true
@@ -83,14 +96,13 @@ const defaultModulesConfig = {
   exam: {
     enabled: true,
     submodules: {
-      gradeScale: true,
       examTerm: true,
-      markDistribution: true,
-      classworkAssessment: true,
-      competencyAssessment: true,
+      examGrade: true,
+      examAssessment: true,
+      observationParameter: true,
+      competencyParameter: true,
       examSchedule: true,
-      tabulationSheet: true,
-      marks: true,
+      examForm: true,
       report: true
     }
   },
@@ -102,81 +114,151 @@ const defaultModulesConfig = {
       attendance: true,
       leave: true,
       payroll: true,
-      subResource: true
+      editRequest: true
     }
   },
-  library: {
+  resource: {
     enabled: true,
     submodules: {
       bookList: true,
-      borrowLog: true,
+      studentDiary: true,
       assignment: true,
       lessonPlan: true,
       syllabus: true,
-      homework: true,
+      onlineClass: true,
       learningMaterial: true,
       download: true
-    }
-  },
-  accounts: {
-    enabled: true,
-    submodules: {
-      income: true,
-      expense: true,
-      invoice: true,
-      report: true
-    }
-  },
-  attendance: {
-    enabled: true,
-    submodules: {
-      studentAttendance: true,
-      employeeAttendance: true,
-      report: true
-    }
-  },
-  leaves: {
-    enabled: true,
-    submodules: {
-      applyLeave: true,
-      leaveTypes: true,
-      leaveRequests: true
-    }
-  },
-  certificate: {
-    enabled: true,
-    submodules: {
-      studentCertificate: true,
-      idCard: true,
-      template: true
     }
   },
   transport: {
     enabled: true,
     submodules: {
-      routes: true,
-      vehicles: true,
-      assignTransport: true
+      transportRoute: true,
+      transportCircle: true,
+      transportFee: true,
+      vehicle: true
+    }
+  },
+  calendar: {
+    enabled: true,
+    submodules: {
+      holiday: true,
+      celebration: true,
+      event: true
+    }
+  },
+  gallery: {
+    enabled: true,
+    submodules: {
+    }
+  },
+  discipline: {
+    enabled: true,
+    submodules: {
+      incident: true
+    }
+  },
+  guardian: {
+    enabled: true,
+    submodules: {
+    }
+  },
+  approval: {
+    enabled: true,
+    submodules: {
+      type: true,
+      request: true,
+      pendingRequests: true,
+      processedRequests: true
+    }
+  },
+  contact: {
+    enabled: true,
+    submodules: {
+    }
+  },
+  mess: {
+    enabled: true,
+    submodules: {
+      menu: true,
+      meal: true,
+      mealLog: true
+    }
+  },
+  inventory: {
+    enabled: true,
+    submodules: {
+      stockCategory: true,
+      stockItem: true,
+      stockRequisition: true,
+      stockPurchase: true,
+      stockTransfer: true,
+      stockAdjustment: true
     }
   },
   communication: {
     enabled: true,
     submodules: {
-      noticeBoard: true,
-      events: true,
-      messages: true,
-      smsConfig: true,
-      whatsAppConfig: true
+      announcement: true,
+      email: true,
+      sMS: true
     }
   },
-  settings: {
+  library: {
     enabled: true,
     submodules: {
-      generalConfig: true,
-      userLimits: true,
-      authentication: true,
-      customField: true,
-      rolesPermissions: true
+      book: true,
+      bookAddition: true,
+      transaction: true
+    }
+  },
+  activity: {
+    enabled: true,
+    submodules: {
+      trip: true
+    }
+  },
+  hostel: {
+    enabled: true,
+    submodules: {
+      hostel: true,
+      roomAllocation: true
+    }
+  },
+  form: {
+    enabled: true,
+    submodules: {
+    }
+  },
+  asset: {
+    enabled: true,
+    submodules: {
+      building: true
+    }
+  },
+  site: {
+    enabled: true,
+    submodules: {
+      page: true,
+      menu: true,
+      block: true
+    }
+  },
+  recruitment: {
+    enabled: true,
+    submodules: {
+      jobVacancy: true,
+      jobApplication: true
+    }
+  },
+  customField: {
+    enabled: true,
+    submodules: {
+    }
+  },
+  user: {
+    enabled: true,
+    submodules: {
     }
   }
 };
