@@ -1167,18 +1167,20 @@ export default function Layout() {
                     </Link>
 
                     {/* Change Password */}
-                    <button 
-                      type="button"
-                      onClick={() => {
-                        setShowProfileDropdown(false);
-                        setPasswordStatus({ loading: false, error: '', success: '' });
-                        setPasswordForm({ oldPassword: '', newPassword: '' });
-                        setShowPasswordModal(true);
-                      }}
-                      className="w-full text-left px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors pb-3 border-b border-gray-100 dark:border-slate-700/80"
-                    >
-                      Change Password
-                    </button>
+                    {user?.role !== 'super-admin' && (
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          setShowProfileDropdown(false);
+                          setPasswordStatus({ loading: false, error: '', success: '' });
+                          setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
+                          setShowPasswordModal(true);
+                        }}
+                        className="w-full text-left px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors pb-3 border-b border-gray-100 dark:border-slate-700/80"
+                      >
+                        Change Password
+                      </button>
+                    )}
 
                     {/* Failed Login Attempt */}
                     <Link 
