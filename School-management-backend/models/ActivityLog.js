@@ -38,4 +38,8 @@ const activityLogSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+
+activityLogSchema.add({ sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', index: true } });
+activityLogSchema.plugin(require('../plugins/tenantPlugin'));
+
 module.exports = mongoose.model('ActivityLog', activityLogSchema);

@@ -6,7 +6,12 @@ const { logActivity } = require('../utils/logActivity');
 // @access  Private/SuperAdmin-Admin
 exports.getUsers = async (req, res) => {
   try {
-    const users = await User.find({}).select('-password').sort({ createdAt: -1 });
+    const { schoolId } = req.query;
+    const filter = {};
+    if (schoolId) {
+      filter.schoolId = schoolId;
+    }
+    const users = await User.find(filter).select('-password').sort({ createdAt: -1 });
     res.json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -42,6 +42,11 @@ const userSchema = new mongoose.Schema({
     ref: 'Student',
     default: null
   },
+  schoolId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'School',
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now

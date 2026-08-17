@@ -41,4 +41,8 @@ const departmentSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+
+departmentSchema.add({ sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', index: true } });
+departmentSchema.plugin(require('../plugins/tenantPlugin'));
+
 module.exports = mongoose.model('Department', departmentSchema);

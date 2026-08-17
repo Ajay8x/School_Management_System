@@ -14,4 +14,8 @@ const visitorSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+
+visitorSchema.add({ sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', index: true } });
+visitorSchema.plugin(require('../plugins/tenantPlugin'));
+
 module.exports = mongoose.model('Visitor', visitorSchema);

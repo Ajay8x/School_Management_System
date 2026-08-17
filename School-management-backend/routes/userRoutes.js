@@ -15,8 +15,8 @@ router.get('/credentials', authRole('super-admin'), getUserCredentials);
 // Reset user password (SuperAdmin only)
 router.put('/:id/reset-password', authRole('super-admin'), resetUserPassword);
 
-// Only SuperAdmin can modify roles or delete users
-router.put('/:id/role', authRole('super-admin'), updateUserRole);
-router.delete('/:id', authRole('super-admin'), deleteUser);
+// Admin and SuperAdmin can modify roles or delete users
+router.put('/:id/role', authRole('super-admin', 'admin'), updateUserRole);
+router.delete('/:id', authRole('super-admin', 'admin'), deleteUser);
 
 module.exports = router;

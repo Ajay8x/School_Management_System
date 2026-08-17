@@ -5,4 +5,8 @@ const librarySchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+
+librarySchema.add({ sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', index: true } });
+librarySchema.plugin(require('../plugins/tenantPlugin'));
+
 module.exports = mongoose.model('Library', librarySchema);

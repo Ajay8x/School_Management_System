@@ -40,4 +40,8 @@ const accountSchema = new mongoose.Schema({
   }
 });
 
+
+accountSchema.add({ sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', index: true } });
+accountSchema.plugin(require('../plugins/tenantPlugin'));
+
 module.exports = mongoose.model('Account', accountSchema);

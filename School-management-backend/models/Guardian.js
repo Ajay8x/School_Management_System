@@ -39,4 +39,8 @@ const guardianSchema = new mongoose.Schema({
   }
 });
 
+
+guardianSchema.add({ sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', index: true } });
+guardianSchema.plugin(require('../plugins/tenantPlugin'));
+
 module.exports = mongoose.model('Guardian', guardianSchema);

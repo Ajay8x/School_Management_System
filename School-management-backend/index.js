@@ -5,6 +5,7 @@ const connectDB = require('./config/db');
 const seedDummyData = require('./config/seedDummyData');
 const User = require('./models/User');
 const schoolMiddleware = require('./middlewares/schoolMiddleware');
+const { tenantMiddleware } = require('./middlewares/tenant');
 
 // Load environment variables
 dotenv.config();
@@ -66,6 +67,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(schoolMiddleware); // Attach req.schoolId from X-School-ID header
+app.use(tenantMiddleware); // Attach schoolId and sessionId to AsyncLocalStorage
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));

@@ -10,4 +10,8 @@ const classSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+
+classSchema.add({ sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', index: true } });
+classSchema.plugin(require('../plugins/tenantPlugin'));
+
 module.exports = mongoose.model('Class', classSchema);

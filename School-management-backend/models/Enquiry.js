@@ -14,4 +14,8 @@ const enquirySchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+
+enquirySchema.add({ sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', index: true } });
+enquirySchema.plugin(require('../plugins/tenantPlugin'));
+
 module.exports = mongoose.model('Enquiry', enquirySchema);

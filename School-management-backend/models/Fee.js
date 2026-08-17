@@ -49,4 +49,8 @@ const feeSchema = new mongoose.Schema({
   }
 });
 
+
+feeSchema.add({ sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', index: true } });
+feeSchema.plugin(require('../plugins/tenantPlugin'));
+
 module.exports = mongoose.model('Fee', feeSchema);

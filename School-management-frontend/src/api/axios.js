@@ -23,7 +23,20 @@ API.interceptors.request.use((config) => {
   // Inject the currently active school ID so backend can scope data
   const schoolId = localStorage.getItem('active_school_id');
   if (schoolId) {
-    config.headers['X-School-ID'] = schoolId;
+    config.headers['x-school-id'] = schoolId;
+  }
+  
+  // Inject the currently active session ID so backend can scope data by academic year
+  const activeSessionStr = localStorage.getItem('active_session');
+  if (activeSessionStr) {
+    try {
+      const activeSession = JSON.parse(activeSessionStr);
+      if (activeSession && activeSession._id) {
+        config.headers['x-session-id'] = activeSession._id;
+      }
+    } catch (e) {
+      // Ignore parsing errors
+    }
   }
   return config;
 });

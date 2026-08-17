@@ -27,5 +27,9 @@ const eventSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+
+eventSchema.add({ sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', index: true } });
+eventSchema.plugin(require('../plugins/tenantPlugin'));
+
 module.exports = mongoose.model('Event', eventSchema);
 

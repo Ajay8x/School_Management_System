@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { SchoolContext } from '../context/SchoolContext';
 import API from '../api/axios';
 import {
   ShieldCheck, Users as UsersIcon, UserCog, Search, Filter,
@@ -31,6 +32,7 @@ const ROLE_CONFIG = {
 
 export default function Users() {
   const { user: currentUser } = useContext(AuthContext);
+  const { currentSchool } = useContext(SchoolContext);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -42,13 +44,15 @@ export default function Users() {
   const itemsPerPage = 8;
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    if (currentSchool?._id) {
+      fetchUsers();
+    }
+  }, [currentSchool?._id]);
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const res = await API.get('/users');
+      const res = await API.get(`/users?schoolId=${currentSchool?._id || ''}`);
       setUsers(res.data);
       setError('');
     } catch (err) {
@@ -89,7 +93,7 @@ export default function Users() {
     e.preventDefault();
     setAddingUser(true);
     try {
-      const payload = { ...newUser };
+      const payload = { ...newUser, schoolId: currentSchool?._id };
       if (!payload.password) delete payload.password; // backend might use default if empty or we can leave it
       delete payload.confirmPassword;
       await API.post('/auth/register', payload);
@@ -146,7 +150,7 @@ export default function Users() {
           <p className="text-gray-500 dark:text-slate-400 mt-1">Manage all system users and their account statuses.</p>
         </div>
         <div className="flex gap-2">
-          {currentUser?.role === 'super-admin' && (
+          {(currentUser?.role === 'super-admin' || currentUser?.role === 'admin') && (
             <button
               onClick={() => setShowAddModal(true)}
               className="flex items-center gap-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-xl text-sm font-medium transition-all shadow-sm"
@@ -257,7 +261,7 @@ export default function Users() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        {currentUser?.role === 'super-admin' && (
+                        {(currentUser?.role === 'super-admin' || currentUser?.role === 'admin') && (
                           <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             {user.role !== 'super-admin' && (
                               <>

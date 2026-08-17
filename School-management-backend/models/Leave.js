@@ -6,4 +6,8 @@ const leaveSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+
+leaveSchema.add({ sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', index: true } });
+leaveSchema.plugin(require('../plugins/tenantPlugin'));
+
 module.exports = mongoose.model('Leave', leaveSchema);

@@ -66,4 +66,8 @@ const programSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+
+programSchema.add({ sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', index: true } });
+programSchema.plugin(require('../plugins/tenantPlugin'));
+
 module.exports = mongoose.model('Program', programSchema);

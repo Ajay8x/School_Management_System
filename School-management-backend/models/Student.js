@@ -105,4 +105,8 @@ studentSchema.pre('validate', function() {
   }
 });
 
+
+guardianSchema.add({ sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', index: true } });
+guardianSchema.plugin(require('../plugins/tenantPlugin'));
+
 module.exports = mongoose.model('Student', studentSchema);

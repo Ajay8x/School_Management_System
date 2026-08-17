@@ -38,4 +38,8 @@ const noticeSchema = new mongoose.Schema({
   }
 });
 
+
+noticeSchema.add({ sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', index: true } });
+noticeSchema.plugin(require('../plugins/tenantPlugin'));
+
 module.exports = mongoose.model('Notice', noticeSchema);

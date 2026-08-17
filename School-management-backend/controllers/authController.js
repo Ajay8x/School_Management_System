@@ -15,7 +15,7 @@ const generateToken = (id) => {
 // @access  Public
 exports.registerUser = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, schoolId } = req.body;
 
     // Check if user exists
     const userExists = await User.findOne({ email });
@@ -29,7 +29,8 @@ exports.registerUser = async (req, res) => {
       name,
       email,
       password,
-      role: role || 'student' // Default to student if not specified
+      role: role || 'student', // Default to student if not specified
+      schoolId: schoolId || null
     });
 
     if (user) {
@@ -45,6 +46,7 @@ exports.registerUser = async (req, res) => {
         email: user.email,
         role: user.role,
         studentId: user.studentId,
+        schoolId: user.schoolId,
         token: generateToken(user._id),
       });
     } else {

@@ -50,4 +50,8 @@ const teacherSchema = new mongoose.Schema({
   }
 });
 
+
+teacherSchema.add({ sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', index: true } });
+teacherSchema.plugin(require('../plugins/tenantPlugin'));
+
 module.exports = mongoose.model('Teacher', teacherSchema);

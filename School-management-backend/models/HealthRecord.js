@@ -28,4 +28,8 @@ const healthRecordSchema = new mongoose.Schema({
   }
 });
 
+
+healthRecordSchema.add({ sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', index: true } });
+healthRecordSchema.plugin(require('../plugins/tenantPlugin'));
+
 module.exports = mongoose.model('HealthRecord', healthRecordSchema);
