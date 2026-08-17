@@ -7,7 +7,7 @@ import {
   X, Check, AlertCircle, Sparkles, Plus, Globe, Phone, Mail,
   ShieldCheck, Users, UserCheck, GraduationCap, Wallet, Library,
   Search, Lock, Edit3, Trash2, ArrowUpDown, Filter, MoreVertical,
-  ChevronDown, ChevronLeft
+  ChevronDown, ChevronLeft, Eye
 } from 'lucide-react';
 
 const INITIAL_ROLES_LIST = [
@@ -43,6 +43,41 @@ const MODULE_PERMISSIONS_SCHEMA = [
   { key: 'config', name: 'System Settings & Config', actions: ['view', 'edit'] },
 ];
 
+const VIEW_ACCESS_MODULES = [
+  { key: 'dashboard', name: 'Dashboard & Overview', category: 'General' },
+  { key: 'reception', name: 'Reception & Visitors', category: 'Operations' },
+  { key: 'academic', name: 'Academic & Courses', category: 'Academic' },
+  { key: 'student', name: 'Student Records & Profile', category: 'Academic' },
+  { key: 'attendance', name: 'Student & Staff Attendance', category: 'Operations' },
+  { key: 'exam', name: 'Examinations, Marks & Results', category: 'Academic' },
+  { key: 'finance', name: 'Finance & Fee Collection', category: 'Finance' },
+  { key: 'employee', name: 'Employee & HRMS Directory', category: 'HR' },
+  { key: 'resource', name: 'Resource & Assignments', category: 'Academic' },
+  { key: 'transport', name: 'Transport & Fleet Management', category: 'Operations' },
+  { key: 'inventory', name: 'Inventory & Store Stock', category: 'Operations' },
+  { key: 'library', name: 'Library & Book Issues', category: 'Academic' },
+  { key: 'hostel', name: 'Hostel & Dormitory Management', category: 'Operations' },
+  { key: 'reports', name: 'Analytics & Management Reports', category: 'Management' },
+  { key: 'config', name: 'System Settings & Config', category: 'Administration' }
+];
+
+const PERMISSION_ROWS = [
+  { key: 'login:action', name: 'login:action' },
+  { key: 'profile:update', name: 'profile:update' },
+  { key: 'password:update', name: 'password:update' },
+  { key: 'post:config', name: 'post:config' },
+  { key: 'post:read', name: 'post:read' },
+  { key: 'post:create', name: 'post:create' },
+  { key: 'post:edit', name: 'post:edit' },
+  { key: 'post:delete', name: 'post:delete' },
+  { key: 'post:comment', name: 'post:comment' },
+  { key: 'access:reports', name: 'access:reports' },
+  { key: 'academic:view', name: 'academic:view' },
+  { key: 'student:manage', name: 'student:manage' },
+  { key: 'finance:collect', name: 'finance:collect' },
+  { key: 'exam:entry', name: 'exam:entry' }
+];
+
 export default function GeneralConfig() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { currentSchool, schools, updateSchool, createSchool, switchSchool } = useContext(SchoolContext);
@@ -51,13 +86,13 @@ export default function GeneralConfig() {
   const isSuperAdmin = user?.role === 'super-admin';
   const activeSchoolName = currentSchool?.name || currentSchool?.appName || 'Demo International School';
 
-  // Sub-navigation active state ('general' | 'role' | 'permission')
+  // Sub-navigation active state ('general' | 'role' | 'permission' | 'view-access')
   const initialSubTab = searchParams.get('tab') || 'general';
   const [activeSubTab, setActiveSubTab] = useState(initialSubTab);
 
   useEffect(() => {
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['general', 'role', 'permission'].includes(tabParam)) {
+    if (tabParam && ['general', 'role', 'permission', 'view-access'].includes(tabParam)) {
       setActiveSubTab(tabParam);
     }
   }, [searchParams]);
@@ -87,9 +122,9 @@ export default function GeneralConfig() {
       { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }
     ],
     inchargeDetails: [
-      { title: 'Principal', name: 'Harshit Tiwari', email: 'harshit@gmail.com', contactNumber: '8996584215' },
-      { title: 'Vice Principal', name: 'Vikas Pandey', email: 'vikas@gmail.com', contactNumber: '7619889628' },
-      { title: 'Co-Ordinator', name: 'Aman Pandey', email: 'aman@gmail.com', contactNumber: '8996584215' },
+      { title: 'Principal', name: 'AMAN PANDEY', email: 'aman@gmail.com', contactNumber: '' },
+      { title: 'Vice Principal', name: 'AJAY SINGH', email: 'ajay@gmail.com', contactNumber: '' },
+      { title: 'Co-Ordinator', name: 'PRAVEEN', email: 'praveen@GMAIL.COM', contactNumber: '' },
       { title: '', name: '', email: '', contactNumber: '' },
       { title: '', name: '', email: '', contactNumber: '' }
     ]
@@ -98,22 +133,9 @@ export default function GeneralConfig() {
   // Roles Table State
   const [rolesList, setRolesList] = useState(INITIAL_ROLES_LIST);
   const [selectedRoleForMatrix, setSelectedRoleForMatrix] = useState(INITIAL_ROLES_LIST[0]);
-  const [rolePermissionsState, setRolePermissionsState] = useState(() => {
-    const initialPerms = {};
-    INITIAL_ROLES_LIST.forEach(role => {
-      initialPerms[role.id] = {};
-      MODULE_PERMISSIONS_SCHEMA.forEach(mod => {
-        initialPerms[role.id][mod.key] = {
-          view: true,
-          create: true,
-          edit: true,
-          delete: role.name === 'Super Admin' || role.name === 'Principal' || role.name === 'Vice Principal' || role.name === 'Manager',
-          export: role.name === 'Accountant' || role.name === 'Manager' || role.name === 'Principal' || role.name === 'Vice Principal'
-        };
-      });
-    });
-    return initialPerms;
-  });
+  const [rolePermissionsState, setRolePermissionsState] = useState({});
+  const [viewAccessState, setViewAccessState] = useState({});
+
   const [showAddRoleModal, setShowAddRoleModal] = useState(false);
   const [newRoleName, setNewRoleName] = useState('');
   const [sortField, setSortField] = useState('name');
@@ -124,11 +146,12 @@ export default function GeneralConfig() {
 
   const activeRole = selectedRoleForMatrix || rolesList[0] || INITIAL_ROLES_LIST[0];
 
-  // Auto scroll permission table to active clicked role column
+  // Auto scroll permission / view access table to active clicked role column
   useEffect(() => {
-    if (activeSubTab === 'permission' && activeRole?.id) {
+    if ((activeSubTab === 'permission' || activeSubTab === 'view-access') && activeRole?.id) {
+      const prefix = activeSubTab === 'view-access' ? 'view-access-role-col-header-' : 'role-col-header-';
       const timer = setTimeout(() => {
-        const el = document.getElementById(`role-col-header-${activeRole.id}`);
+        const el = document.getElementById(`${prefix}${activeRole.id}`);
         if (el) {
           el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
@@ -145,23 +168,30 @@ export default function GeneralConfig() {
   });
   const [onboarding, setOnboarding] = useState(false);
 
-  // Initialize permissions matrix state for all roles
+  // Initialize permissions matrix and view access state for all roles (if not already loaded from localStorage)
   useEffect(() => {
+    const permKey = `rolePermissionsConfig_${currentSchool?._id || 'default'}`;
+    const viewKey = `viewAccessConfig_${currentSchool?._id || 'default'}`;
+
+    const savedPerms = localStorage.getItem(permKey);
+    const savedView = localStorage.getItem(viewKey);
+
     const initialPerms = {};
+    const initialViewAccess = {};
     rolesList.forEach(role => {
       initialPerms[role.id] = {};
-      MODULE_PERMISSIONS_SCHEMA.forEach(mod => {
-        initialPerms[role.id][mod.key] = {
-          view: true,
-          create: true,
-          edit: true,
-          delete: role.name === 'Super Admin' || role.name === 'Principal' || role.name === 'Manager',
-          export: role.name === 'Accountant' || role.name === 'Manager' || role.name === 'Principal'
-        };
+      initialViewAccess[role.id] = {};
+      PERMISSION_ROWS.forEach(mod => {
+        initialPerms[role.id][mod.key] = true;
+      });
+      VIEW_ACCESS_MODULES.forEach(mod => {
+        initialViewAccess[role.id][mod.key] = true;
       });
     });
-    setRolePermissionsState(initialPerms);
-  }, [rolesList]);
+
+    setRolePermissionsState(savedPerms ? JSON.parse(savedPerms) : initialPerms);
+    setViewAccessState(savedView ? JSON.parse(savedView) : initialViewAccess);
+  }, [rolesList, currentSchool]);
 
   // Populate general form from active school context
   useEffect(() => {
@@ -234,9 +264,9 @@ export default function GeneralConfig() {
           { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }, { label: '', value: '' }
         ],
         inchargeDetails: [
-          { title: 'Principal', name: 'Harshit Tiwari', email: 'harshit@gmail.com', contactNumber: '8996584215' },
-          { title: 'Vice Principal', name: 'Vikas Pandey', email: 'vikas@gmail.com', contactNumber: '7619889628' },
-          { title: 'Co-Ordinator', name: 'Aman Pandey', email: 'aman@gmail.com', contactNumber: '8996584215' },
+          { title: 'Principal', name: 'AMAN PANDEY', email: 'aman@gmail.com', contactNumber: '' },
+          { title: 'Vice Principal', name: 'AJAY SINGH', email: 'ajay@gmail.com', contactNumber: '' },
+          { title: 'Co-Ordinator', name: 'PRAVEEN', email: 'praveen@GMAIL.COM', contactNumber: '' },
           { title: '', name: '', email: '', contactNumber: '' },
           { title: '', name: '', email: '', contactNumber: '' }
         ]
@@ -338,7 +368,50 @@ export default function GeneralConfig() {
   };
 
   const handleSavePermissions = () => {
+    const permKey = `rolePermissionsConfig_${currentSchool?._id || 'default'}`;
+    localStorage.setItem(permKey, JSON.stringify(rolePermissionsState));
     setMessage({ type: 'success', text: `Permissions for role "${selectedRoleForMatrix.name}" saved successfully!` });
+    setTimeout(() => setMessage({ type: '', text: '' }), 4000);
+  };
+
+  const handleResetPermissions = () => {
+    const permKey = `rolePermissionsConfig_${currentSchool?._id || 'default'}`;
+    const resetPerms = {};
+    rolesList.forEach(role => {
+      resetPerms[role.id] = {};
+      [
+        'login:action', 'profile:update', 'password:update', 'post:config',
+        'post:read', 'post:create', 'post:edit', 'post:delete', 'post:comment',
+        'access:reports', 'academic:view', 'student:manage', 'finance:collect', 'exam:entry'
+      ].forEach(key => {
+        resetPerms[role.id][key] = false;
+      });
+    });
+    setRolePermissionsState(resetPerms);
+    localStorage.setItem(permKey, JSON.stringify(resetPerms));
+    setMessage({ type: 'info', text: 'All permissions turned OFF (0 / unchecked).' });
+    setTimeout(() => setMessage({ type: '', text: '' }), 3500);
+  };
+
+  const handleResetViewAccess = () => {
+    const viewKey = `viewAccessConfig_${currentSchool?._id || 'default'}`;
+    const resetObj = {};
+    rolesList.forEach(r => {
+      resetObj[r.id] = {};
+      VIEW_ACCESS_MODULES.forEach(m => {
+        resetObj[r.id][m.key] = false;
+      });
+    });
+    setViewAccessState(resetObj);
+    localStorage.setItem(viewKey, JSON.stringify(resetObj));
+    setMessage({ type: 'info', text: 'All view access permissions turned OFF (0 / unchecked).' });
+    setTimeout(() => setMessage({ type: '', text: '' }), 3500);
+  };
+
+  const handleSaveViewAccess = () => {
+    const viewKey = `viewAccessConfig_${currentSchool?._id || 'default'}`;
+    localStorage.setItem(viewKey, JSON.stringify(viewAccessState));
+    setMessage({ type: 'success', text: `View Access permissions saved successfully!` });
     setTimeout(() => setMessage({ type: '', text: '' }), 4000);
   };
 
@@ -394,11 +467,11 @@ export default function GeneralConfig() {
             </span>
             <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
             <span className="font-bold text-teal-600 dark:text-teal-400 capitalize">
-              {activeSubTab === 'role' ? 'Role' : activeSubTab}
+              {activeSubTab === 'role' ? 'Role' : activeSubTab === 'view-access' ? 'View Access' : activeSubTab}
             </span>
           </nav>
           <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mt-1 capitalize">
-            {activeSubTab === 'role' ? 'Role' : activeSubTab}
+            {activeSubTab === 'role' ? 'Role' : activeSubTab === 'view-access' ? 'View Access' : activeSubTab}
           </h1>
         </div>
 
@@ -492,6 +565,19 @@ export default function GeneralConfig() {
             >
               <Key className="w-4 h-4 flex-shrink-0" />
               <span>Permission</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleSubTabChange('view-access')}
+              className={`flex-1 md:w-full flex items-center justify-center md:justify-start space-x-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition whitespace-nowrap ${
+                activeSubTab === 'view-access'
+                  ? 'bg-teal-500 text-white shadow-sm'
+                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <Eye className="w-4 h-4 flex-shrink-0" />
+              <span>View Access</span>
             </button>
           </nav>
         </aside>
@@ -843,7 +929,7 @@ export default function GeneralConfig() {
             </form>
           )}
 
-          {/* TAB 2: ROLE MANAGEMENT CONFIGURATION TABLE MATCHING SCREENSHOT */}
+          {/* TAB 2: ROLE MANAGEMENT CONFIGURATION TABLE */}
           {activeSubTab === 'role' && (
             <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200/80 dark:border-slate-700/80 shadow-sm overflow-hidden p-6 space-y-6">
               
@@ -1000,9 +1086,9 @@ export default function GeneralConfig() {
             </div>
           )}
 
-          {/* TAB 3: PERMISSIONS MATRIX CONFIGURATION MATCHING HTML */}
+          {/* TAB 3: PERMISSIONS MATRIX CONFIGURATION */}
           {activeSubTab === 'permission' && (
-            <div className="bg-white dark:bg-slate-800 sm:rounded-lg border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-slate-800 sm:rounded-lg border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden animate-in fade-in duration-200">
               
               {/* Top Action Header Bar */}
               <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1029,6 +1115,10 @@ export default function GeneralConfig() {
                   </button>
                   <button
                     type="button"
+                    onClick={() => {
+                      setMessage({ type: 'info', text: 'User-wise permission feature is coming soon.' });
+                      setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+                    }}
                     className="px-4 py-2 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl shadow transition"
                   >
                     User wise Permission
@@ -1050,19 +1140,39 @@ export default function GeneralConfig() {
                           <th 
                             key={role.id} 
                             id={`role-col-header-${role.id}`}
-                            className={`px-5 py-4 border-b border-r border-gray-200 dark:border-slate-700 text-center font-extrabold whitespace-nowrap min-w-[160px] tracking-wide transition-all ${
+                            onClick={() => setSelectedRoleForMatrix(role)}
+                            className={`cursor-pointer px-5 py-4 border-b border-r border-gray-200 dark:border-slate-700 text-center font-extrabold whitespace-nowrap min-w-[160px] tracking-wide transition-all ${
                               isTarget
                                 ? 'bg-teal-500 text-white shadow-md border-x-2 border-teal-600'
-                                : 'bg-gray-100 dark:bg-slate-900 text-gray-700 dark:text-slate-300'
+                                : 'bg-gray-100 dark:bg-slate-900 text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-800'
                             }`}
                           >
-                            <div className="flex flex-col items-center justify-center gap-0.5">
-                              <span>{role.name}</span>
+                            <div className="flex flex-col items-center justify-center gap-1.5">
+                              <span className="pointer-events-none">{role.name}</span>
                               {isTarget && (
-                                <span className="px-2 py-0.5 text-[9px] uppercase font-black tracking-widest bg-white/20 text-white rounded-full">
+                                <span className="px-2 py-0.5 text-[9px] uppercase font-black tracking-widest bg-white/20 text-white rounded-full pointer-events-none">
                                   Selected Role
                                 </span>
                               )}
+                              <div onClick={(e) => e.stopPropagation()}>
+                                <input 
+                                  type="checkbox"
+                                  checked={PERMISSION_ROWS.every(row => rolePermissionsState[role.id]?.[row.key] !== false)}
+                                  onChange={(e) => {
+                                    const isChecked = e.target.checked;
+                                    setRolePermissionsState(prev => {
+                                      const newState = { ...prev };
+                                      newState[role.id] = { ...prev[role.id] };
+                                      PERMISSION_ROWS.forEach(row => {
+                                        newState[role.id][row.key] = isChecked;
+                                      });
+                                      return newState;
+                                    });
+                                  }}
+                                  className="w-4 h-4 text-blue-600 rounded border-gray-300 dark:border-slate-600 focus:ring-teal-500 cursor-pointer transition-transform hover:scale-110 accent-blue-600"
+                                  title="Select All Permissions"
+                                />
+                              </div>
                             </div>
                           </th>
                         );
@@ -1070,22 +1180,7 @@ export default function GeneralConfig() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 dark:divide-slate-700 text-sm text-gray-700 dark:text-slate-200">
-                    {[
-                      { key: 'login:action', name: 'login:action' },
-                      { key: 'profile:update', name: 'profile:update' },
-                      { key: 'password:update', name: 'password:update' },
-                      { key: 'post:config', name: 'post:config' },
-                      { key: 'post:read', name: 'post:read' },
-                      { key: 'post:create', name: 'post:create' },
-                      { key: 'post:edit', name: 'post:edit' },
-                      { key: 'post:delete', name: 'post:delete' },
-                      { key: 'post:comment', name: 'post:comment' },
-                      { key: 'access:reports', name: 'access:reports' },
-                      { key: 'academic:view', name: 'academic:view' },
-                      { key: 'student:manage', name: 'student:manage' },
-                      { key: 'finance:collect', name: 'finance:collect' },
-                      { key: 'exam:entry', name: 'exam:entry' }
-                    ].filter(item => item.name.toLowerCase().includes(filterSearchQuery.toLowerCase()))
+                    {PERMISSION_ROWS.filter(item => item.name.toLowerCase().includes(filterSearchQuery.toLowerCase()))
                     .map((permRow) => (
                       <tr key={permRow.key} className="hover:bg-teal-50/40 dark:hover:bg-slate-700/40 transition">
                         <td className="sticky left-0 bg-white dark:bg-slate-800 py-3.5 px-6 font-mono text-xs font-bold text-gray-900 dark:text-slate-100 z-10 border-r border-gray-200 dark:border-slate-700 shadow-sm whitespace-nowrap min-w-[200px]">
@@ -1117,7 +1212,7 @@ export default function GeneralConfig() {
                                       }
                                     }));
                                   }}
-                                  className="w-4 h-4 text-teal-600 rounded border-gray-300 dark:border-slate-600 focus:ring-teal-500 cursor-pointer transition-transform hover:scale-110"
+                                  className="w-4 h-4 text-blue-600 rounded border-gray-300 dark:border-slate-600 focus:ring-teal-500 cursor-pointer transition-transform hover:scale-110 accent-blue-600"
                                 />
                               </div>
                             </td>
@@ -1133,7 +1228,7 @@ export default function GeneralConfig() {
               <div className="bg-gray-50 dark:bg-slate-900/60 px-6 py-4 border-t border-gray-200 dark:border-slate-700 flex items-center justify-between">
                 <button
                   type="button"
-                  onClick={() => setMessage({ type: 'info', text: 'Permissions matrix reset to default.' })}
+                  onClick={handleResetPermissions}
                   className="px-4 py-2 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-xl text-xs font-bold transition"
                 >
                   Reset
@@ -1145,6 +1240,175 @@ export default function GeneralConfig() {
                   className="px-6 py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1.5"
                 >
                   <Save className="w-4 h-4" /> Save Permissions
+                </button>
+              </div>
+
+            </div>
+          )}
+
+          {/* TAB 4: VIEW ACCESS CONFIGURATION TABLE */}
+          {activeSubTab === 'view-access' && (
+            <div className="bg-white dark:bg-slate-800 sm:rounded-lg border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden animate-in fade-in duration-200">
+              
+              {/* Top Action Header Bar */}
+              <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <Eye className="w-5 h-5 text-teal-500" />
+                    View Access
+                  </h2>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">Configure role-wise module visibility and view access permissions.</p>
+                </div>
+
+                <div className="flex items-center gap-3 flex-wrap">
+                  <input 
+                    type="text" 
+                    placeholder="Search module view access..." 
+                    value={filterSearchQuery}
+                    onChange={(e) => setFilterSearchQuery(e.target.value)}
+                    className="w-full sm:w-64 rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs text-gray-700 dark:text-slate-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowFilterBar(!showFilterBar)}
+                    className="p-2 rounded-xl border border-gray-300 dark:border-slate-600 text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition"
+                    title="Filter"
+                  >
+                    <Filter className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMessage({ type: 'info', text: 'User-wise view access feature is coming soon.' });
+                      setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+                    }}
+                    className="px-4 py-2 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl shadow transition"
+                  >
+                    User wise View Access
+                  </button>
+                </div>
+              </div>
+
+              {/* View Access Matrix Table */}
+              <div className="relative overflow-x-auto custom-scrollbar">
+                <table className="w-full text-left text-sm border-collapse min-w-max">
+                  <thead className="bg-gray-100 dark:bg-slate-900/90 text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-slate-300">
+                    <tr>
+                      <th className="sticky left-0 bg-gray-100 dark:bg-slate-900 px-6 py-4 border-b border-r border-gray-200 dark:border-slate-700 z-20 font-extrabold min-w-[240px] shadow-sm">
+                        VIEW ACCESS
+                      </th>
+                      {rolesList.map(role => {
+                        const isTarget = activeRole?.id === role.id;
+                        return (
+                          <th 
+                            key={role.id} 
+                            id={`view-access-role-col-header-${role.id}`}
+                            onClick={() => setSelectedRoleForMatrix(role)}
+                            className={`cursor-pointer px-5 py-4 border-b border-r border-gray-200 dark:border-slate-700 text-center font-extrabold whitespace-nowrap min-w-[160px] tracking-wide transition-all ${
+                              isTarget
+                                ? 'bg-teal-500 text-white shadow-md border-x-2 border-teal-600'
+                                : 'bg-gray-100 dark:bg-slate-900 text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-800'
+                            }`}
+                          >
+                            <div className="flex flex-col items-center justify-center gap-1.5">
+                              <span className="pointer-events-none">{role.name}</span>
+                              {isTarget && (
+                                <span className="px-2 py-0.5 text-[9px] uppercase font-black tracking-widest bg-white/20 text-white rounded-full pointer-events-none">
+                                  Selected Role
+                                </span>
+                              )}
+                              <div onClick={(e) => e.stopPropagation()}>
+                                <input 
+                                  type="checkbox"
+                                  checked={VIEW_ACCESS_MODULES.every(row => viewAccessState[role.id]?.[row.key] !== false)}
+                                  onChange={(e) => {
+                                    const isChecked = e.target.checked;
+                                    setViewAccessState(prev => {
+                                      const newState = { ...prev };
+                                      newState[role.id] = { ...prev[role.id] };
+                                      VIEW_ACCESS_MODULES.forEach(row => {
+                                        newState[role.id][row.key] = isChecked;
+                                      });
+                                      return newState;
+                                    });
+                                  }}
+                                  className="w-4 h-4 text-blue-600 rounded border-gray-300 dark:border-slate-600 focus:ring-teal-500 cursor-pointer transition-transform hover:scale-110 accent-blue-600"
+                                  title="Select All View Access"
+                                />
+                              </div>
+                            </div>
+                          </th>
+                        );
+                      })}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-slate-700 text-sm text-gray-700 dark:text-slate-200">
+                    {VIEW_ACCESS_MODULES.filter(item => 
+                      item.name.toLowerCase().includes(filterSearchQuery.toLowerCase()) || 
+                      item.category.toLowerCase().includes(filterSearchQuery.toLowerCase()) ||
+                      item.key.toLowerCase().includes(filterSearchQuery.toLowerCase())
+                    ).map((modRow) => (
+                      <tr key={modRow.key} className="hover:bg-teal-50/40 dark:hover:bg-slate-700/40 transition">
+                        <td className="sticky left-0 bg-white dark:bg-slate-800 py-3.5 px-6 z-10 border-r border-gray-200 dark:border-slate-700 shadow-sm whitespace-nowrap min-w-[240px]">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-semibold text-gray-900 dark:text-slate-100 text-xs">{modRow.name}</span>
+                            <span className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 uppercase tracking-wider">{modRow.category}</span>
+                          </div>
+                        </td>
+
+                        {rolesList.map(role => {
+                          const isTarget = activeRole?.id === role.id;
+                          const isChecked = viewAccessState[role.id]?.[modRow.key] !== false;
+                          return (
+                            <td 
+                              key={role.id} 
+                              className={`py-3.5 px-5 text-center border-r min-w-[160px] transition-colors ${
+                                isTarget
+                                  ? 'bg-teal-50/80 dark:bg-teal-950/40 border-x-2 border-teal-500/40 font-bold'
+                                  : 'border-gray-100 dark:border-slate-700/40'
+                              }`}
+                            >
+                              <div className="flex items-center justify-center">
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={() => {
+                                    setViewAccessState(prev => ({
+                                      ...prev,
+                                      [role.id]: {
+                                        ...prev[role.id],
+                                        [modRow.key]: !isChecked
+                                      }
+                                    }));
+                                  }}
+                                  className="w-4 h-4 text-blue-600 rounded border-gray-300 dark:border-slate-600 focus:ring-teal-500 cursor-pointer transition-transform hover:scale-110 accent-blue-600"
+                                />
+                              </div>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Footer Buttons */}
+              <div className="bg-gray-50 dark:bg-slate-900/60 px-6 py-4 border-t border-gray-200 dark:border-slate-700 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={handleResetViewAccess}
+                  className="px-4 py-2 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-xl text-xs font-bold transition"
+                >
+                  Reset
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleSaveViewAccess}
+                  className="px-6 py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1.5"
+                >
+                  <Save className="w-4 h-4" /> Save View Access
                 </button>
               </div>
 

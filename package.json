@@ -1,6 +1,10 @@
 {
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix School-management-frontend\" \"npm run dev --prefix School-management-backend\""
+  },
   "devDependencies": {
     "autoprefixer": "^10.5.0",
+    "concurrently": "^10.0.5",
     "postcss": "^8.5.14",
     "tailwindcss": "^4.2.4"
   },

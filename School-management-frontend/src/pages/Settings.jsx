@@ -76,7 +76,7 @@ export default function Settings({ initialTab = 'general' }) {
       <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl border border-gray-100 dark:border-slate-700/80 shadow-sm flex items-center gap-1.5 overflow-x-auto custom-scrollbar">
         {visibleTabs.map(tab => {
           const Icon = tab.icon;
-          const isActive = activeTab === tab.id || (tab.id === 'roles' && ['role', 'permission'].includes(activeTab));
+          const isActive = activeTab === tab.id || (tab.id === 'general' && ['general', 'role', 'permission', 'view-access'].includes(activeTab)) || (tab.id === 'roles' && ['roles', 'role', 'permission', 'view-access'].includes(activeTab));
           return (
             <button
               key={tab.id}
@@ -96,7 +96,7 @@ export default function Settings({ initialTab = 'general' }) {
 
       {/* Active Tab View */}
       <div className="animate-in fade-in duration-200">
-        {(activeTab === 'general' || activeTab === 'roles' || activeTab === 'role' || activeTab === 'permission') && <GeneralConfig />}
+        {(activeTab === 'general' || activeTab === 'roles' || activeTab === 'role' || activeTab === 'permission' || activeTab === 'view-access') && <GeneralConfig />}
         {activeTab === 'asset' && <AssetConfig />}
         {activeTab === 'module' && <ModuleConfig />}
         {activeTab === 'credentials' && <UserCredentials />}
