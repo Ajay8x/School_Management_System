@@ -567,7 +567,8 @@ export default function Layout() {
       if (!hasRole) return false;
 
       // Module enabled check (hides menu item if module is disabled for the school)
-      if (item.moduleKey) {
+      // Super admin bypasses this check to always see everything
+      if (!isSuperAdmin && item.moduleKey) {
         return isModuleEnabled(item.moduleKey, null, user.role);
       }
       return true;
@@ -581,7 +582,7 @@ export default function Layout() {
       if (item.submenu) {
         filteredSubmenu = item.submenu.filter(sub => {
           if (sub.roles && !isSuperAdmin && !sub.roles.includes(user.role)) return false;
-          if (item.moduleKey && sub.subKey) {
+          if (!isSuperAdmin && item.moduleKey && sub.subKey) {
             return isModuleEnabled(item.moduleKey, sub.subKey, user.role);
           }
           return true;
