@@ -25,6 +25,7 @@ import StudentAttendance from './pages/students/Attendance';
 import FeeAllocation from './pages/students/FeeAllocation';
 import ServiceAllocation from './pages/students/ServiceAllocation';
 import Promotion from './pages/students/Promotion';
+import StudentConfig from './pages/students/StudentConfig';
 import Enquiry from './pages/reception/Enquiry';
 import VisitorLog from './pages/reception/VisitorLog';
 import Complaint from './pages/reception/Complaint';
@@ -63,10 +64,14 @@ import Period from './pages/Period';
 import Division from './pages/Division';
 import Course from './pages/Course';
 import Batch from './pages/Batch';
+import Subject from './pages/Subject';
 import Placeholder from './components/Placeholder';
 import UserCredentials from './pages/super-admin/UserCredentials';
 import ModuleConfig from './pages/super-admin/ModuleConfig';
 import ActivityLog from './pages/ActivityLog';
+import FAQ from './pages/helpdesk/FAQ';
+import Ticket from './pages/helpdesk/Ticket';
+import HelpdeskConfig from './pages/helpdesk/HelpdeskConfig';
 import NotFound from './pages/NotFound';
 
 
@@ -95,6 +100,14 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="students/transfer" element={<Placeholder title="Transfer" />} />
     <Route path="students/alumni" element={<Placeholder title="Alumni" />} />
     <Route path="students/report" element={<Placeholder title="Report" />} />
+    <Route path="students/config" element={<StudentConfig />} />
+    <Route path="students/config/:tab" element={<StudentConfig />} />
+    <Route path="students/config/:tab/create" element={<StudentConfig />} />
+    <Route path="students/config/:tab/edit/:id" element={<StudentConfig />} />
+    <Route path="student/config" element={<StudentConfig />} />
+    <Route path="student/config/:tab" element={<StudentConfig />} />
+    <Route path="student/config/:tab/create" element={<StudentConfig />} />
+    <Route path="student/config/:tab/edit/:id" element={<StudentConfig />} />
     
     <Route path="teachers" element={<Teachers />} />
     <Route path="teachers/:id" element={<TeacherProfile />} />
@@ -143,8 +156,12 @@ const AdminAndSuperAdminRoutes = () => (
 
     {/* New System Modules matching sidebar screenshot */}
     <Route path="task" element={<Placeholder title="Task" />} />
-    <Route path="helpdesk/faq" element={<Placeholder title="Helpdesk FAQ" />} />
-    <Route path="helpdesk/ticket" element={<Placeholder title="Helpdesk Ticket" />} />
+    <Route path="helpdesk/faq" element={<FAQ />} />
+    <Route path="helpdesk/config" element={<HelpdeskConfig />} />
+    <Route path="helpdesk/faq-category" element={<HelpdeskConfig initialTab="faq-category" />} />
+    <Route path="helpdesk/ticket-category" element={<HelpdeskConfig initialTab="ticket-category" />} />
+    <Route path="helpdesk/ticket-priority" element={<HelpdeskConfig initialTab="ticket-priority" />} />
+    <Route path="helpdesk/ticket" element={<Ticket />} />
 
     <Route path="academic/department" element={<Department />} />
     <Route path="academic/program" element={<Program />} />
@@ -157,7 +174,11 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="academic/batches" element={<Batch />} />
     <Route path="academic/routine" element={<Placeholder title="Timetable / Class Routine" />} />
     <Route path="academic/section" element={<Placeholder title="Section" />} />
-    <Route path="academic/subject" element={<Placeholder title="Subject" />} />
+    <Route path="academic/subject" element={<Subject />} />
+    <Route path="academic/subjects" element={<Subject />} />
+    <Route path="academic/subject/create" element={<Subject />} />
+    <Route path="academic/subjects/create" element={<Subject />} />
+    <Route path="academic/subject-incharge" element={<Subject />} />
     <Route path="academic/class-timing" element={<Placeholder title="Class Timing" />} />
     <Route path="academic/syllabus" element={<Placeholder title="Syllabus" />} />
     <Route path="academic/id-card" element={<Placeholder title="Student & Staff ID Card Generation" />} />

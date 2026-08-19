@@ -309,7 +309,8 @@ export default function Layout() {
         { name: 'Transfer Request', href: '/students/transfer-request', subKey: 'transferRequest' },
         { name: 'Transfer', href: '/students/transfer', subKey: 'transfer' },
         { name: 'Alumni', href: '/students/alumni', subKey: 'alumni' },
-        { name: 'Report', href: '/students/report', subKey: 'report' }
+        { name: 'Report', href: '/students/report', subKey: 'report' },
+        { name: 'Config', href: '/students/config', subKey: 'config' }
       ] 
     },
     { 

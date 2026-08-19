@@ -45,6 +45,13 @@ const studentSchema = new mongoose.Schema({
   dateOfBirth: {
     type: Date
   },
+  section: {
+    type: String,
+    default: 'A'
+  },
+  batch: {
+    type: String
+  },
   period: {
     type: String
   },

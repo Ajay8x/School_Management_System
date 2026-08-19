@@ -65,7 +65,8 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(schoolMiddleware); // Attach req.schoolId from X-School-ID header
 app.use(tenantMiddleware); // Attach schoolId and sessionId to AsyncLocalStorage
 
@@ -103,7 +104,11 @@ app.use('/api/periods', require('./routes/periodRoutes'));
 app.use('/api/divisions', require('./routes/divisionRoutes'));
 app.use('/api/courses', require('./routes/courseRoutes'));
 app.use('/api/batches', require('./routes/batchRoutes'));
+app.use('/api/subjects', require('./routes/subjectRoutes'));
 app.use('/api/organizations', require('./routes/organizationRoutes'));
+app.use('/api/faqs', require('./routes/faqRoutes'));
+app.use('/api/tickets', require('./routes/ticketRoutes'));
+app.use('/api/helpdesk', require('./routes/helpdeskConfigRoutes'));
 
 
 // Basic route

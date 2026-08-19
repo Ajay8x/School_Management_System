@@ -7,10 +7,13 @@ const { logActivity } = require('../utils/logActivity');
 // @access  Private (Admin, Teacher)
 exports.getStudents = async (req, res) => {
   try {
-    const filter = req.schoolId ? { schoolId: req.schoolId } : {};
+    const filter = req.schoolId 
+      ? { $or: [{ schoolId: req.schoolId }, { schoolId: null }, { schoolId: { $exists: false } }] } 
+      : {};
     const students = await Student.find(filter).sort({ createdAt: -1 });
     res.json(students);
   } catch (error) {
+    console.error('getStudents Error:', error);
     res.status(500).json({ message: 'Server Error' });
   }
 };

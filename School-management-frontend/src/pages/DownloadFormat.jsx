@@ -4,25 +4,26 @@ import * as XLSX from 'xlsx';
 import API from '../api/axios';
 import { 
   FileSpreadsheet, Download, Upload, CheckCircle2, AlertCircle, 
-  RefreshCw, LayoutDashboard, FileCheck
+  RefreshCw, LayoutDashboard, FileCheck, X
 } from 'lucide-react';
 
 export default function DownloadFormat() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
+  const [activeItem, setActiveItem] = useState(null);
   const [activeModule, setActiveModule] = useState(null);
   const [activeFileName, setActiveFileName] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadResult, setUploadResult] = useState(null);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
-  // Grouped Template Definitions matching User Screenshots
+  // Grouped Template Definitions matching User Screenshots with Batch & Course Linking
   const formatCategories = [
     {
       title: 'Academic',
       items: [
-        { name: 'Batch.xlsx', key: 'batch', headers: ['Batch Name', 'Start Year', 'End Year', 'Class Name', 'Status'] },
+        { name: 'Batch.xlsx', key: 'batch', headers: ['Batch Name', 'Class Name', 'Max Strength', 'Roll Prefix', 'Description'] },
         { name: 'Course.xlsx', key: 'course', headers: ['Course Code', 'Course Name', 'Department', 'Credits', 'Description'] },
         { name: 'Subject Incharge.xlsx', key: 'subject_incharge', headers: ['Subject Name', 'Teacher Name', 'Employee ID', 'Class Name', 'Section'] }
       ]
@@ -86,7 +87,7 @@ export default function DownloadFormat() {
     {
       title: 'Other',
       items: [
-        { name: 'Historical Student.xlsx', key: 'historical_student', headers: ['Roll Number', 'Student Name', 'Passing Year', 'Grade/Class', 'Leaving Certificate No'] }
+        { name: 'Historical Student.xlsx', key: 'historical_student', headers: ['Roll Number', 'Student Name', 'Class Name', 'Batch', 'Passing Year', 'Grade/Class', 'Leaving Certificate No'] }
       ]
     },
     {
@@ -99,13 +100,13 @@ export default function DownloadFormat() {
       title: 'Student',
       items: [
         { name: 'Guardian.xlsx', key: 'guardian', headers: ['Guardian Name', 'Relation', 'Phone', 'Email', 'Occupation', 'Address'] },
-        { name: 'Student Account.xlsx', key: 'student_account', headers: ['Roll Number', 'Student Name', 'Bank Name', 'Account No', 'IFSC Code'] },
-        { name: 'Student Create User Account.xlsx', key: 'student_create_user', headers: ['Roll Number', 'Student Name', 'Username', 'Email', 'Default Password'] },
+        { name: 'Student Account.xlsx', key: 'student_account', headers: ['Roll Number', 'Student Name', 'Class Name', 'Batch', 'Bank Name', 'Account No', 'IFSC Code'] },
+        { name: 'Student Create User Account.xlsx', key: 'student_create_user', headers: ['Roll Number', 'Student Name', 'Class Name', 'Batch', 'Username', 'Email', 'Default Password'] },
         { name: 'Student Document.xlsx', key: 'student_document', headers: ['Roll Number', 'Document Name', 'Document Number', 'Verification Status'] },
         { name: 'Student Qualification.xlsx', key: 'student_qualification', headers: ['Roll Number', 'Previous School', 'Board', 'Passing Grade', 'Percentage'] },
         { name: 'Student Update User Account.xlsx', key: 'student_update_user', headers: ['Roll Number', 'Email', 'Phone', 'New Status'] },
-        { name: 'Student Update.xlsx', key: 'student_update', headers: ['Roll Number', 'Full Name', 'Class Name', 'Section', 'Contact Number', 'Email'] },
-        { name: 'Student.xlsx', key: 'student', headers: ['Roll Number', 'Student Name', 'Class Name', 'Section', 'Gender', 'Email', 'Contact'] }
+        { name: 'Student Update.xlsx', key: 'student_update', headers: ['Roll Number', 'Full Name', 'Class Name', 'Batch', 'Contact Number', 'Email Address'] },
+        { name: 'Student.xlsx', key: 'student', headers: ['Roll Number', 'First Name', 'Last Name', 'Class Name', 'Batch', 'Gender', 'Email', 'Contact Number', 'Guardian Name', 'Address'] }
       ]
     },
     {
@@ -126,9 +127,11 @@ export default function DownloadFormat() {
     const sampleRow = {};
     headers.forEach(h => {
       if (h.toLowerCase().includes('date')) sampleRow[h] = '2026-08-15';
-      else if (h.toLowerCase().includes('email')) sampleRow[h] = 'example@school.com';
+      else if (h.toLowerCase().includes('email')) sampleRow[h] = 'example@school.local';
       else if (h.toLowerCase().includes('phone') || h.toLowerCase().includes('contact')) sampleRow[h] = '9876543210';
       else if (h.toLowerCase().includes('amount') || h.toLowerCase().includes('price') || h.toLowerCase().includes('marks')) sampleRow[h] = '100';
+      else if (h === 'Class Name' || h === 'Class') sampleRow[h] = 'LKG';
+      else if (h === 'Batch' || h === 'Section') sampleRow[h] = 'Section A';
       else sampleRow[h] = `Sample ${h}`;
     });
 
@@ -140,13 +143,14 @@ export default function DownloadFormat() {
 
   // Open Upload Modal
   const handleOpenUpload = (item) => {
+    setActiveItem(item);
     setActiveModule(item.key);
     setActiveFileName(item.name);
     setUploadResult(null);
     setIsUploadModalOpen(true);
   };
 
-  // Handle XLSX File Read & Upload to Backend
+  // Handle XLSX File Read & Upload to Backend with Strict Header Validation
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -166,6 +170,34 @@ export default function DownloadFormat() {
         if (jsonRows.length === 0) {
           setUploadResult({ success: false, message: 'The uploaded XLSX file is empty.' });
           setUploading(false);
+          return;
+        }
+
+        // ==========================================
+        // STRICT FORMAT VALIDATION (Headers Check)
+        // ==========================================
+        const uploadedHeaders = Object.keys(jsonRows[0] || {});
+        const expectedHeaders = activeItem?.headers || [];
+
+        // Normalize helper function
+        const normalize = (str) => String(str).toLowerCase().replace(/[^a-z0-9]/g, '');
+
+        const normUploaded = uploadedHeaders.map(normalize);
+        const normExpected = expectedHeaders.map(normalize);
+
+        // Count how many expected headers are present in uploaded file
+        const matchedHeadersCount = normExpected.filter(h => normUploaded.includes(h)).length;
+        const matchPercentage = (matchedHeadersCount / normExpected.length) * 100;
+
+        // If less than 40% matching headers, block the upload!
+        if (matchedHeadersCount === 0 || (expectedHeaders.length > 2 && matchPercentage < 40)) {
+          setUploadResult({
+            success: false,
+            message: `❌ Format Mismatch Error! The uploaded file columns (${uploadedHeaders.slice(0, 3).join(', ')}) do not match the expected template format for "${activeFileName}" (${expectedHeaders.slice(0, 3).join(', ')}). Please download the exact format file and upload again!`
+          });
+          setUploading(false);
+          // Reset file input so user can pick the right file
+          if (fileInputRef.current) fileInputRef.current.value = '';
           return;
         }
 
@@ -296,7 +328,7 @@ export default function DownloadFormat() {
             </div>
 
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Select an <strong>.xlsx</strong> spreadsheet file formatted with appropriate column headers. The rows will be parsed and saved directly into the school database.
+              Please select the exact <strong>{activeFileName}</strong> spreadsheet file formatted with column headers: <span className="font-semibold text-teal-600 dark:text-teal-400">{activeItem?.headers?.slice(0, 4).join(', ')}...</span>
             </p>
 
             {/* File Input Box */}
@@ -317,7 +349,7 @@ export default function DownloadFormat() {
                   <Upload className="w-6 h-6" />
                 </div>
                 <span className="text-xs font-bold text-teal-600 dark:text-teal-400">
-                  Click to select .xlsx file
+                  Click to select {activeFileName} file
                 </span>
                 <span className="text-[11px] text-slate-400">Excel Spreadsheets (.xlsx, .xls)</span>
               </label>
@@ -327,7 +359,7 @@ export default function DownloadFormat() {
             {uploading && (
               <div className="flex items-center justify-center space-x-2 py-3 text-xs font-semibold text-teal-600 dark:text-teal-400">
                 <RefreshCw className="w-4 h-4 animate-spin" />
-                <span>Processing file & saving to database...</span>
+                <span>Validating format & importing to database...</span>
               </div>
             )}
 

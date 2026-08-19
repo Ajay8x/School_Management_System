@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, XCircle, Search, Upload } from 'lucide-react';
+import { ChevronDown, XCircle, Search, Upload, X, Download } from 'lucide-react';
 import API from '../../api/axios';
 
 export default function Photo() {
@@ -14,6 +14,7 @@ export default function Photo() {
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [uploadingId, setUploadingId] = useState(null);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   useEffect(() => {
     fetchStudents();
@@ -60,28 +61,65 @@ export default function Photo() {
     setFilteredStudents(result);
   };
 
+  // Dynamic options for batch/class dropdown
+  const uniqueBatches = Array.from(new Set(
+    students.map(s => s.className ? `${s.className}${s.section ? ' ' + s.section : ''}` : s.period).filter(Boolean)
+  ));
+
   const handlePhotoUpload = async (studentId, file) => {
     if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024) {
-      alert("File size should be less than 2MB");
+    if (file.size > 10 * 1024 * 1024) {
+      alert("File size should be less than 10MB");
       return;
     }
 
     setUploadingId(studentId);
+
     const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64String = reader.result;
-      try {
-        const res = await API.put(`/students/${studentId}`, { avatar: base64String });
-        setFilteredStudents(prev => prev.map(s => s._id === studentId ? { ...s, avatar: res.data.avatar } : s));
-        setStudents(prev => prev.map(s => s._id === studentId ? { ...s, avatar: res.data.avatar } : s));
-      } catch (err) {
-        console.error('Failed to upload photo', err);
-        alert('Failed to upload photo');
-      } finally {
-        setUploadingId(null);
-      }
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = async () => {
+        // Compress & resize image to 400x400 max
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 400;
+        const MAX_HEIGHT = 400;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const base64String = canvas.toDataURL('image/jpeg', 0.85);
+
+        try {
+          const res = await API.put(`/students/${studentId}`, { avatar: base64String });
+          const updatedAvatar = res.data?.avatar || base64String;
+
+          setFilteredStudents(prev => prev.map(s => s._id === studentId ? { ...s, avatar: updatedAvatar } : s));
+          setStudents(prev => prev.map(s => s._id === studentId ? { ...s, avatar: updatedAvatar } : s));
+        } catch (err) {
+          console.error('Failed to upload photo', err);
+          alert('Failed to upload photo. Please try again.');
+        } finally {
+          setUploadingId(null);
+        }
+      };
+      img.src = e.target.result;
     };
     reader.readAsDataURL(file);
   };
@@ -111,11 +149,9 @@ export default function Photo() {
                 className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-md bg-transparent focus:outline-none focus:border-blue-500 text-sm text-gray-700 dark:text-slate-200"
               >
                 <option value="">All Batches</option>
-                <option value="Class 1">Class 1</option>
-                <option value="Class 2">Class 2</option>
-                <option value="Class 3">Class 3</option>
-                <option value="2023-2024">2023-2024</option>
-                <option value="2024-2025">2024-2025</option>
+                {uniqueBatches.map(b => (
+                  <option key={b} value={b}>{b}</option>
+                ))}
               </select>
             </div>
             <div>
@@ -198,7 +234,13 @@ export default function Photo() {
                         <td className="px-6 py-4 text-sm text-gray-700 dark:text-slate-300 font-semibold">{student.name}</td>
                         <td className="px-6 py-4 text-sm text-gray-500 dark:text-slate-400">{student.className} {student.section}</td>
                         <td className="px-6 py-4">
-                          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-200 dark:border-slate-600 bg-white flex items-center justify-center">
+                          <div 
+                            onClick={() => student.avatar && setSelectedPhoto(student)}
+                            className={`w-12 h-12 rounded-full overflow-hidden border-2 border-gray-200 dark:border-slate-600 bg-white flex items-center justify-center ${
+                              student.avatar ? 'cursor-pointer hover:ring-2 hover:ring-teal-500 transition-all hover:scale-105 shadow-sm' : ''
+                            }`}
+                            title={student.avatar ? "Click to view photo" : "No photo uploaded"}
+                          >
                             {student.avatar ? (
                               <img src={student.avatar} alt={student.name} className="w-full h-full object-cover" />
                             ) : (
@@ -232,6 +274,61 @@ export default function Photo() {
             )}
           </div>
         </div>
+
+        {/* Full Size Image Preview Modal */}
+        {selectedPhoto && (
+          <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative border border-gray-100 dark:border-slate-700">
+              
+              {/* Modal Header */}
+              <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-700 pb-4 mb-4">
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                    {selectedPhoto.name}
+                  </h3>
+                  <p className="text-xs text-gray-500 dark:text-slate-400">
+                    Roll No: <span className="font-semibold text-gray-700 dark:text-slate-200">{selectedPhoto.rollNumber || 'N/A'}</span> • Class: <span className="font-semibold text-gray-700 dark:text-slate-200">{selectedPhoto.className} {selectedPhoto.section}</span>
+                  </p>
+                </div>
+                <button 
+                  onClick={() => setSelectedPhoto(null)}
+                  className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-white rounded-full bg-gray-100 dark:bg-slate-700 transition"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Large Image View */}
+              <div className="relative rounded-xl overflow-hidden bg-black/5 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 max-h-[70vh] flex items-center justify-center p-2">
+                <img 
+                  src={selectedPhoto.avatar} 
+                  alt={selectedPhoto.name} 
+                  className="max-h-[65vh] w-auto object-contain rounded-lg shadow-md"
+                />
+              </div>
+
+              {/* Modal Footer Actions */}
+              <div className="flex items-center justify-between mt-5 pt-3 border-t border-gray-100 dark:border-slate-700">
+                <a 
+                  href={selectedPhoto.avatar} 
+                  download={`${selectedPhoto.name}_Photo.jpg`}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-gray-700 dark:text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-2 transition"
+                >
+                  <Download className="w-4 h-4 text-teal-600" />
+                  <span>Download Photo</span>
+                </a>
+
+                <button 
+                  onClick={() => setSelectedPhoto(null)}
+                  className="px-5 py-2 bg-slate-900 hover:bg-black text-white rounded-xl text-xs font-semibold transition"
+                >
+                  Close
+                </button>
+              </div>
+
+            </div>
+          </div>
+        )}
 
         <div className="mt-8 text-center text-xs text-gray-500">
           Campus Pilot

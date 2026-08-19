@@ -24,19 +24,12 @@ export default function Students() {
     try {
       const res = await API.get('/students');
       const data = Array.isArray(res.data) ? res.data : [];
-      if (data.length === 0) {
-        const dummy = getDummyStudents();
-        setStudents(dummy);
-        setFilteredStudents(dummy);
-      } else {
-        setStudents(data);
-        setFilteredStudents(data);
-      }
+      setStudents(data);
+      setFilteredStudents(data);
     } catch (error) {
       console.error('Failed to fetch students', error);
-      const dummy = getDummyStudents();
-      setStudents(dummy);
-      setFilteredStudents(dummy);
+      setStudents([]);
+      setFilteredStudents([]);
     } finally {
       setLoading(false);
     }
@@ -121,9 +114,13 @@ export default function Students() {
             <button className="p-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded shadow-sm text-gray-600 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center justify-center">
               <Filter className="w-4 h-4" />
             </button>
-            <button className="p-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded shadow-sm text-gray-600 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center justify-center">
+            <Link 
+              to={`${routePrefix}/students/config`}
+              className="p-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded shadow-sm text-gray-600 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center justify-center"
+              title="Student Config"
+            >
               <Settings className="w-4 h-4" />
-            </button>
+            </Link>
             <div className="flex bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded shadow-sm overflow-hidden hidden md:flex">
               <button className="p-2 text-gray-400 hover:bg-gray-50 hover:text-gray-600">
                 <List className="w-4 h-4" />
