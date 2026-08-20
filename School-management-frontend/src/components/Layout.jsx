@@ -774,10 +774,10 @@ export default function Layout() {
               <button
                 type="button"
                 onClick={() => setShowSessionDropdown(!showSessionDropdown)}
-                className="flex items-center space-x-2 text-white hover:text-teal-300 px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700/70 transition-all font-semibold text-[13.5px] sm:text-[14.5px] tracking-tight group shadow-sm"
+                className="flex items-center space-x-1 sm:space-x-2 text-white hover:text-teal-300 px-2 sm:px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700/70 transition-all font-semibold text-[13.5px] sm:text-[14.5px] tracking-tight group shadow-sm"
               >
                 <Calendar className="w-4 h-4 text-teal-400 flex-shrink-0" />
-                <span className="truncate flex items-center gap-1">
+                <span className="hidden sm:flex items-center gap-1 truncate">
                   <span>Session {currentSession?.name || '2025-2026'}</span>
                   {(currentSession?.code || currentSession?.shortCode) && (
                     <span className="text-slate-300 font-normal">
@@ -859,10 +859,10 @@ export default function Layout() {
                 <button
                   type="button"
                   onClick={() => setShowSchoolDropdown(!showSchoolDropdown)}
-                  className="flex items-center space-x-2 text-white hover:text-teal-300 px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700/70 transition-all font-semibold text-[15px] tracking-tight group shadow-sm"
+                  className="flex items-center space-x-1 sm:space-x-2 text-white hover:text-teal-300 px-2 sm:px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700/70 transition-all font-semibold text-[15px] tracking-tight group shadow-sm"
                 >
                   <Building className="w-4 h-4 text-teal-400 flex-shrink-0" />
-                  <span className="max-w-[180px] sm:max-w-[240px] md:max-w-[320px] truncate flex items-center gap-1.5">
+                  <span className="hidden md:flex max-w-[180px] sm:max-w-[240px] md:max-w-[320px] truncate items-center gap-1.5">
                     <span className="truncate">{currentSchool?.name || currentSchool?.appName || 'Campus Pilot'}</span>
                     {currentSchool?.code && (
                       <span className="px-1.5 py-0.5 text-[10px] font-extrabold bg-teal-500/20 text-teal-300 rounded border border-teal-500/40 flex-shrink-0">
@@ -952,7 +952,7 @@ export default function Layout() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center space-x-2 text-white px-3 py-1.5 rounded-xl bg-slate-800/50 border border-slate-700/50 font-semibold text-[15px] tracking-tight cursor-default">
+              <div className="hidden sm:flex items-center space-x-2 text-white px-3 py-1.5 rounded-xl bg-slate-800/50 border border-slate-700/50 font-semibold text-[15px] tracking-tight cursor-default">
                 <Building className="w-4 h-4 text-teal-400 flex-shrink-0" />
                 <span className="max-w-[180px] sm:max-w-[240px] md:max-w-[320px] truncate flex items-center gap-1.5">
                   <span className="truncate">{currentSchool?.name || currentSchool?.appName || 'Campus Pilot'}</span>
@@ -968,7 +968,7 @@ export default function Layout() {
             {/* Home Icon */}
             <Link
               to={`/${user.role}/dashboard`}
-              className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition"
+              className="hidden md:flex w-9 h-9 items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition"
               title="Home Dashboard"
             >
               <Home className="w-5 h-5" />
@@ -977,7 +977,7 @@ export default function Layout() {
             {/* Settings Icon */}
             <Link
               to={isSuperAdmin ? '/admin/general-config' : '/admin/settings'}
-              className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition"
+              className="hidden md:flex w-9 h-9 items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition"
               title="General Configuration & Settings"
             >
               <Settings className="w-5 h-5" />
