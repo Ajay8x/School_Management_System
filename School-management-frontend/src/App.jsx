@@ -65,6 +65,9 @@ import Division from './pages/Division';
 import Course from './pages/Course';
 import Batch from './pages/Batch';
 import Subject from './pages/Subject';
+import ClassTiming from './pages/ClassTiming';
+import Timetable from './pages/Timetable';
+import BookList from './pages/BookList';
 import Placeholder from './components/Placeholder';
 import UserCredentials from './pages/super-admin/UserCredentials';
 import ModuleConfig from './pages/super-admin/ModuleConfig';
@@ -172,15 +175,33 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="academic/courses" element={<Course />} />
     <Route path="academic/batch" element={<Batch />} />
     <Route path="academic/batches" element={<Batch />} />
-    <Route path="academic/routine" element={<Placeholder title="Timetable / Class Routine" />} />
+    <Route path="academic/routine" element={<Timetable />} />
+    <Route path="academic/timetable" element={<Timetable />} />
+    <Route path="academic/timetables" element={<Timetable />} />
+    <Route path="academic/timetable/create" element={<Timetable initialView="add" />} />
+    <Route path="academic/timetables/create" element={<Timetable initialView="add" />} />
+    <Route path="academic/timetable/teacher" element={<Timetable initialView="teacher" />} />
     <Route path="academic/section" element={<Placeholder title="Section" />} />
     <Route path="academic/subject" element={<Subject />} />
     <Route path="academic/subjects" element={<Subject />} />
     <Route path="academic/subject/create" element={<Subject />} />
     <Route path="academic/subjects/create" element={<Subject />} />
     <Route path="academic/subject-incharge" element={<Subject />} />
-    <Route path="academic/class-timing" element={<Placeholder title="Class Timing" />} />
+    <Route path="academic/class-timing" element={<ClassTiming />} />
+    <Route path="academic/class-timings" element={<ClassTiming />} />
+    <Route path="academic/class-timing/create" element={<ClassTiming initialView="add" />} />
+    <Route path="academic/class-timings/create" element={<ClassTiming initialView="add" />} />
     <Route path="academic/syllabus" element={<Placeholder title="Syllabus" />} />
+    <Route path="academic/book-list" element={<BookList />} />
+    <Route path="academic/book-lists" element={<BookList />} />
+    <Route path="academic/book-list/create" element={<BookList initialView="add" />} />
+    <Route path="academic/book-lists/create" element={<BookList initialView="add" />} />
+    <Route path="academic/certificate" element={<Certificate />} />
+    <Route path="academic/certificates" element={<Certificate />} />
+    <Route path="academic/certificate/create" element={<Certificate initialView="add" />} />
+    <Route path="academic/certificates/create" element={<Certificate initialView="add" />} />
+    <Route path="academic/certificate-template" element={<Certificate initialView="templates" />} />
+    <Route path="academic/certificate-templates" element={<Certificate initialView="templates" />} />
     <Route path="academic/id-card" element={<Placeholder title="Student & Staff ID Card Generation" />} />
 
     <Route path="finance/payment-method" element={<Placeholder title="Payment Method" />} />

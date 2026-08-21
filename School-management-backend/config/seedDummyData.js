@@ -158,11 +158,111 @@ const seedDummyData = async () => {
     ]);
 
 
+    const ClassTiming = require('../models/ClassTiming');
+    const timingCount = await ClassTiming.countDocuments();
+    if (timingCount === 0) {
+      console.log('Seeding initial class timings...');
+      const sampleSessions = [
+        { session: '1st Period', code: 'P1', isBreak: false, startTime: '08:00 AM', endTime: '08:35 AM' },
+        { session: '2nd Period', code: 'P2', isBreak: false, startTime: '08:35 AM', endTime: '09:10 AM' },
+        { session: 'Short Break', code: 'BRK1', isBreak: true, startTime: '09:10 AM', endTime: '09:25 AM' },
+        { session: '3rd Period', code: 'P3', isBreak: false, startTime: '09:25 AM', endTime: '10:00 AM' },
+        { session: '4th Period', code: 'P4', isBreak: false, startTime: '10:00 AM', endTime: '10:35 AM' },
+        { session: 'Lunch Break', code: 'LUNCH', isBreak: true, startTime: '10:35 AM', endTime: '11:05 AM' },
+        { session: '5th Period', code: 'P5', isBreak: false, startTime: '11:05 AM', endTime: '11:40 AM' },
+        { session: '6th Period', code: 'P6', isBreak: false, startTime: '11:40 AM', endTime: '12:10 PM' },
+        { session: '7th Period', code: 'P7', isBreak: false, startTime: '12:10 PM', endTime: '12:25 PM' },
+        { session: '8th Period', code: 'P8', isBreak: false, startTime: '12:25 PM', endTime: '12:40 PM' }
+      ];
+
+      const timingList = [
+        { sessionName: 'XII (C) 2025-26', description: 'Standard Senior Secondary Timing' },
+        { sessionName: 'XII (B) 2025-26', description: 'Standard Senior Secondary Timing' },
+        { sessionName: 'XII (A) 2025-26', description: 'Standard Senior Secondary Timing' },
+        { sessionName: 'XI (C) 2025-26', description: 'Senior Secondary Timing' },
+        { sessionName: 'XI (B) 2025-26', description: 'Senior Secondary Timing' },
+        { sessionName: 'XI (A) 2025-26', description: 'Senior Secondary Timing' },
+        { sessionName: 'X (A) 2025-26', description: 'Secondary Section Class Timing' },
+        { sessionName: 'X (B) 2025-26', description: 'Secondary Section Class Timing' },
+        { sessionName: 'X (C) 2025-26', description: 'Secondary Section Class Timing' },
+        { sessionName: 'IX (C) 2025-26', description: 'Secondary Section Class Timing' },
+        { sessionName: 'IX (B) 2025-26', description: 'Secondary Section Class Timing' },
+        { sessionName: 'IX (A) 2025-26', description: 'Secondary Section Class Timing' },
+        { sessionName: 'VIII (C) 2025-26', description: 'Middle Section Class Timing' },
+        { sessionName: 'VIII (B) 2025-26', description: 'Middle Section Class Timing' },
+        { sessionName: 'VIII (A) 2025-26', description: 'Middle Section Class Timing' },
+        { sessionName: 'VII (C) 2025-26', description: 'Middle Section Class Timing' },
+        { sessionName: 'VII (B) 2025-26', description: 'Middle Section Class Timing' },
+        { sessionName: 'VII (A) 2025-26', description: 'Middle Section Class Timing' },
+        { sessionName: 'VI (C) 2025-26', description: 'Middle Section Class Timing' },
+        { sessionName: 'VI (B) 2025-26', description: 'Middle Section Class Timing' },
+        { sessionName: 'VI (A) 2025-26', description: 'Middle Section Class Timing' },
+        { sessionName: 'V (C) 2025-26', description: 'Primary Section Class Timing' },
+        { sessionName: 'V (B) 2025-26', description: 'Primary Section Class Timing' },
+        { sessionName: 'V (A) 2025-26', description: 'Primary Section Class Timing' },
+        { sessionName: 'IV (C) 2025-26', description: 'Primary Section Class Timing' }
+      ];
+
+      for (let t of timingList) {
+        await ClassTiming.create({
+          sessionName: t.sessionName,
+          description: t.description,
+          sessions: sampleSessions,
+          totalDurationText: '4 hour(s) 40 minute(s)',
+          timeRangeText: '8:00 AM - 12:40 PM',
+          sessionCount: 8,
+          breakCount: 2,
+          createdAt: new Date('2025-02-11T10:14:00.000Z')
+        });
+      }
+      console.log('Seeded initial Class Timings successfully.');
+    }
+
+    // Seed Certificate Templates & Certificates if empty
+    const CertificateTemplate = require('../models/CertificateTemplate');
+    const Certificate = require('../models/Certificate');
+    
+    const templateCount = await CertificateTemplate.countDocuments();
+    if (templateCount === 0) {
+      console.log('Seeding initial Certificate Templates...');
+      const templatesData = [
+        { name: 'Transfer Certificate', type: 'Transfer Certificate', applicableFor: 'Student', headerText: 'TRANSFER CERTIFICATE', subHeader: 'TO WHOM IT MAY CONCERN', bodyText: 'This is to certify that {{student_name}}, son/daughter of {{father_name}}, was a student of this institution in Class {{class_name}} during the academic session. His/Her conduct and character during the stay in the school has been good.', createdAt: new Date('2025-06-16T11:07:00Z') },
+        { name: 'Birth Certificate', type: 'Other', applicableFor: 'Student', headerText: 'BIRTH CERTIFICATE', subHeader: 'CERTIFICATE OF BIRTH', bodyText: 'This is to certify that according to the school records, the date of birth of {{student_name}} is {{dob}}.', createdAt: new Date('2025-04-19T16:04:00Z') },
+        { name: 'Bonafide Certificate', type: 'Other', applicableFor: 'Student', headerText: 'BONAFIDE CERTIFICATE', subHeader: 'TO WHOM IT MAY CONCERN', bodyText: 'This is to certify that {{student_name}} is a bonafide student of this institution studying in Class {{class_name}}.', createdAt: new Date('2025-04-19T15:57:00Z') },
+        { name: 'Character Certificate', type: 'Other', applicableFor: 'Student', headerText: 'CHARACTER CERTIFICATE', subHeader: 'TO WHOM IT MAY CONCERN', bodyText: 'This is to certify that {{student_name}} bears an exemplary moral character and good general behavior.', createdAt: new Date('2025-03-06T13:22:00Z') },
+        { name: 'Transfer Certificate', type: 'Transfer Certificate', applicableFor: 'Student', headerText: 'TRANSFER CERTIFICATE', subHeader: 'TO WHOM IT MAY CONCERN', bodyText: 'This is to certify that {{student_name}} has completed studies in this school.', createdAt: new Date('2025-02-26T16:10:00Z') }
+      ];
+      await CertificateTemplate.insertMany(templatesData);
+      console.log('Seeded Certificate Templates successfully.');
+    }
+
+    const certCount = await Certificate.countDocuments();
+    if (certCount === 0) {
+      console.log('Seeding initial Certificates...');
+      const createdTemplates = await CertificateTemplate.find();
+      const tcTpl = createdTemplates.find(t => t.name === 'Transfer Certificate') || createdTemplates[0];
+      const birthTpl = createdTemplates.find(t => t.name === 'Birth Certificate') || createdTemplates[0];
+      const charTpl = createdTemplates.find(t => t.name === 'Character Certificate') || createdTemplates[0];
+
+      const certificatesData = [
+        { certificateNo: 'TC-22003', templateId: tcTpl?._id, templateName: 'Transfer Certificate', applicableFor: 'Student', toName: 'Anam Pandey', toCode: 'SM007', date: new Date('2026-01-15'), createdBy: '-', createdAt: new Date('2026-01-15T12:57:00Z') },
+        { certificateNo: 'BTHC001', templateId: birthTpl?._id, templateName: 'Birth Certificate', applicableFor: 'Student', toName: 'Shriti Tripathi', toCode: 'SM004', date: new Date('2025-11-10'), createdBy: '-', createdAt: new Date('2025-11-10T14:24:00Z') },
+        { certificateNo: 'TC-2526004', templateId: tcTpl?._id, templateName: 'Transfer Certificate', applicableFor: 'Student', toName: 'Shriti Tripathi', toCode: 'SM004', date: new Date('2025-06-16'), createdBy: '-', createdAt: new Date('2025-06-16T06:31:00Z') },
+        { certificateNo: 'TC-2526003', templateId: tcTpl?._id, templateName: 'Transfer Certificate', applicableFor: 'Student', toName: 'Aarna Inaaya Contractor', toCode: 'SM212', date: new Date('2025-05-29'), createdBy: '-', createdAt: new Date('2025-06-05T12:55:00Z') },
+        { certificateNo: 'TC-2526002', templateId: tcTpl?._id, templateName: 'Transfer Certificate', applicableFor: 'Student', toName: 'Aaina Rohan Choudhary', toCode: 'SM158', date: new Date('2025-04-09'), createdBy: '-', createdAt: new Date('2025-04-09T17:38:00Z') },
+        { certificateNo: 'CC001', templateId: charTpl?._id, templateName: 'Character Certificate', applicableFor: 'Student', toName: 'Aaina Rohan Choudhary', toCode: 'SM158', date: new Date('2025-03-06'), createdBy: '-', createdAt: new Date('2025-03-06T13:25:00Z') },
+        { certificateNo: 'TC-2526001', templateId: tcTpl?._id, templateName: 'Transfer Certificate', applicableFor: 'Student', toName: 'Anam Pandey', toCode: 'SM007', date: new Date('2025-02-26'), createdBy: '-', createdAt: new Date('2025-02-26T16:10:00Z') }
+      ];
+      await Certificate.insertMany(certificatesData);
+      console.log('Seeded Certificates successfully.');
+    }
+
     console.log('Dummy data seeded successfully.');
   } catch (error) {
     console.error('Error seeding dummy data:', error);
   }
 };
+
 
 module.exports = seedDummyData;
 

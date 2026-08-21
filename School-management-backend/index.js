@@ -85,6 +85,7 @@ app.use('/api/fees', require('./routes/feeRoutes'));
 app.use('/api/attendance', require('./routes/attendanceRoutes'));
 app.use('/api/leaves', require('./routes/leaveRoutes'));
 app.use('/api/certificates', require('./routes/certificateRoutes'));
+app.use('/api/certificate-templates', require('./routes/certificateRoutes'));
 app.use('/api/libraries', require('./routes/libraryRoutes'));
 app.use('/api/accounts', require('./routes/accountRoutes'));
 app.use('/api/hrms', require('./routes/hrmRoutes'));
@@ -109,6 +110,14 @@ app.use('/api/organizations', require('./routes/organizationRoutes'));
 app.use('/api/faqs', require('./routes/faqRoutes'));
 app.use('/api/tickets', require('./routes/ticketRoutes'));
 app.use('/api/helpdesk', require('./routes/helpdeskConfigRoutes'));
+app.use('/api/class-timings', require('./routes/classTimingRoutes'));
+app.use('/api/timetables', require('./routes/timetableRoutes'));
+app.use('/api/timetable', require('./routes/timetableRoutes'));
+app.use('/api/book-lists', require('./routes/bookListRoutes'));
+app.use('/api/book-list', require('./routes/bookListRoutes'));
+
+
+
 
 
 // Basic route

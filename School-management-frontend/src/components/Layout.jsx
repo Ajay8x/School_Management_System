@@ -284,8 +284,8 @@ export default function Layout() {
         { name: 'Subject', href: '/academic/subject' },
         { name: 'Class Timing', href: '/academic/class-timing' },
         { name: 'Timetable', href: '/academic/routine' },
-        { name: 'Book list', href: '/library' },
-        { name: 'Certificate', href: '/certificate' },
+        { name: 'Book list', href: '/academic/book-list' },
+        { name: 'Certificate', href: '/academic/certificates' },
         { name: 'ID Card', href: '/academic/id-card' }
       ]
     },
