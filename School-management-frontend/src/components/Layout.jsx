@@ -286,7 +286,8 @@ export default function Layout() {
         { name: 'Timetable', href: '/academic/routine' },
         { name: 'Book list', href: '/academic/book-list' },
         { name: 'Certificate', href: '/academic/certificates' },
-        { name: 'ID Card', href: '/academic/id-card' }
+        { name: 'ID Card Template', href: '/academic/id-card-templates' },
+        { name: 'ID Card', href: '/academic/id-cards' }
       ]
     },
 

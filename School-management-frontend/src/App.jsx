@@ -68,6 +68,7 @@ import Subject from './pages/Subject';
 import ClassTiming from './pages/ClassTiming';
 import Timetable from './pages/Timetable';
 import BookList from './pages/BookList';
+import IdCard from './pages/IdCard';
 import Placeholder from './components/Placeholder';
 import UserCredentials from './pages/super-admin/UserCredentials';
 import ModuleConfig from './pages/super-admin/ModuleConfig';
@@ -202,7 +203,13 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="academic/certificates/create" element={<Certificate initialView="add" />} />
     <Route path="academic/certificate-template" element={<Certificate initialView="templates" />} />
     <Route path="academic/certificate-templates" element={<Certificate initialView="templates" />} />
-    <Route path="academic/id-card" element={<Placeholder title="Student & Staff ID Card Generation" />} />
+    <Route path="academic/id-card" element={<IdCard initialView="id-cards" />} />
+    <Route path="academic/id-cards" element={<IdCard initialView="id-cards" />} />
+    <Route path="academic/id-card-template" element={<IdCard initialView="templates" />} />
+    <Route path="academic/id-card-templates" element={<IdCard initialView="templates" />} />
+    <Route path="academic/id-card-templates/create" element={<IdCard initialView="create" />} />
+    <Route path="academic/id-card-templates/edit/:id" element={<IdCard initialView="create" />} />
+
 
     <Route path="finance/payment-method" element={<Placeholder title="Payment Method" />} />
     <Route path="finance/fee-group" element={<Placeholder title="Fee Group" />} />

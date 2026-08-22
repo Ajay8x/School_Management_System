@@ -257,7 +257,69 @@ const seedDummyData = async () => {
       console.log('Seeded Certificates successfully.');
     }
 
+    // Seed ID Card Templates if empty
+    const IdCardTemplate = require('../models/IdCardTemplate');
+    const idCardTplCount = await IdCardTemplate.countDocuments();
+    if (idCardTplCount === 0) {
+      console.log('Seeding initial ID Card Templates...');
+      const idCardTemplates = [
+        {
+          name: 'IDCARD1',
+          for: 'Student',
+          customTemplateFileName: 'IDCARD1new',
+          layout: 'Portrait',
+          headerBgColor: '#0f172a',
+          headerTextColor: '#ffffff',
+          cardBgColor: '#ffffff',
+          schoolTitle: 'ROYAL INTERNATIONAL ACADEMY',
+          subTitle: 'STUDENT IDENTITY CARD',
+          showLogo: true,
+          showPhoto: true,
+          showRollNo: true,
+          showClassCourse: true,
+          showBatchSection: true,
+          showDob: true,
+          showBloodGroup: true,
+          showPhone: true,
+          showEmergencyContact: true,
+          showAddress: true,
+          showBarcode: true,
+          showSignature: true,
+          signatureTitle: 'Principal',
+          createdAt: new Date('2025-02-10T17:45:00Z')
+        },
+        {
+          name: 'Vikrant Verma',
+          for: 'Student',
+          customTemplateFileName: 'vikrant',
+          layout: 'Landscape',
+          headerBgColor: '#1e293b',
+          headerTextColor: '#38bdf8',
+          cardBgColor: '#ffffff',
+          schoolTitle: 'DEMO INTERNATIONAL SCHOOL',
+          subTitle: 'OFFICIAL ID PASS',
+          showLogo: true,
+          showPhoto: true,
+          showRollNo: true,
+          showClassCourse: true,
+          showBatchSection: true,
+          showDob: true,
+          showBloodGroup: true,
+          showPhone: true,
+          showEmergencyContact: true,
+          showAddress: true,
+          showBarcode: true,
+          showSignature: true,
+          signatureTitle: 'Authorized Signatory',
+          createdAt: new Date('2026-03-02T11:49:00Z')
+        }
+      ];
+      await IdCardTemplate.insertMany(idCardTemplates);
+      console.log('Seeded ID Card Templates successfully.');
+    }
+
     console.log('Dummy data seeded successfully.');
+
   } catch (error) {
     console.error('Error seeding dummy data:', error);
   }

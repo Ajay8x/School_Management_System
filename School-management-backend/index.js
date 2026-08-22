@@ -115,6 +115,9 @@ app.use('/api/timetables', require('./routes/timetableRoutes'));
 app.use('/api/timetable', require('./routes/timetableRoutes'));
 app.use('/api/book-lists', require('./routes/bookListRoutes'));
 app.use('/api/book-list', require('./routes/bookListRoutes'));
+app.use('/api/id-card-templates', require('./routes/idCardRoutes'));
+app.use('/api/id-cards', require('./routes/idCardRoutes'));
+
 
 
 
