@@ -26,6 +26,8 @@ import FeeAllocation from './pages/students/FeeAllocation';
 import ServiceAllocation from './pages/students/ServiceAllocation';
 import Promotion from './pages/students/Promotion';
 import StudentConfig from './pages/students/StudentConfig';
+import EditRequests from './pages/students/EditRequests';
+
 import Enquiry from './pages/reception/Enquiry';
 import VisitorLog from './pages/reception/VisitorLog';
 import Complaint from './pages/reception/Complaint';
@@ -97,7 +99,13 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="students/fee-allocation" element={<FeeAllocation />} />
     <Route path="students/service-allocation" element={<ServiceAllocation />} />
     <Route path="students/promotion" element={<Promotion />} />
-    <Route path="students/edit-request" element={<Placeholder title="Edit Request" />} />
+    <Route path="students/edit-request" element={<EditRequests />} />
+    <Route path="students/edit-requests" element={<EditRequests />} />
+    <Route path="students/edit-request/:id" element={<EditRequests />} />
+    <Route path="students/edit-requests/:id" element={<EditRequests />} />
+    <Route path="student/edit-requests" element={<EditRequests />} />
+    <Route path="student/edit-requests/:id" element={<EditRequests />} />
+
     <Route path="students/service-request" element={<Placeholder title="Service Request" />} />
     <Route path="students/leave-request" element={<Placeholder title="Leave Request" />} />
     <Route path="students/transfer-request" element={<Placeholder title="Transfer Request" />} />

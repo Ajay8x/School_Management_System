@@ -318,7 +318,100 @@ const seedDummyData = async () => {
       console.log('Seeded ID Card Templates successfully.');
     }
 
+    // Seed Edit Requests if empty
+    const EditRequest = require('../models/EditRequest');
+    const editReqCount = await EditRequest.countDocuments();
+    if (editReqCount === 0) {
+      console.log('Seeding initial Edit Requests...');
+      const sampleEditRequests = [
+        {
+          studentName: 'Ritisha Tripathi',
+          contact: '9935332556',
+          fatherName: 'Hariom Tripathi',
+          motherName: 'Anamika Tripathi',
+          parentName: 'Hariom Tripathi / Anamika Tripathi',
+          dateOfAdmission: 'February 8, 2025',
+          admissionNumber: 'SM001',
+          course: 'IX',
+          section: 'Section A',
+          birthDate: 'December 5, 2000',
+          requestBy: 'Ritisha Tripathi',
+          bloodGroup: 'O+',
+          status: 'Rejected',
+          rejectionReason: 'bb',
+          attachment: null,
+          createdAt: new Date('2025-12-04T18:51:00Z'),
+          lastUpdatedAt: new Date('2026-02-02T13:20:00Z')
+        },
+        {
+          studentName: 'Ritisha Tripathi',
+          contact: '9935332556',
+          fatherName: 'Hariom Tripathi',
+          motherName: 'Anamika Tripathi',
+          parentName: 'Hariom Tripathi / Anamika Tripathi',
+          dateOfAdmission: 'February 8, 2025',
+          admissionNumber: 'SM001',
+          course: 'IX',
+          section: 'Section A',
+          birthDate: 'December 5, 2000',
+          requestBy: 'Ritisha Tripathi',
+          bloodGroup: 'O+',
+          status: 'Approved',
+          rejectionReason: '',
+          attachment: {
+            fileName: 'IMG-20250711-WA0005.jpg',
+            fileSize: '103.97 KB',
+            url: '#'
+          },
+          createdAt: new Date('2025-07-11T07:45:00Z'),
+          lastUpdatedAt: new Date('2025-07-13T10:17:00Z')
+        },
+        {
+          studentName: 'Ritisha Tripathi',
+          contact: '9935332556',
+          fatherName: 'Hariom Tripathi',
+          motherName: 'Anamika Tripathi',
+          parentName: 'Hariom Tripathi / Anamika Tripathi',
+          dateOfAdmission: 'February 8, 2025',
+          admissionNumber: 'SM001',
+          course: 'IX',
+          section: 'Section A',
+          birthDate: 'December 5, 2000',
+          requestBy: 'Ritisha Tripathi',
+          bloodGroup: 'O+',
+          status: 'Approved',
+          rejectionReason: '',
+          attachment: null,
+          createdAt: new Date('2025-07-11T07:14:00Z'),
+          lastUpdatedAt: new Date('2025-07-11T07:14:00Z')
+        },
+        {
+          studentName: 'Ritisha Tripathi',
+          contact: '9935332556',
+          fatherName: 'Hariom Tripathi',
+          motherName: 'Anamika Tripathi',
+          parentName: 'Hariom Tripathi / Anamika Tripathi',
+          dateOfAdmission: 'February 8, 2025',
+          admissionNumber: 'SM001',
+          course: 'IX',
+          section: 'Section A',
+          birthDate: 'December 5, 2000',
+          requestBy: 'Ritisha Tripathi',
+          bloodGroup: 'O+',
+          status: 'Approved',
+          rejectionReason: '',
+          attachment: null,
+          createdAt: new Date('2025-07-10T13:16:00Z'),
+          lastUpdatedAt: new Date('2025-07-10T13:16:00Z')
+        }
+      ];
+
+      await EditRequest.insertMany(sampleEditRequests);
+      console.log('Seeded initial Edit Requests successfully.');
+    }
+
     console.log('Dummy data seeded successfully.');
+
 
   } catch (error) {
     console.error('Error seeding dummy data:', error);

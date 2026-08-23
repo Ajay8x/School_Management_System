@@ -117,6 +117,9 @@ app.use('/api/book-lists', require('./routes/bookListRoutes'));
 app.use('/api/book-list', require('./routes/bookListRoutes'));
 app.use('/api/id-card-templates', require('./routes/idCardRoutes'));
 app.use('/api/id-cards', require('./routes/idCardRoutes'));
+app.use('/api/students/edit-requests', require('./routes/editRequestRoutes'));
+app.use('/api/edit-requests', require('./routes/editRequestRoutes'));
+
 
 
 
