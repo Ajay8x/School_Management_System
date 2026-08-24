@@ -264,8 +264,8 @@ export default function GeneralConfig() {
       const updatedPayload = {
         ...currentSchool,
         name: formData.name,
-        appName: formData.appName,
-        footerText: formData.footerText || formData.appName,
+        appName: formData.appName || formData.name,
+        footerText: formData.footerText || formData.appName || formData.name,
         title1: formData.title1,
         title2: formData.title2,
         title3: formData.title3,
@@ -285,7 +285,8 @@ export default function GeneralConfig() {
       };
 
       await updateSchool(currentSchool._id, updatedPayload);
-      document.title = `${formData.appName || formData.name} | Campus Pilot`;
+      document.title = formData.name || formData.appName || 'Campus Pilot';
+      window.dispatchEvent(new CustomEvent('school-updated', { detail: { school: updatedPayload } }));
       setMessage({ type: 'success', text: 'General Configuration saved successfully!' });
       setTimeout(() => setMessage({ type: '', text: '' }), 4000);
     } catch (err) {

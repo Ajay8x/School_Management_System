@@ -9,7 +9,8 @@ import {
   ShieldCheck, UserPlus, BookOpen, FileText, CreditCard, Clock, Activity, FileBadge, Trash2, Edit3, Settings,
   Database, Server, Layers, Sliders, CheckSquare, MessageSquare, AlertCircle, HelpCircle as QuestionIcon,
   Calendar, Award, UserCheck, Bell, Briefcase, DollarSign, Truck, Home, ShoppingBag, PieChart, Lock, PhoneCall,
-  UserCheck as TeacherIcon, BookMarked, Layers3, Hash, Flag, UserX, AlertTriangle, FileSpreadsheet, FolderPlus
+  UserCheck as TeacherIcon, BookMarked, Layers3, Hash, Flag, UserX, AlertTriangle, FileSpreadsheet, FolderPlus,
+  Image, Store, Newspaper, ShieldAlert, CheckCircle, Mail, Coffee, Bus, Bed, Layout, UserSearch, Wrench
 } from 'lucide-react';
 import aiLogo from '../assets/ai-logo.png';
 
@@ -22,7 +23,7 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
     {
       id: 1,
       sender: 'ai',
-      text: `Namaste ${user?.name || 'Admin'}! I am your Supreme AI Master Copilot trained on ALL 42 modules and every single feature of Campus Pilot. Whatever task or module you want (Students, Teachers, Departments, Subjects, Programs, Batches, Books, Events, Notices, Tickets, FAQs, ID Cards, Certificates, Fees, Exams, Attendance, Reception, Users, Bulk XLSX Import)—just speak or type!`,
+      text: `Namaste ${user?.name || 'Admin'}! I am your Universal School Master AI Copilot, trained on ALL 36 Sidebar Modules (Dashboard, Reception, Task, Helpdesk, Academic, Student, Finance, Exam, Employee, Resource, Transport, Calendar, Notice Board, Gallery, Inventory, Store, Blog, News, Discipline, Guardian, Approval, Contact, Mess, Communication, Library, Activity, Hostel, Form, Asset, Site, Recruitment, Configuration, User, Custom Field, Utility, Config). Give any command, and I will execute it live!`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -33,7 +34,6 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
   const [thinking, setThinking] = useState(false);
 
   // Universal Dynamic Multi-Module Form Wizard Engine
-  // wizardType can be: 'student' | 'teacher' | 'department' | 'subject' | 'book' | 'notice' | 'ticket' | 'event' | 'program' | 'batch'
   const [wizardType, setWizardType] = useState('student');
   const [wizardStep, setWizardStep] = useState(0); 
   const [wizardData, setWizardData] = useState({});
@@ -158,37 +158,35 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
     return user?.role === 'super-admin' || user?.role === 'admin' ? '/admin' : `/${user?.role || 'admin'}`;
   };
 
-  // Master Exhaustive 100% School System Route & Action Map for all 42 Modules
+  // Master Universal Route Map for ALL 36 SIDEBAR MODULES & SUB-ROUTES
   const ROUTE_MAP = {
+    // 1. Dashboard
     dashboard: `${getRolePrefix()}/dashboard`,
     home: `${getRolePrefix()}/dashboard`,
-    organization: `${getRolePrefix()}/organization`,
-    school: `${getRolePrefix()}/school`,
 
-    // Student Suite
-    student: `${getRolePrefix()}/students`,
-    students: `${getRolePrefix()}/students`,
-    addstudent: `${getRolePrefix()}/students/add`,
-    rollnumber: `${getRolePrefix()}/students/roll-number`,
-    photo: `${getRolePrefix()}/students/photo`,
-    healthrecord: `${getRolePrefix()}/students/health-record`,
-    electivesubject: `${getRolePrefix()}/students/elective-subject`,
-    feeallocation: `${getRolePrefix()}/students/fee-allocation`,
-    serviceallocation: `${getRolePrefix()}/students/service-allocation`,
-    promotion: `${getRolePrefix()}/students/promotion`,
-    editrequests: `${getRolePrefix()}/students/edit-requests`,
-    servicerequests: `${getRolePrefix()}/students/service-requests`,
-    studentconfig: `${getRolePrefix()}/students/config`,
+    // 2. Reception
+    reception: `${getRolePrefix()}/reception/enquiry`,
+    enquiry: `${getRolePrefix()}/reception/enquiry`,
+    visitor: `${getRolePrefix()}/reception/visitor-log`,
+    visitorlog: `${getRolePrefix()}/reception/visitor-log`,
+    gatepass: `${getRolePrefix()}/reception/gate-pass`,
+    complaint: `${getRolePrefix()}/reception/complaint`,
+    correspondence: `${getRolePrefix()}/reception/correspondence`,
+    query: `${getRolePrefix()}/reception/query`,
 
-    // Staff Suite
-    teacher: `${getRolePrefix()}/teachers`,
-    teachers: `${getRolePrefix()}/teachers`,
-    addteacher: `${getRolePrefix()}/teachers/add`,
-    guardian: `${getRolePrefix()}/guardians`,
-    guardians: `${getRolePrefix()}/guardians`,
-    addguardian: `${getRolePrefix()}/guardians/add`,
+    // 3. Task
+    task: `${getRolePrefix()}/task`,
 
-    // Academic Suite
+    // 4. Helpdesk
+    helpdesk: `${getRolePrefix()}/helpdesk/ticket`,
+    ticket: `${getRolePrefix()}/helpdesk/ticket`,
+    tickets: `${getRolePrefix()}/helpdesk/ticket`,
+    faq: `${getRolePrefix()}/helpdesk/faq`,
+    faqs: `${getRolePrefix()}/helpdesk/faq`,
+    helpdeskconfig: `${getRolePrefix()}/helpdesk/config`,
+
+    // 5. Academic
+    academic: `${getRolePrefix()}/academic/department`,
     department: `${getRolePrefix()}/academic/department`,
     departments: `${getRolePrefix()}/academic/department`,
     program: `${getRolePrefix()}/academic/program`,
@@ -207,68 +205,184 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
     classes: `${getRolePrefix()}/academic/batch`,
     timetable: `${getRolePrefix()}/academic/timetable`,
     routine: `${getRolePrefix()}/academic/timetable`,
+    section: `${getRolePrefix()}/academic/section`,
     subject: `${getRolePrefix()}/academic/subject`,
     subjects: `${getRolePrefix()}/academic/subject`,
     classtiming: `${getRolePrefix()}/academic/class-timing`,
+    syllabus: `${getRolePrefix()}/academic/syllabus`,
     booklist: `${getRolePrefix()}/academic/book-list`,
     books: `${getRolePrefix()}/academic/book-list`,
     certificate: `${getRolePrefix()}/academic/certificate`,
     certificates: `${getRolePrefix()}/academic/certificate`,
-    certificatetemplate: `${getRolePrefix()}/academic/certificate-template`,
     idcard: `${getRolePrefix()}/academic/id-card`,
     idcards: `${getRolePrefix()}/academic/id-card`,
-    idcardtemplate: `${getRolePrefix()}/academic/id-card-template`,
 
-    // Finance & Examination Suite
-    fees: `${getRolePrefix()}/fees`,
+    // 6. Student
+    student: `${getRolePrefix()}/students`,
+    students: `${getRolePrefix()}/students`,
+    addstudent: `${getRolePrefix()}/students/add`,
+    rollnumber: `${getRolePrefix()}/students/roll-number`,
+    photo: `${getRolePrefix()}/students/photo`,
+    healthrecord: `${getRolePrefix()}/students/health-record`,
+    electivesubject: `${getRolePrefix()}/students/elective-subject`,
+    feeallocation: `${getRolePrefix()}/students/fee-allocation`,
+    serviceallocation: `${getRolePrefix()}/students/service-allocation`,
+    promotion: `${getRolePrefix()}/students/promotion`,
+    editrequests: `${getRolePrefix()}/students/edit-requests`,
+    servicerequests: `${getRolePrefix()}/students/service-requests`,
+    studentconfig: `${getRolePrefix()}/students/config`,
+
+    // 7. Finance
     finance: `${getRolePrefix()}/fees`,
-    examinations: `${getRolePrefix()}/examinations`,
-    exam: `${getRolePrefix()}/examinations`,
-    attendance: `${getRolePrefix()}/attendance`,
-    leaves: `${getRolePrefix()}/leaves`,
-    leave: `${getRolePrefix()}/leaves`,
-    library: `${getRolePrefix()}/library`,
-    accounts: `${getRolePrefix()}/accounts`,
-    hrm: `${getRolePrefix()}/hrm`,
+    fees: `${getRolePrefix()}/fees`,
+    paymentmethod: `${getRolePrefix()}/finance/payment-method`,
+    feegroup: `${getRolePrefix()}/finance/fee-group`,
+    feehead: `${getRolePrefix()}/finance/fee-head`,
+    feecomponent: `${getRolePrefix()}/finance/fee-component`,
+    feeconcession: `${getRolePrefix()}/finance/fee-concession`,
+    ledger: `${getRolePrefix()}/finance/ledger`,
+    tax: `${getRolePrefix()}/finance/tax`,
+    receipt: `${getRolePrefix()}/finance/receipt`,
+    financereport: `${getRolePrefix()}/finance/report`,
 
-    // Communication & Support Suite
+    // 8. Exam
+    exam: `${getRolePrefix()}/examinations`,
+    examinations: `${getRolePrefix()}/examinations`,
+    examterm: `${getRolePrefix()}/exam/term`,
+    gradescale: `${getRolePrefix()}/exam/grade-scale`,
+    assessment: `${getRolePrefix()}/exam/assessment`,
+    examschedule: `${getRolePrefix()}/exam/schedule`,
+    onlineexam: `${getRolePrefix()}/exam/online-exam`,
+    examform: `${getRolePrefix()}/exam/form`,
+    admitcard: `${getRolePrefix()}/exam/admit-card`,
+    marks: `${getRolePrefix()}/exam/marks`,
+    marksheet: `${getRolePrefix()}/exam/marksheet`,
+    examreport: `${getRolePrefix()}/exam/report`,
+
+    // 9. Employee
+    employee: `${getRolePrefix()}/teachers`,
+    teachers: `${getRolePrefix()}/teachers`,
+    teacher: `${getRolePrefix()}/teachers`,
+    designation: `${getRolePrefix()}/employee/designation`,
+    payroll: `${getRolePrefix()}/employee/payroll`,
+
+    // 10. Resource
+    resource: `${getRolePrefix()}/resource/student-diary`,
+    studentdiary: `${getRolePrefix()}/resource/student-diary`,
+    lessonplan: `${getRolePrefix()}/resource/lesson-plan`,
+    assignment: `${getRolePrefix()}/resource/assignment`,
+    onlineclass: `${getRolePrefix()}/resource/online-class`,
+    learningmaterial: `${getRolePrefix()}/resource/learning-material`,
+    download: `${getRolePrefix()}/resource/download`,
+
+    // 11. Transport
+    transport: `${getRolePrefix()}/transport/route`,
+    transportroute: `${getRolePrefix()}/transport/route`,
+    transportcircle: `${getRolePrefix()}/transport/circle`,
+    transportfee: `${getRolePrefix()}/transport/fee`,
+    transportvehicle: `${getRolePrefix()}/transport/vehicle`,
+
+    // 12. Calendar
+    calendar: `${getRolePrefix()}/calendar/event`,
+    holiday: `${getRolePrefix()}/calendar/holiday`,
+    celebration: `${getRolePrefix()}/calendar/celebration`,
+    event: `${getRolePrefix()}/calendar/event`,
+
+    // 13. Notice Board
     noticeboard: `${getRolePrefix()}/notice-board`,
     notice: `${getRolePrefix()}/notice-board`,
     notices: `${getRolePrefix()}/notice-board`,
-    event: `${getRolePrefix()}/event`,
-    events: `${getRolePrefix()}/event`,
+
+    // 14. Gallery
+    gallery: `${getRolePrefix()}/gallery`,
+
+    // 15. Inventory
+    inventory: `${getRolePrefix()}/inventory/item`,
+    vendor: `${getRolePrefix()}/inventory/vendor`,
+    inventorycategory: `${getRolePrefix()}/inventory/category`,
+    inventoryitem: `${getRolePrefix()}/inventory/item`,
+    requisition: `${getRolePrefix()}/inventory/requisition`,
+    purchase: `${getRolePrefix()}/inventory/purchase`,
+
+    // 16. Store
+    store: `${getRolePrefix()}/store/sale`,
+    storesale: `${getRolePrefix()}/store/sale`,
+
+    // 17. Blog
+    blog: `${getRolePrefix()}/blog`,
+
+    // 18. News
+    news: `${getRolePrefix()}/news`,
+
+    // 19. Discipline
+    discipline: `${getRolePrefix()}/discipline/incident`,
+
+    // 20. Guardian
+    guardian: `${getRolePrefix()}/guardians`,
+    guardians: `${getRolePrefix()}/guardians`,
+
+    // 21. Approval
+    approval: `${getRolePrefix()}/approval/request`,
+
+    // 22. Contact
+    contact: `${getRolePrefix()}/reception/correspondence`,
+
+    // 23. Mess
+    mess: `${getRolePrefix()}/mess/item`,
+
+    // 24. Communication
+    communication: `${getRolePrefix()}/communication/email`,
+    email: `${getRolePrefix()}/communication/email`,
+    sms: `${getRolePrefix()}/communication/sms`,
+    whatsapp: `${getRolePrefix()}/communication/whatsapp`,
     message: `${getRolePrefix()}/message`,
-    reports: `${getRolePrefix()}/reports`,
-    ticket: `${getRolePrefix()}/helpdesk/ticket`,
-    tickets: `${getRolePrefix()}/helpdesk/ticket`,
-    helpdesk: `${getRolePrefix()}/helpdesk/ticket`,
-    faq: `${getRolePrefix()}/helpdesk/faq`,
-    faqs: `${getRolePrefix()}/helpdesk/faq`,
-    helpdeskconfig: `${getRolePrefix()}/helpdesk/config`,
 
-    // Reception & Front Desk Suite
-    enquiry: `${getRolePrefix()}/reception/enquiry`,
-    visitorlog: `${getRolePrefix()}/reception/visitor-log`,
-    gatepass: `${getRolePrefix()}/reception/gate-pass`,
-    complaint: `${getRolePrefix()}/reception/complaint`,
-    correspondence: `${getRolePrefix()}/reception/correspondence`,
-    query: `${getRolePrefix()}/reception/query`,
+    // 25. Library
+    library: `${getRolePrefix()}/library`,
 
-    // System Administration Suite
-    users: `${getRolePrefix()}/users`,
-    roles: `${getRolePrefix()}/roles`,
-    settings: `${getRolePrefix()}/settings`,
+    // 26. Activity
+    activity: `${getRolePrefix()}/activity/trip`,
+
+    // 27. Hostel
+    hostel: `${getRolePrefix()}/hostel/list`,
+
+    // 28. Form
+    form: `${getRolePrefix()}/download-format`,
+
+    // 29. Asset
+    asset: `${getRolePrefix()}/asset/building`,
+    assetconfig: `${getRolePrefix()}/asset-config`,
+
+    // 30. Site
+    site: `${getRolePrefix()}/site/page`,
+
+    // 31. Recruitment
+    recruitment: `${getRolePrefix()}/recruitment/vacancy`,
+
+    // 32. Configuration
+    configuration: `${getRolePrefix()}/general-config`,
     generalconfig: `${getRolePrefix()}/general-config`,
-    credentials: `${getRolePrefix()}/credentials`,
     moduleconfig: `${getRolePrefix()}/module-config`,
+
+    // 33. User
+    user: `${getRolePrefix()}/users`,
+    users: `${getRolePrefix()}/users`,
+    credentials: `${getRolePrefix()}/credentials`,
+
+    // 34. Custom Field
+    customfield: `${getRolePrefix()}/custom-field`,
+
+    // 35. Utility
+    utility: `${getRolePrefix()}/utility/activity-log`,
     activitylog: `${getRolePrefix()}/utility/activity-log`,
+
+    // 36. Config
+    config: `${getRolePrefix()}/general-config`,
     bulkimport: `${getRolePrefix()}/download-format`,
-    downloadformat: `${getRolePrefix()}/download-format`,
-    holiday: `${getRolePrefix()}/calendar/holiday`,
-    celebration: `${getRolePrefix()}/calendar/celebration`
+    downloadformat: `${getRolePrefix()}/download-format`
   };
 
-  // Master Supreme Universal NLP Intent Engine across ALL 42 Modules
+  // Master Supreme Universal NLP Intent Engine across ALL 36 SIDEBAR MODULES
   const processAICommand = async (commandText) => {
     setThinking(true);
     const lower = commandText.toLowerCase().trim();
@@ -281,8 +395,6 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
       // 1. UNIVERSAL MULTI-MODULE INTERACTIVE WIZARD ENGINE
       // =========================================================
       if (wizardStep > 0) {
-
-        // --- STUDENT WIZARD ---
         if (wizardType === 'student') {
           if (wizardStep === 1) {
             const studentName = commandText.trim();
@@ -322,8 +434,6 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
             navigate(ROUTE_MAP.students);
           }
         }
-
-        // --- TEACHER WIZARD ---
         else if (wizardType === 'teacher') {
           if (wizardStep === 1) {
             const name = commandText.trim();
@@ -350,8 +460,6 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
             navigate(ROUTE_MAP.teachers);
           }
         }
-
-        // --- DEPARTMENT WIZARD ---
         else if (wizardType === 'department') {
           if (wizardStep === 1) {
             const deptName = commandText.trim();
@@ -373,57 +481,13 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
             navigate(ROUTE_MAP.department);
           }
         }
-
-        // --- BOOK WIZARD ---
-        else if (wizardType === 'book') {
-          if (wizardStep === 1) {
-            const title = commandText.trim();
-            setWizardData({ title });
-            setWizardStep(2);
-            reply = `Book Title set to "${title}"!\n\n📌 Step 2/2: Book Author का नाम क्या है?`;
-          } else if (wizardStep === 2) {
-            const author = commandText.trim();
-            const finalBook = { ...wizardData, author, code: `BK-${Date.now().toString().slice(-4)}`, status: 'Available' };
-            try {
-              await API.post('/books', finalBook);
-              reply = `🎉 Book "${finalBook.title}" added to library catalog! Opening Books live.`;
-            } catch (e) {
-              reply = `Book processed! Opening Books catalog live.`;
-            }
-            setWizardStep(0);
-            autoCloseModal = true;
-            navigate(ROUTE_MAP.books);
-          }
-        }
-
-        // --- NOTICE WIZARD ---
-        else if (wizardType === 'notice') {
-          if (wizardStep === 1) {
-            const title = commandText.trim();
-            setWizardData({ title });
-            setWizardStep(2);
-            reply = `Notice Title set to "${title}"!\n\n📌 Step 2/2: Target Audience कौन है? (e.g. All, Students, Teachers)`;
-          } else if (wizardStep === 2) {
-            const targetAudience = commandText.trim();
-            const finalNotice = { ...wizardData, targetAudience, description: wizardData.title, date: new Date() };
-            try {
-              await API.post('/notices', finalNotice);
-              reply = `🎉 Notice "${finalNotice.title}" broadcasted live! Opening Noticeboard.`;
-            } catch (e) {
-              reply = `Notice processed! Opening Noticeboard.`;
-            }
-            setWizardStep(0);
-            autoCloseModal = true;
-            navigate(ROUTE_MAP.noticeboard);
-          }
-        }
       }
 
       // =========================================================
       // 2. TRIGGER STEP-BY-STEP INTERACTIVE WIZARDS FOR ANY MODULE
       // =========================================================
       else if (lower.includes('puch') || lower.includes('step by step') || lower.includes('interview')) {
-        if (lower.includes('teacher') || lower.includes('faculty')) {
+        if (lower.includes('teacher') || lower.includes('faculty') || lower.includes('employee')) {
           setWizardType('teacher');
           setWizardStep(1);
           setWizardData({});
@@ -435,20 +499,7 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
           setWizardData({});
           navigate(ROUTE_MAP.department);
           reply = `Starting Step-by-Step Department Wizard!\n\n📌 Step 1/2: Department ka Name kya hai?`;
-        } else if (lower.includes('book')) {
-          setWizardType('book');
-          setWizardStep(1);
-          setWizardData({});
-          navigate(ROUTE_MAP.books);
-          reply = `Starting Step-by-Step Book Catalog Wizard!\n\n📌 Step 1/2: Book ka Title kya hai?`;
-        } else if (lower.includes('notice')) {
-          setWizardType('notice');
-          setWizardStep(1);
-          setWizardData({});
-          navigate(ROUTE_MAP.noticeboard);
-          reply = `Starting Step-by-Step Notice Broadcast Wizard!\n\n📌 Step 1/2: Notice ka Title kya hai?`;
         } else {
-          // Default: Student Wizard
           setWizardType('student');
           setWizardStep(1);
           setWizardData({});
@@ -459,10 +510,8 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
       }
 
       // =========================================================
-      // 3. DIRECT CREATION & MANAGEMENT ACROSS ALL MODULES
+      // 3. DIRECT CREATIONS FOR MODULES
       // =========================================================
-
-      // --- STUDENT ---
       else if (lower.includes('student') && (lower.includes('add') || lower.includes('create') || lower.includes('register') || lower.includes('karo') || lower.includes('banao'))) {
         let name = commandText.replace(/add|create|register|student|karo|banao|naya|new|ko|ka|ki/gi, '').trim();
         if (!name) {
@@ -483,10 +532,8 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
           navigate(ROUTE_MAP.students);
         }
       }
-
-      // --- TEACHER ---
-      else if ((lower.includes('teacher') || lower.includes('faculty')) && (lower.includes('add') || lower.includes('create') || lower.includes('karo') || lower.includes('banao'))) {
-        let name = commandText.replace(/add|create|teacher|faculty|karo|banao|naya|new|ko|ka|ki/gi, '').trim() || 'Dr. Vikram Seth';
+      else if ((lower.includes('teacher') || lower.includes('faculty') || lower.includes('employee')) && (lower.includes('add') || lower.includes('create') || lower.includes('karo') || lower.includes('banao'))) {
+        let name = commandText.replace(/add|create|teacher|faculty|employee|karo|banao|naya|new|ko|ka|ki/gi, '').trim() || 'Dr. Vikram Seth';
         try {
           await API.post('/teachers', { name, subject: 'Science & Mathematics', status: 'Active' });
           reply = `Teacher "${name}" added! Opening Teachers list live.`;
@@ -497,8 +544,6 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
         autoCloseModal = true;
         navigate(ROUTE_MAP.teachers);
       }
-
-      // --- DEPARTMENT ---
       else if (lower.includes('department') && (lower.includes('add') || lower.includes('create') || lower.includes('karo') || lower.includes('banao'))) {
         let name = commandText.replace(/add|create|department|karo|banao|naya|new|ko|ka|ki/gi, '').trim() || 'Artificial Intelligence';
         try {
@@ -511,8 +556,6 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
         autoCloseModal = true;
         navigate(ROUTE_MAP.department);
       }
-
-      // --- SUBJECT ---
       else if (lower.includes('subject') && (lower.includes('add') || lower.includes('create') || lower.includes('karo') || lower.includes('banao'))) {
         let name = commandText.replace(/add|create|subject|karo|banao|naya|new|ko|ka|ki/gi, '').trim() || 'Robotics & Automation';
         try {
@@ -525,120 +568,21 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
         autoCloseModal = true;
         navigate(ROUTE_MAP.subject);
       }
-
-      // --- PROGRAM / COURSE ---
-      else if ((lower.includes('program') || lower.includes('course')) && (lower.includes('add') || lower.includes('create') || lower.includes('karo') || lower.includes('banao'))) {
-        let name = commandText.replace(/add|create|program|course|karo|banao|naya|new|ko|ka|ki/gi, '').trim() || 'B.Tech Computer Science';
-        try {
-          await API.post('/programs', { name, code: name.substring(0, 4).toUpperCase(), status: 'Active' });
-          reply = `Program "${name}" created! Opening Programs live.`;
-          executedAction = `Program Created: ${name}`;
-        } catch (e) {
-          reply = `Opening Programs view live.`;
-        }
-        autoCloseModal = true;
-        navigate(ROUTE_MAP.program);
-      }
-
-      // --- BATCH / CLASS ---
-      else if ((lower.includes('batch') || lower.includes('class')) && (lower.includes('add') || lower.includes('create') || lower.includes('karo') || lower.includes('banao'))) {
-        let name = commandText.replace(/add|create|batch|class|karo|banao|naya|new|ko|ka|ki/gi, '').trim() || 'Class 10 Section A';
-        try {
-          await API.post('/batches', { name, code: name.substring(0, 4).toUpperCase(), status: 'Active' });
-          reply = `Batch "${name}" created! Opening Batches live.`;
-          executedAction = `Batch Created: ${name}`;
-        } catch (e) {
-          reply = `Opening Batches view live.`;
-        }
-        autoCloseModal = true;
-        navigate(ROUTE_MAP.batch);
-      }
-
-      // --- PERIOD / TIMING ---
-      else if ((lower.includes('period') || lower.includes('timing')) && (lower.includes('add') || lower.includes('create') || lower.includes('karo') || lower.includes('banao'))) {
-        let name = commandText.replace(/add|create|period|timing|karo|banao|naya|new|ko|ka|ki/gi, '').trim() || 'Period 1 Morning';
-        try {
-          await API.post('/periods', { name, startTime: '09:00 AM', endTime: '10:00 AM', status: 'Active' });
-          reply = `Period "${name}" created! Opening Class Timings live.`;
-          executedAction = `Period Created: ${name}`;
-        } catch (e) {
-          reply = `Opening Periods screen live.`;
-        }
-        autoCloseModal = true;
-        navigate(ROUTE_MAP.period);
-      }
-
-      // --- BOOK LIST ---
-      else if (lower.includes('book') && (lower.includes('add') || lower.includes('create') || lower.includes('karo') || lower.includes('banao'))) {
-        let title = commandText.replace(/add|create|book|karo|banao|nayi|new|ko|ka|ki/gi, '').trim() || 'Core Java Programming';
-        try {
-          await API.post('/books', { title, code: `BK-${Date.now().toString().slice(-4)}`, status: 'Available' });
-          reply = `Book "${title}" added to library catalog! Opening Books live.`;
-          executedAction = `Book Created: ${title}`;
-        } catch (e) {
-          reply = `Opening Books catalog live.`;
-        }
-        autoCloseModal = true;
-        navigate(ROUTE_MAP.books);
-      }
-
-      // --- NOTICE ---
-      else if (lower.includes('notice') && (lower.includes('post') || lower.includes('create') || lower.includes('add') || lower.includes('karo') || lower.includes('banao'))) {
-        let title = commandText.replace(/post|create|add|notice|karo|banao|nayi|new/gi, '').trim() || 'Important Announcement';
-        try {
-          await API.post('/notices', { title, description: title, targetAudience: 'All', date: new Date() });
-          reply = `Notice "${title}" broadcasted! Opening Noticeboard live.`;
-          executedAction = `Notice Posted: ${title}`;
-        } catch (e) {
-          reply = `Opening Noticeboard screen live.`;
-        }
-        autoCloseModal = true;
-        navigate(ROUTE_MAP.noticeboard);
-      }
-
-      // --- TICKET ---
-      else if (lower.includes('ticket') && (lower.includes('create') || lower.includes('raise') || lower.includes('add') || lower.includes('karo') || lower.includes('banao'))) {
-        let issue = commandText.replace(/create|raise|add|ticket|karo|banao|nayi|new/gi, '').trim() || 'Classroom Wifi Issue';
-        try {
-          await API.post('/tickets', { subject: issue, description: issue, priority: 'High', status: 'Open' });
-          reply = `Ticket "${issue}" raised! Opening Helpdesk live.`;
-          executedAction = `Ticket Created: ${issue}`;
-        } catch (e) {
-          reply = `Opening Helpdesk live.`;
-        }
-        autoCloseModal = true;
-        navigate(ROUTE_MAP.ticket);
-      }
-
-      // --- FAQ ---
-      else if (lower.includes('faq') && (lower.includes('add') || lower.includes('create') || lower.includes('karo') || lower.includes('banao'))) {
-        let question = commandText.replace(/add|create|faq|karo|banao|naya|new/gi, '').trim() || 'What are the school operating hours?';
-        try {
-          await API.post('/faqs', { question, answer: 'School operates from 8:00 AM to 3:00 PM Monday through Saturday.', category: 'General' });
-          reply = `FAQ "${question}" added! Opening FAQ Knowledgebase live.`;
-          executedAction = `FAQ Created: ${question}`;
-        } catch (e) {
-          reply = `Opening FAQ Knowledgebase live.`;
-        }
-        autoCloseModal = true;
-        navigate(ROUTE_MAP.faq);
-      }
-
-      // --- GLOBAL REBRANDING & SYSTEM SETTINGS ---
       else if (lower.includes('rebrand') || lower.includes('change school name') || lower.includes('set school name') || (lower.includes('school') && lower.includes('naam'))) {
         let newName = commandText.replace(/change school name to|set school name to|rebrand to|school ka naam badlo|school name/gi, '').trim() || 'Royal International School';
         if (currentSchool && currentSchool._id) {
           await updateSchool(currentSchool._id, { appName: newName, footerText: newName, name: newName });
-          reply = `System branding updated live to "${newName}" across all screens!`;
+          document.title = newName;
+          window.dispatchEvent(new CustomEvent('school-updated', { detail: { school: { ...currentSchool, name: newName, appName: newName } } }));
+          reply = `System branding & Browser tab title updated live to "${newName}" across all screens!`;
           executedAction = `Rebrand System: ${newName}`;
         } else {
+          document.title = newName;
           reply = `School name updated to "${newName}".`;
         }
         autoCloseModal = true;
         navigate(ROUTE_MAP.generalconfig);
       }
-
-      // --- THEME TOGGLE ---
       else if (lower.includes('dark mode') || lower.includes('light mode') || lower.includes('theme')) {
         if (toggleTheme) toggleTheme();
         reply = `System theme toggled live!`;
@@ -647,50 +591,72 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
       }
 
       // =========================================================
-      // 4. EXHAUSTIVE SCREEN ROUTING (ALL 42 MODULES)
+      // 4. EXHAUSTIVE SCREEN ROUTING MATCHING ALL 36 SIDEBAR ITEMS
       // =========================================================
+      else if (lower.includes('dashboard') || lower.includes('home')) { navigate(ROUTE_MAP.dashboard); reply = `Opening Dashboard live!`; autoCloseModal = true; }
+      else if (lower.includes('reception') || lower.includes('enquiry')) { navigate(ROUTE_MAP.reception); reply = `Opening Reception & Enquiries live!`; autoCloseModal = true; }
+      else if (lower.includes('visitor')) { navigate(ROUTE_MAP.visitorlog); reply = `Opening Visitor Log live!`; autoCloseModal = true; }
+      else if (lower.includes('gate pass')) { navigate(ROUTE_MAP.gatepass); reply = `Opening Gate Pass live!`; autoCloseModal = true; }
+      else if (lower.includes('complaint')) { navigate(ROUTE_MAP.complaint); reply = `Opening Complaints live!`; autoCloseModal = true; }
+      else if (lower.includes('task')) { navigate(ROUTE_MAP.task); reply = `Opening Tasks module live!`; autoCloseModal = true; }
+      else if (lower.includes('ticket') || lower.includes('helpdesk')) { navigate(ROUTE_MAP.helpdesk); reply = `Opening Helpdesk live!`; autoCloseModal = true; }
+      else if (lower.includes('faq')) { navigate(ROUTE_MAP.faq); reply = `Opening FAQ Knowledgebase live!`; autoCloseModal = true; }
+      else if (lower.includes('department')) { navigate(ROUTE_MAP.department); reply = `Opening Departments live!`; autoCloseModal = true; }
+      else if (lower.includes('program')) { navigate(ROUTE_MAP.program); reply = `Opening Programs live!`; autoCloseModal = true; }
+      else if (lower.includes('session')) { navigate(ROUTE_MAP.session); reply = `Opening Sessions live!`; autoCloseModal = true; }
+      else if (lower.includes('period')) { navigate(ROUTE_MAP.period); reply = `Opening Periods live!`; autoCloseModal = true; }
+      else if (lower.includes('division')) { navigate(ROUTE_MAP.division); reply = `Opening Divisions live!`; autoCloseModal = true; }
+      else if (lower.includes('course') || lower.includes('academic')) { navigate(ROUTE_MAP.course); reply = `Opening Courses & Academic live!`; autoCloseModal = true; }
+      else if (lower.includes('batch') || lower.includes('class')) { navigate(ROUTE_MAP.batch); reply = `Opening Batches live!`; autoCloseModal = true; }
+      else if (lower.includes('timetable') || lower.includes('routine')) { navigate(ROUTE_MAP.timetable); reply = `Opening Timetables live!`; autoCloseModal = true; }
+      else if (lower.includes('subject')) { navigate(ROUTE_MAP.subject); reply = `Opening Subjects live!`; autoCloseModal = true; }
+      else if (lower.includes('classtiming')) { navigate(ROUTE_MAP.classtiming); reply = `Opening Class Timings live!`; autoCloseModal = true; }
+      else if (lower.includes('syllabus')) { navigate(ROUTE_MAP.syllabus); reply = `Opening Syllabus live!`; autoCloseModal = true; }
+      else if (lower.includes('book')) { navigate(ROUTE_MAP.books); reply = `Opening Book Catalog live!`; autoCloseModal = true; }
+      else if (lower.includes('certificate')) { navigate(ROUTE_MAP.certificate); reply = `Opening Certificates Studio live!`; autoCloseModal = true; }
+      else if (lower.includes('id card')) { navigate(ROUTE_MAP.idcard); reply = `Opening ID Cards Studio live!`; autoCloseModal = true; }
+      else if (lower.includes('student')) { navigate(ROUTE_MAP.students); reply = `Opening Students Directory live!`; autoCloseModal = true; }
       else if (lower.includes('roll number')) { navigate(ROUTE_MAP.rollnumber); reply = `Opening Roll Number allocation live!`; autoCloseModal = true; }
       else if (lower.includes('health')) { navigate(ROUTE_MAP.healthrecord); reply = `Opening Health Records live!`; autoCloseModal = true; }
-      else if (lower.includes('elective')) { navigate(ROUTE_MAP.electivesubject); reply = `Opening Elective Subject allotment live!`; autoCloseModal = true; }
-      else if (lower.includes('fee allocation')) { navigate(ROUTE_MAP.feeallocation); reply = `Opening Fee Allocation live!`; autoCloseModal = true; }
-      else if (lower.includes('promotion')) { navigate(ROUTE_MAP.promotion); reply = `Opening Student Promotion module live!`; autoCloseModal = true; }
-      else if (lower.includes('edit request')) { navigate(ROUTE_MAP.editrequests); reply = `Opening Student Edit Requests live!`; autoCloseModal = true; }
+      else if (lower.includes('elective')) { navigate(ROUTE_MAP.electivesubject); reply = `Opening Elective Subjects live!`; autoCloseModal = true; }
+      else if (lower.includes('promotion')) { navigate(ROUTE_MAP.promotion); reply = `Opening Student Promotion live!`; autoCloseModal = true; }
       else if (lower.includes('service request')) { navigate(ROUTE_MAP.servicerequests); reply = `Opening Service Requests live!`; autoCloseModal = true; }
-      else if (lower.includes('student config')) { navigate(ROUTE_MAP.studentconfig); reply = `Opening Student Configuration live!`; autoCloseModal = true; }
-      else if (lower.includes('department')) { navigate(ROUTE_MAP.department); reply = `Opening Departments screen live!`; autoCloseModal = true; }
-      else if (lower.includes('subject')) { navigate(ROUTE_MAP.subject); reply = `Opening Subjects screen live!`; autoCloseModal = true; }
-      else if (lower.includes('program') || lower.includes('course')) { navigate(ROUTE_MAP.program); reply = `Opening Programs screen live!`; autoCloseModal = true; }
-      else if (lower.includes('batch') || lower.includes('class')) { navigate(ROUTE_MAP.batch); reply = `Opening Batches screen live!`; autoCloseModal = true; }
-      else if (lower.includes('period') || lower.includes('timing')) { navigate(ROUTE_MAP.period); reply = `Opening Periods screen live!`; autoCloseModal = true; }
-      else if (lower.includes('division')) { navigate(ROUTE_MAP.division); reply = `Opening Divisions screen live!`; autoCloseModal = true; }
-      else if (lower.includes('book')) { navigate(ROUTE_MAP.books); reply = `Opening Book Catalog live!`; autoCloseModal = true; }
-      else if (lower.includes('id card')) { navigate(ROUTE_MAP.idcard); reply = `Opening ID Card Studio live!`; autoCloseModal = true; }
-      else if (lower.includes('certificate')) { navigate(ROUTE_MAP.certificate); reply = `Opening Certificate Studio live!`; autoCloseModal = true; }
-      else if (lower.includes('enquiry')) { navigate(ROUTE_MAP.enquiry); reply = `Opening Admission Enquiries live!`; autoCloseModal = true; }
-      else if (lower.includes('visitor')) { navigate(ROUTE_MAP.visitorlog); reply = `Opening Visitor Log live!`; autoCloseModal = true; }
-      else if (lower.includes('gate pass')) { navigate(ROUTE_MAP.gatepass); reply = `Opening Gate Pass module live!`; autoCloseModal = true; }
-      else if (lower.includes('complaint')) { navigate(ROUTE_MAP.complaint); reply = `Opening Complaints screen live!`; autoCloseModal = true; }
-      else if (lower.includes('fee') || lower.includes('finance')) { navigate(ROUTE_MAP.fees); reply = `Opening Fee & Finance module live!`; autoCloseModal = true; }
-      else if (lower.includes('exam') || lower.includes('examination')) { navigate(ROUTE_MAP.examinations); reply = `Opening Examinations module live!`; autoCloseModal = true; }
-      else if (lower.includes('attendance')) { navigate(ROUTE_MAP.attendance); reply = `Opening Attendance tracker live!`; autoCloseModal = true; }
-      else if (lower.includes('leave')) { navigate(ROUTE_MAP.leaves); reply = `Opening Leave Management live!`; autoCloseModal = true; }
-      else if (lower.includes('library')) { navigate(ROUTE_MAP.library); reply = `Opening Library Management live!`; autoCloseModal = true; }
-      else if (lower.includes('account')) { navigate(ROUTE_MAP.accounts); reply = `Opening Accounts module live!`; autoCloseModal = true; }
-      else if (lower.includes('hrm') || lower.includes('staff')) { navigate(ROUTE_MAP.hrm); reply = `Opening HRM & Staff management live!`; autoCloseModal = true; }
-      else if (lower.includes('notice')) { navigate(ROUTE_MAP.noticeboard); reply = `Opening Noticeboard live!`; autoCloseModal = true; }
-      else if (lower.includes('event') || lower.includes('holiday')) { navigate(ROUTE_MAP.event); reply = `Opening Calendar & Events live!`; autoCloseModal = true; }
-      else if (lower.includes('ticket') || lower.includes('helpdesk')) { navigate(ROUTE_MAP.ticket); reply = `Opening Helpdesk live!`; autoCloseModal = true; }
-      else if (lower.includes('faq')) { navigate(ROUTE_MAP.faq); reply = `Opening FAQ Knowledgebase live!`; autoCloseModal = true; }
-      else if (lower.includes('bulk import') || lower.includes('download format') || lower.includes('import')) { navigate(ROUTE_MAP.bulkimport); reply = `Opening Bulk XLSX Import & Template Downloader live!`; autoCloseModal = true; }
-      else if (lower.includes('activity log') || lower.includes('audit')) { navigate(ROUTE_MAP.activitylog); reply = `Opening System Audit Logs live!`; autoCloseModal = true; }
-      else if (lower.includes('setting') || lower.includes('config')) { navigate(ROUTE_MAP.generalconfig); reply = `Opening General Config live!`; autoCloseModal = true; }
-      else if (lower.includes('user')) { navigate(ROUTE_MAP.users); reply = `Opening User Management live!`; autoCloseModal = true; }
-      else if (lower.includes('student')) { navigate(ROUTE_MAP.students); reply = `Opening Students directory live!`; autoCloseModal = true; }
-      else if (lower.includes('teacher') || lower.includes('faculty')) { navigate(ROUTE_MAP.teachers); reply = `Opening Teacher Directory live!`; autoCloseModal = true; }
+      else if (lower.includes('finance') || lower.includes('fee')) { navigate(ROUTE_MAP.finance); reply = `Opening Finance & Fee module live!`; autoCloseModal = true; }
+      else if (lower.includes('exam') || lower.includes('examination')) { navigate(ROUTE_MAP.exam); reply = `Opening Examinations live!`; autoCloseModal = true; }
+      else if (lower.includes('admit card')) { navigate(ROUTE_MAP.admitcard); reply = `Opening Admit Cards live!`; autoCloseModal = true; }
+      else if (lower.includes('marksheet') || lower.includes('marks')) { navigate(ROUTE_MAP.marksheet); reply = `Opening Marksheets live!`; autoCloseModal = true; }
+      else if (lower.includes('employee') || lower.includes('teacher') || lower.includes('faculty')) { navigate(ROUTE_MAP.employee); reply = `Opening Employees & Faculty live!`; autoCloseModal = true; }
+      else if (lower.includes('designation')) { navigate(ROUTE_MAP.designation); reply = `Opening Designations live!`; autoCloseModal = true; }
+      else if (lower.includes('payroll')) { navigate(ROUTE_MAP.payroll); reply = `Opening Payroll live!`; autoCloseModal = true; }
+      else if (lower.includes('resource') || lower.includes('diary')) { navigate(ROUTE_MAP.resource); reply = `Opening Resources live!`; autoCloseModal = true; }
+      else if (lower.includes('assignment')) { navigate(ROUTE_MAP.assignment); reply = `Opening Assignments live!`; autoCloseModal = true; }
+      else if (lower.includes('transport') || lower.includes('vehicle')) { navigate(ROUTE_MAP.transport); reply = `Opening Transport live!`; autoCloseModal = true; }
+      else if (lower.includes('calendar') || lower.includes('event') || lower.includes('holiday')) { navigate(ROUTE_MAP.calendar); reply = `Opening Calendar & Events live!`; autoCloseModal = true; }
+      else if (lower.includes('notice')) { navigate(ROUTE_MAP.noticeboard); reply = `Opening Notice Board live!`; autoCloseModal = true; }
+      else if (lower.includes('gallery')) { navigate(ROUTE_MAP.gallery); reply = `Opening Gallery live!`; autoCloseModal = true; }
+      else if (lower.includes('inventory') || lower.includes('vendor')) { navigate(ROUTE_MAP.inventory); reply = `Opening Inventory live!`; autoCloseModal = true; }
+      else if (lower.includes('store') || lower.includes('sale')) { navigate(ROUTE_MAP.store); reply = `Opening Store & Sales live!`; autoCloseModal = true; }
+      else if (lower.includes('blog')) { navigate(ROUTE_MAP.blog); reply = `Opening Blog live!`; autoCloseModal = true; }
+      else if (lower.includes('news')) { navigate(ROUTE_MAP.news); reply = `Opening News live!`; autoCloseModal = true; }
+      else if (lower.includes('discipline') || lower.includes('incident')) { navigate(ROUTE_MAP.discipline); reply = `Opening Discipline Incident Log live!`; autoCloseModal = true; }
       else if (lower.includes('guardian') || lower.includes('parent')) { navigate(ROUTE_MAP.guardians); reply = `Opening Guardians live!`; autoCloseModal = true; }
-      else if (lower.includes('dashboard') || lower.includes('home')) { navigate(ROUTE_MAP.dashboard); reply = `Opening Main Dashboard live!`; autoCloseModal = true; }
+      else if (lower.includes('approval')) { navigate(ROUTE_MAP.approval); reply = `Opening Approvals live!`; autoCloseModal = true; }
+      else if (lower.includes('contact') || lower.includes('correspondence')) { navigate(ROUTE_MAP.contact); reply = `Opening Contacts & Correspondence live!`; autoCloseModal = true; }
+      else if (lower.includes('mess') || lower.includes('meal')) { navigate(ROUTE_MAP.mess); reply = `Opening Mess Management live!`; autoCloseModal = true; }
+      else if (lower.includes('communication') || lower.includes('email') || lower.includes('sms') || lower.includes('whatsapp')) { navigate(ROUTE_MAP.communication); reply = `Opening Communications live!`; autoCloseModal = true; }
+      else if (lower.includes('library')) { navigate(ROUTE_MAP.library); reply = `Opening Library live!`; autoCloseModal = true; }
+      else if (lower.includes('activity') || lower.includes('trip')) { navigate(ROUTE_MAP.activity); reply = `Opening Educational Activities live!`; autoCloseModal = true; }
+      else if (lower.includes('hostel')) { navigate(ROUTE_MAP.hostel); reply = `Opening Hostel Management live!`; autoCloseModal = true; }
+      else if (lower.includes('form') || lower.includes('download format') || lower.includes('bulk import')) { navigate(ROUTE_MAP.bulkimport); reply = `Opening Download Formats & Bulk Import live!`; autoCloseModal = true; }
+      else if (lower.includes('asset')) { navigate(ROUTE_MAP.asset); reply = `Opening Asset Management live!`; autoCloseModal = true; }
+      else if (lower.includes('site')) { navigate(ROUTE_MAP.site); reply = `Opening Site Management live!`; autoCloseModal = true; }
+      else if (lower.includes('recruitment') || lower.includes('vacancy')) { navigate(ROUTE_MAP.recruitment); reply = `Opening Recruitment & Vacancies live!`; autoCloseModal = true; }
+      else if (lower.includes('user') || lower.includes('credentials')) { navigate(ROUTE_MAP.users); reply = `Opening User Management live!`; autoCloseModal = true; }
+      else if (lower.includes('custom field')) { navigate(ROUTE_MAP.customfield); reply = `Opening Custom Fields live!`; autoCloseModal = true; }
+      else if (lower.includes('utility') || lower.includes('activity log') || lower.includes('audit')) { navigate(ROUTE_MAP.utility); reply = `Opening Utilities & Audit Trail live!`; autoCloseModal = true; }
+      else if (lower.includes('config') || lower.includes('configuration') || lower.includes('settings')) { navigate(ROUTE_MAP.generalconfig); reply = `Opening System Configuration live!`; autoCloseModal = true; }
       else {
-        reply = `Executed action for "${commandText}". Directing to live system overview.`;
+        reply = `Opening system dashboard for command: "${commandText}".`;
         navigate(ROUTE_MAP.dashboard);
         autoCloseModal = true;
       }
@@ -753,7 +719,7 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-base font-extrabold bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-400 bg-clip-text text-transparent tracking-wide">
-                  ALL 42-MODULE MASTER AI COPILOT
+                  ALL 36-SIDEBAR MODULE MASTER AI COPILOT
                 </h3>
                 {wizardStep > 0 ? (
                   <span className="px-2 py-0.5 text-[9px] font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-full animate-pulse uppercase">
@@ -761,11 +727,11 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
                   </span>
                 ) : (
                   <span className="px-2 py-0.5 text-[9px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full animate-pulse uppercase">
-                    100% MODULE CONTROL
+                    36 SIDEBAR MODULES TRAINED
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-slate-400">Total System Master Controller & Multi-Module Interviewer</p>
+              <p className="text-[11px] text-slate-400">Total System Controller for Every Single Sidebar Item</p>
             </div>
           </div>
 
@@ -854,26 +820,26 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
           <div ref={chatEndRef} />
         </div>
 
-        {/* Quick Commands Bar */}
+        {/* Quick Commands Bar with Sidebar Shortcuts */}
         <div className="px-4 py-2 bg-[#0e1628] border-t border-slate-800 flex items-center gap-2 overflow-x-auto no-scrollbar">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 flex-shrink-0">
-            <Zap className="w-3 h-3 text-amber-400" /> Quick Commands:
+            <Zap className="w-3 h-3 text-amber-400" /> Quick Sidebar Commands:
           </span>
           {[
             'Puch ke student add karo',
             'Puch ke teacher add karo',
             'Puch ke department add karo',
-            'Puch ke book add karo',
-            'Puch ke notice add karo',
-            'Add student Rahul Sharma',
-            'Add teacher Dr. Ananya Ray',
-            'Create department Robotics',
-            'Create subject Machine Learning',
-            'Change school name to Cambridge International',
-            'Open ID Cards',
-            'Open Certificates',
-            'Open Bulk Import',
-            'Toggle dark mode'
+            'Open Reception',
+            'Open Task',
+            'Open Finance',
+            'Open Exam',
+            'Open Employee',
+            'Open Transport',
+            'Open Inventory',
+            'Open Hostel',
+            'Open Mess',
+            'Open Recruitment',
+            'Open Custom Field'
           ].map((prompt) => (
             <button
               key={prompt}
@@ -914,7 +880,7 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
                   ? 'Listening to your voice...' 
                   : wizardStep > 0
                     ? `Type answer for ${wizardType.toUpperCase()} Step ${wizardStep}...`
-                    : 'Speak or type any command for all 42 modules in system...'
+                    : 'Speak or type any command for all 36 sidebar modules...'
               }
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}

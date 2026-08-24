@@ -544,22 +544,28 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const updateSchool = async (schoolId, schoolData) => {
+    let resultSchool = null;
     try {
       const res = await API.put(`/schools/${schoolId}`, schoolData);
+      resultSchool = res.data;
       setSchools(prev => prev.map(s => s._id === schoolId ? res.data : s));
       if (currentSchool?._id === schoolId) {
         setCurrentSchool(res.data);
         localStorage.setItem('active_school', JSON.stringify(res.data));
       }
-      return res.data;
     } catch (err) {
       setSchools(prev => prev.map(s => s._id === schoolId ? { ...s, ...schoolData } : s));
       if (currentSchool?._id === schoolId) {
         const updated = { ...currentSchool, ...schoolData };
         setCurrentSchool(updated);
         localStorage.setItem('active_school', JSON.stringify(updated));
+        resultSchool = updated;
       }
     }
+    if (resultSchool) {
+      window.dispatchEvent(new CustomEvent('school-updated', { detail: { schoolId, school: resultSchool } }));
+    }
+    return resultSchool;
   };
 
   const deleteSchool = async (schoolId) => {
