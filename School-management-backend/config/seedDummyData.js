@@ -410,7 +410,148 @@ const seedDummyData = async () => {
       console.log('Seeded initial Edit Requests successfully.');
     }
 
+    // Seed Service Requests if empty
+    const ServiceRequest = require('../models/ServiceRequest');
+    const srCount = await ServiceRequest.countDocuments();
+    if (srCount === 0) {
+      console.log('Seeding initial Service Requests...');
+      const sampleServiceRequests = [
+        {
+          codeNumber: 'SR002',
+          studentName: 'May 27, 2026',
+          parentName: 'Transport Khaira',
+          dateOfAdmission: 'Opt In',
+          admissionNumber: '',
+          course: 'Approved',
+          date: new Date('2026-05-27T09:58:00Z'),
+          type: 'Transport',
+          requestType: 'Opt In',
+          status: 'Approved',
+          createdAt: new Date('2026-05-27T09:58:00Z')
+        },
+        {
+          codeNumber: 'SR001',
+          studentName: 'April 20, 2026',
+          parentName: 'Transport Khaira',
+          dateOfAdmission: 'Opt In',
+          admissionNumber: '',
+          course: 'Requested',
+          date: new Date('2026-04-20T13:13:00Z'),
+          type: 'Transport',
+          requestType: 'Opt In',
+          status: 'Requested',
+          createdAt: new Date('2026-04-20T13:13:00Z')
+        },
+        {
+          codeNumber: 'SR006',
+          studentName: 'Ritisha Tripathi',
+          contact: '9935332556',
+          fatherName: 'Hariom Tripathi',
+          motherName: 'Anamika Tripathi',
+          parentName: 'Hariom Tripathi\nAnamika Tripathi',
+          dateOfAdmission: 'February 8, 2025',
+          admissionNumber: 'SM001',
+          course: 'IX',
+          section: 'Section A',
+          date: new Date('2026-01-15T00:00:00Z'),
+          type: 'Mess',
+          requestType: 'Opt In',
+          status: 'Approved',
+          createdAt: new Date('2026-01-15T12:39:00Z')
+        },
+        {
+          codeNumber: 'SR005',
+          studentName: 'Ritisha Tripathi',
+          contact: '9935332556',
+          fatherName: 'Hariom Tripathi',
+          motherName: 'Anamika Tripathi',
+          parentName: 'Hariom Tripathi\nAnamika Tripathi',
+          dateOfAdmission: 'February 8, 2025',
+          admissionNumber: 'SM001',
+          course: 'IX',
+          section: 'Section A',
+          date: new Date('2025-12-04T00:00:00Z'),
+          type: 'Transport\nDlw',
+          requestType: 'Opt In',
+          status: 'Approved',
+          createdAt: new Date('2025-12-04T18:59:00Z')
+        },
+        {
+          codeNumber: 'SR004',
+          studentName: 'Ritisha Tripathi',
+          contact: '9935332556',
+          fatherName: 'Hariom Tripathi',
+          motherName: 'Anamika Tripathi',
+          parentName: 'Hariom Tripathi\nAnamika Tripathi',
+          dateOfAdmission: 'February 8, 2025',
+          admissionNumber: 'SM001',
+          course: 'IX',
+          section: 'Section A',
+          date: new Date('2025-11-29T00:00:00Z'),
+          type: 'Hostel',
+          requestType: 'Opt In',
+          status: 'Approved',
+          createdAt: new Date('2025-11-28T18:29:00Z')
+        },
+        {
+          codeNumber: 'SR002',
+          studentName: 'Ritisha Tripathi',
+          contact: '9935332556',
+          fatherName: 'Hariom Tripathi',
+          motherName: 'Anamika Tripathi',
+          parentName: 'Hariom Tripathi\nAnamika Tripathi',
+          dateOfAdmission: 'February 8, 2025',
+          admissionNumber: 'SM001',
+          course: 'IX',
+          section: 'Section A',
+          date: new Date('2025-07-12T00:00:00Z'),
+          type: 'Mess',
+          requestType: 'Opt In',
+          status: 'Requested',
+          createdAt: new Date('2025-07-09T15:04:00Z')
+        },
+        {
+          codeNumber: 'SR001',
+          studentName: 'Ritisha Tripathi',
+          contact: '9935332556',
+          fatherName: 'Hariom Tripathi',
+          motherName: 'Anamika Tripathi',
+          parentName: 'Hariom Tripathi\nAnamika Tripathi',
+          dateOfAdmission: 'February 8, 2025',
+          admissionNumber: 'SM001',
+          course: 'IX',
+          section: 'Section A',
+          date: new Date('2025-07-10T00:00:00Z'),
+          type: 'Transport\nCentral Avenue',
+          requestType: 'Opt In',
+          status: 'Approved',
+          createdAt: new Date('2025-07-09T15:02:00Z')
+        },
+        {
+          codeNumber: 'SR003',
+          studentName: 'Ritisha Tripathi',
+          contact: '9935332556',
+          fatherName: 'Hariom Tripathi',
+          motherName: 'Anamika Tripathi',
+          parentName: 'Hariom Tripathi\nAnamika Tripathi',
+          dateOfAdmission: 'February 8, 2025',
+          admissionNumber: 'SM001',
+          course: 'IX',
+          section: 'Section A',
+          date: new Date('2025-07-10T00:00:00Z'),
+          type: 'Hostel',
+          requestType: 'Opt In',
+          status: 'Requested',
+          createdAt: new Date('2025-07-10T08:20:00Z')
+        }
+      ];
+
+      await ServiceRequest.insertMany(sampleServiceRequests);
+      console.log('Seeded initial Service Requests successfully.');
+    }
+
     console.log('Dummy data seeded successfully.');
+
 
 
   } catch (error) {

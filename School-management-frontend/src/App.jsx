@@ -27,6 +27,8 @@ import ServiceAllocation from './pages/students/ServiceAllocation';
 import Promotion from './pages/students/Promotion';
 import StudentConfig from './pages/students/StudentConfig';
 import EditRequests from './pages/students/EditRequests';
+import ServiceRequest from './pages/students/ServiceRequest';
+
 
 import Enquiry from './pages/reception/Enquiry';
 import VisitorLog from './pages/reception/VisitorLog';
@@ -106,7 +108,14 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="student/edit-requests" element={<EditRequests />} />
     <Route path="student/edit-requests/:id" element={<EditRequests />} />
 
-    <Route path="students/service-request" element={<Placeholder title="Service Request" />} />
+    <Route path="students/service-request" element={<ServiceRequest />} />
+    <Route path="students/service-requests" element={<ServiceRequest />} />
+    <Route path="students/service-request/create" element={<ServiceRequest initialView="add" />} />
+    <Route path="students/service-requests/create" element={<ServiceRequest initialView="add" />} />
+    <Route path="student/service-request" element={<ServiceRequest />} />
+    <Route path="student/service-requests" element={<ServiceRequest />} />
+    <Route path="student/service-requests/create" element={<ServiceRequest initialView="add" />} />
+
     <Route path="students/leave-request" element={<Placeholder title="Leave Request" />} />
     <Route path="students/transfer-request" element={<Placeholder title="Transfer Request" />} />
     <Route path="students/transfer" element={<Placeholder title="Transfer" />} />
@@ -362,6 +371,10 @@ function App() {
           <Route path="calendar/event" element={<CalendarManager defaultType="event" />} />
           <Route path="download-format" element={<DownloadFormat />} />
           <Route path="message" element={<Message />} />
+          <Route path="students/service-request" element={<ServiceRequest />} />
+          <Route path="students/service-requests" element={<ServiceRequest />} />
+          <Route path="students/service-request/create" element={<ServiceRequest initialView="add" />} />
+          <Route path="students/service-requests/create" element={<ServiceRequest initialView="add" />} />
           <Route path="library" element={<Library />} />
           <Route path="utility/activity-log" element={<ActivityLog />} />
           <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
@@ -382,6 +395,11 @@ function App() {
           <Route path="calendar/event" element={<CalendarManager defaultType="event" />} />
           <Route path="download-format" element={<DownloadFormat />} />
           <Route path="message" element={<Message />} />
+          <Route path="students/service-request" element={<ServiceRequest />} />
+          <Route path="students/service-requests" element={<ServiceRequest />} />
+          <Route path="students/service-request/create" element={<ServiceRequest initialView="add" />} />
+          <Route path="students/service-requests/create" element={<ServiceRequest initialView="add" />} />
+
           <Route path="library" element={<Library />} />
           <Route path="utility/activity-log" element={<ActivityLog />} />
           <Route path="utility/config" element={<Placeholder title="Utility Config" />} />

@@ -119,6 +119,11 @@ app.use('/api/id-card-templates', require('./routes/idCardRoutes'));
 app.use('/api/id-cards', require('./routes/idCardRoutes'));
 app.use('/api/students/edit-requests', require('./routes/editRequestRoutes'));
 app.use('/api/edit-requests', require('./routes/editRequestRoutes'));
+app.use('/api/service-requests', require('./routes/serviceRequestRoutes'));
+app.use('/api/service-request', require('./routes/serviceRequestRoutes'));
+app.use('/api/students/service-requests', require('./routes/serviceRequestRoutes'));
+app.use('/api/students/service-request', require('./routes/serviceRequestRoutes'));
+
 
 
 
