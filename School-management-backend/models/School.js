@@ -274,6 +274,11 @@ const schoolSchema = new mongoose.Schema({
     default: 'Campus Pilot',
     trim: true
   },
+  footerText: {
+    type: String,
+    default: 'Campus Pilot',
+    trim: true
+  },
   code: {
     type: String,
     trim: true

@@ -87,6 +87,8 @@ export default function GeneralConfig() {
   // General Form State
   const [formData, setFormData] = useState({
     name: 'Campus Pilot International School',
+    appName: 'Campus Pilot',
+    footerText: 'Campus Pilot',
     title1: '',
     title2: '',
     title3: '',
@@ -172,6 +174,8 @@ export default function GeneralConfig() {
       setFormData(prev => ({
         ...prev,
         name: currentSchool.name || 'Campus Pilot International School',
+        appName: currentSchool.appName || 'Campus Pilot',
+        footerText: currentSchool.footerText || currentSchool.appName || 'Campus Pilot',
         title1: currentSchool.title1 || '',
         title2: currentSchool.title2 || '',
         title3: currentSchool.title3 || '',
@@ -220,6 +224,8 @@ export default function GeneralConfig() {
     if (currentSchool) {
       setFormData({
         name: currentSchool.name || 'Campus Pilot International School',
+        appName: currentSchool.appName || 'Campus Pilot',
+        footerText: currentSchool.footerText || currentSchool.appName || 'Campus Pilot',
         title1: currentSchool.title1 || '',
         title2: currentSchool.title2 || '',
         title3: currentSchool.title3 || '',
@@ -258,6 +264,8 @@ export default function GeneralConfig() {
       const updatedPayload = {
         ...currentSchool,
         name: formData.name,
+        appName: formData.appName,
+        footerText: formData.footerText || formData.appName,
         title1: formData.title1,
         title2: formData.title2,
         title3: formData.title3,
@@ -277,7 +285,7 @@ export default function GeneralConfig() {
       };
 
       await updateSchool(currentSchool._id, updatedPayload);
-      document.title = `${formData.name} | Campus Pilot`;
+      document.title = `${formData.appName || formData.name} | Campus Pilot`;
       setMessage({ type: 'success', text: 'General Configuration saved successfully!' });
       setTimeout(() => setMessage({ type: '', text: '' }), 4000);
     } catch (err) {
@@ -551,6 +559,24 @@ export default function GeneralConfig() {
                         placeholder="Name"
                         className="w-full px-3.5 py-2 text-sm rounded-lg border-b-2 border-gray-300 dark:border-slate-600 bg-transparent text-gray-900 dark:text-slate-100 focus:border-teal-500 outline-none transition"
                       />
+                    </div>
+
+                    <div className="col-span-2 sm:col-span-1">
+                      <label className="block text-xs font-bold text-teal-700 dark:text-teal-400 mb-1 flex items-center justify-between">
+                        <span>System Branding / App Name (Footer Text)</span>
+                        <span className="text-[10px] font-normal text-teal-600 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/50 px-2 py-0.5 rounded-full border border-teal-200 dark:border-teal-800">Global Option</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="appName"
+                        value={formData.appName}
+                        onChange={handleChange}
+                        placeholder="Campus Pilot"
+                        className="w-full px-3.5 py-2 text-sm font-semibold rounded-lg border-2 border-teal-500/50 bg-teal-50/30 dark:bg-slate-900 text-gray-900 dark:text-slate-100 focus:border-teal-600 outline-none transition shadow-sm"
+                      />
+                      <p className="text-[11px] text-gray-500 dark:text-slate-400 mt-1">
+                        Whatever name you put here (e.g., Campus Pilot) will automatically update across all footers, page titles, and application branding globally.
+                      </p>
                     </div>
 
                     <div className="col-span-2 sm:col-span-1">

@@ -6,6 +6,7 @@ import {
   Trash2, Edit, Download, Upload, Search, List
 } from 'lucide-react';
 import API from '../../api/axios';
+import Footer from '../../components/Footer';
 
 export default function HelpdeskConfig({ initialTab = 'config' }) {
   const location = useLocation();
@@ -816,10 +817,7 @@ export default function HelpdeskConfig({ initialTab = 'config' }) {
         </div>
       </div>
 
-      {/* Campus Pilot Footer */}
-      <footer className="mt-8 py-4 text-center text-xs font-medium text-gray-600 dark:text-slate-400 border-t border-gray-100 dark:border-slate-800">
-        Campus Pilot
-      </footer>
+
 
     </div>
   );

@@ -3,6 +3,9 @@ import { useContext, useState, useEffect, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { SchoolContext } from '../context/SchoolContext';
 import API from '../api/axios';
+import Footer from './Footer';
+import AiAssistant from './AiAssistant';
+import aiLogo from '../assets/ai-logo.png';
 import { 
   LayoutDashboard, Menu, Search, Sun, Moon, Bell, Settings,
   ChevronDown, ChevronRight, CheckCircle, GraduationCap, Users, UserCheck, 
@@ -112,6 +115,9 @@ export default function Layout() {
     return document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
   });
 
+  // AI Copilot Assistant State
+  const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
+
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const profileDropdownRef = useRef(null);
@@ -179,7 +185,7 @@ export default function Layout() {
   useEffect(() => {
     if (currentSchool) {
       const siteTitle = currentSchool.appName || currentSchool.name || 'Campus Pilot';
-      document.title = `${siteTitle} | Campus Pilot`;
+      document.title = siteTitle;
     }
   }, [currentSchool]);
 
@@ -628,8 +634,8 @@ export default function Layout() {
               </div>
             )}
             <div className="min-w-0 flex-1">
-              <h1 className="text-[15px] font-bold text-gray-800 dark:text-white tracking-tight truncate max-w-[170px]" title={currentSchool?.name || currentSchool?.appName || 'Campus Pilot'}>
-                {currentSchool?.name || currentSchool?.appName || 'Campus Pilot'}
+              <h1 className="text-[15px] font-bold text-gray-800 dark:text-white tracking-tight truncate max-w-[170px]" title={currentSchool?.appName || currentSchool?.name || 'Campus Pilot'}>
+                {currentSchool?.appName || currentSchool?.name || 'Campus Pilot'}
               </h1>
               {currentSchool?.code && (
                 <p className="text-[10px] font-bold text-teal-600 dark:text-teal-400 tracking-wider truncate">
@@ -702,68 +708,86 @@ export default function Layout() {
               <Menu className="w-5 h-5" />
             </button>
             
-            {/* Search Bar */}
-            <div className="hidden lg:flex items-center bg-slate-800/80 border border-slate-700/60 rounded-xl px-3 py-2 w-64 xl:w-72 focus-within:ring-1 focus-within:ring-teal-500 transition-all relative">
-              <Search className="w-[18px] h-[18px] text-slate-400 mr-2" />
-              <input 
-                type="text" 
-                placeholder="Search database..." 
-                className="bg-transparent border-none outline-none w-full text-[13px] text-slate-200 placeholder-slate-400"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => {if(searchQuery.length >= 2) setShowSearchDropdown(true)}}
-              />
-              
-              {/* Search Dropdown Results */}
-              {showSearchDropdown && (
-                <div className="absolute top-12 left-0 w-full lg:w-[400px] bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 max-h-[400px] overflow-y-auto z-50">
-                  {isSearching ? (
-                    <div className="p-4 text-center text-sm text-gray-500 dark:text-slate-400">Searching...</div>
-                  ) : (
-                    <div className="p-2">
-                      {searchResults.students.length === 0 && searchResults.teachers.length === 0 && searchResults.guardians.length === 0 && (
-                        <div className="p-4 text-center text-sm text-gray-500 dark:text-slate-400">No results found for "{searchQuery}"</div>
-                      )}
-                      
-                      {searchResults.students.length > 0 && (
-                        <div className="mb-2">
-                          <h4 className="px-3 py-1 text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">Students</h4>
-                          {searchResults.students.map(s => (
-                            <Link key={s._id} to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/students`} className="block px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
-                              <p className="text-sm font-medium text-gray-800 dark:text-white">{s.name}</p>
-                              <p className="text-xs text-gray-500 dark:text-slate-400">{s.email || 'No email'}</p>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                      
-                      {searchResults.teachers.length > 0 && (
-                        <div className="mb-2">
-                          <h4 className="px-3 py-1 text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">Teachers</h4>
-                          {searchResults.teachers.map(t => (
-                            <Link key={t._id} to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/teachers`} className="block px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
-                              <p className="text-sm font-medium text-gray-800 dark:text-white">{t.name}</p>
-                              <p className="text-xs text-gray-500 dark:text-slate-400">{t.subject}</p>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                      
-                      {searchResults.guardians.length > 0 && (
-                        <div>
-                          <h4 className="px-3 py-1 text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">Guardians</h4>
-                          {searchResults.guardians.map(g => (
-                            <Link key={g._id} to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/guardians/${g._id}`} className="block px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
-                              <p className="text-sm font-medium text-gray-800 dark:text-white">{g.name}</p>
-                              <p className="text-xs text-gray-500 dark:text-slate-400">{g.relationship}</p>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
+            {/* Search Bar & AI Copilot Logo */}
+            <div className="hidden lg:flex items-center space-x-3">
+              <div className="flex items-center bg-slate-800/80 border border-slate-700/60 rounded-xl px-3 py-2 w-64 xl:w-72 focus-within:ring-1 focus-within:ring-teal-500 transition-all relative">
+                <Search className="w-[18px] h-[18px] text-slate-400 mr-2" />
+                <input 
+                  type="text" 
+                  placeholder="Search database..." 
+                  className="bg-transparent border-none outline-none w-full text-[13px] text-slate-200 placeholder-slate-400"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => {if(searchQuery.length >= 2) setShowSearchDropdown(true)}}
+                />
+                
+                {/* Search Dropdown Results */}
+                {showSearchDropdown && (
+                  <div className="absolute top-12 left-0 w-full lg:w-[400px] bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 max-h-[400px] overflow-y-auto z-50">
+                    {isSearching ? (
+                      <div className="p-4 text-center text-sm text-gray-500 dark:text-slate-400">Searching...</div>
+                    ) : (
+                      <div className="p-2">
+                        {searchResults.students.length === 0 && searchResults.teachers.length === 0 && searchResults.guardians.length === 0 && (
+                          <div className="p-4 text-center text-sm text-gray-500 dark:text-slate-400">No results found for "{searchQuery}"</div>
+                        )}
+                        
+                        {searchResults.students.length > 0 && (
+                          <div className="mb-2">
+                            <h4 className="px-3 py-1 text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">Students</h4>
+                            {searchResults.students.map(s => (
+                              <Link key={s._id} to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/students`} className="block px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
+                                <p className="text-sm font-medium text-gray-800 dark:text-white">{s.name}</p>
+                                <p className="text-xs text-gray-500 dark:text-slate-400">{s.email || 'No email'}</p>
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {searchResults.teachers.length > 0 && (
+                          <div className="mb-2">
+                            <h4 className="px-3 py-1 text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">Teachers</h4>
+                            {searchResults.teachers.map(t => (
+                              <Link key={t._id} to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/teachers`} className="block px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
+                                <p className="text-sm font-medium text-gray-800 dark:text-white">{t.name}</p>
+                                <p className="text-xs text-gray-500 dark:text-slate-400">{t.subject}</p>
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {searchResults.guardians.length > 0 && (
+                          <div>
+                            <h4 className="px-3 py-1 text-[11px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">Guardians</h4>
+                            {searchResults.guardians.map(g => (
+                              <Link key={g._id} to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/guardians/${g._id}`} className="block px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
+                                <p className="text-sm font-medium text-gray-800 dark:text-white">{g.name}</p>
+                                <p className="text-xs text-gray-500 dark:text-slate-400">{g.relationship}</p>
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* AI Copilot Button with Neon Hexagon Logo */}
+              <button
+                type="button"
+                onClick={() => setIsAiAssistantOpen(true)}
+                className="relative group px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-purple-500/50 hover:border-pink-500 transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.35)] hover:shadow-[0_0_22px_rgba(236,72,153,0.5)] hover:scale-105 flex items-center gap-2 cursor-pointer"
+                title="Open AI School Copilot (Voice & Chat Control)"
+              >
+                <div className="relative w-7 h-7 flex-shrink-0 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-lg blur-xs opacity-80 animate-pulse"></div>
+                  <img src={aiLogo} alt="AI Copilot" className="w-6 h-6 object-contain relative z-10" />
                 </div>
-              )}
+                <span className="hidden xl:inline text-xs font-extrabold bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-400 bg-clip-text text-transparent tracking-wider">
+                  AI COPILOT
+                </span>
+              </button>
             </div>
           </div>
           
@@ -864,7 +888,7 @@ export default function Layout() {
                 >
                   <Building className="w-4 h-4 text-teal-400 flex-shrink-0" />
                   <span className="hidden md:flex max-w-[180px] sm:max-w-[240px] md:max-w-[320px] truncate items-center gap-1.5">
-                    <span className="truncate">{currentSchool?.name || currentSchool?.appName || 'Campus Pilot'}</span>
+                    <span className="truncate">{currentSchool?.appName || currentSchool?.name || 'Campus Pilot'}</span>
                     {currentSchool?.code && (
                       <span className="px-1.5 py-0.5 text-[10px] font-extrabold bg-teal-500/20 text-teal-300 rounded border border-teal-500/40 flex-shrink-0">
                         {currentSchool.code}
@@ -956,7 +980,7 @@ export default function Layout() {
               <div className="hidden sm:flex items-center space-x-2 text-white px-3 py-1.5 rounded-xl bg-slate-800/50 border border-slate-700/50 font-semibold text-[15px] tracking-tight cursor-default">
                 <Building className="w-4 h-4 text-teal-400 flex-shrink-0" />
                 <span className="max-w-[180px] sm:max-w-[240px] md:max-w-[320px] truncate flex items-center gap-1.5">
-                  <span className="truncate">{currentSchool?.name || currentSchool?.appName || 'Campus Pilot'}</span>
+                  <span className="truncate">{currentSchool?.appName || currentSchool?.name || 'Campus Pilot'}</span>
                   {currentSchool?.code && (
                     <span className="px-1.5 py-0.5 text-[10px] font-extrabold bg-teal-500/20 text-teal-300 rounded border border-teal-500/40 flex-shrink-0">
                       {currentSchool.code}
@@ -1085,7 +1109,7 @@ export default function Layout() {
                       {user.email}
                     </p>
                     <p className="text-xs text-teal-600 dark:text-teal-400 font-semibold truncate mt-0.5">
-                      {currentSchool?.name || currentSchool?.appName || 'Campus Pilot'}
+                      {currentSchool?.appName || currentSchool?.name || 'Campus Pilot'}
                     </p>
                   </div>
 
@@ -1258,10 +1282,11 @@ export default function Layout() {
         </header>
 
         {/* Page Content scrolling area */}
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 md:p-8 bg-[#F0F5FB] dark:bg-slate-900 transition-colors duration-300" onClick={() => setShowSearchDropdown(false)}>
-          <div className="max-w-7xl mx-auto">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 md:p-8 bg-[#F0F5FB] dark:bg-slate-900 transition-colors duration-300 flex flex-col justify-between" onClick={() => setShowSearchDropdown(false)}>
+          <div className="max-w-7xl mx-auto w-full flex-1">
             <Outlet />
           </div>
+          <Footer />
         </main>
       </div>
 
@@ -1442,6 +1467,13 @@ export default function Layout() {
           <span>{toastMessage}</span>
         </div>
       )}
+      {/* AI Copilot Voice & Text Assistant Modal */}
+      <AiAssistant
+        isOpen={isAiAssistantOpen}
+        onClose={() => setIsAiAssistantOpen(false)}
+        toggleTheme={toggleTheme}
+        isDark={isDark}
+      />
     </div>
   );
 }

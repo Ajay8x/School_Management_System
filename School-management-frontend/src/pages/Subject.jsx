@@ -1096,10 +1096,7 @@ export default function Subject() {
         </div>
       )}
 
-      {/* Footer Branding */}
-      <footer className="py-6 text-center text-xs text-slate-400 dark:text-slate-500 font-medium">
-        Campus Pilot
-      </footer>
+
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useContext } from 'react';
 import API from '../api/axios';
+import Footer from '../components/Footer';
 import { AuthContext } from '../context/AuthContext';
 import { useSchoolRefresh } from '../hooks/useSchoolRefresh';
 import * as XLSX from 'xlsx';
@@ -801,10 +802,7 @@ export default function Department() {
         </div>
       )}
 
-      {/* Footer Branding matching Screenshots: "Campus Pilot" */}
-      <footer className="mt-8 pt-4 border-t border-gray-200/60 dark:border-slate-800 text-center text-xs font-medium text-gray-500 dark:text-slate-400 no-print">
-        Campus Pilot
-      </footer>
+
 
     </div>
   );

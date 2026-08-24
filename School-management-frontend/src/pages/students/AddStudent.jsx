@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { useNavigate, Link, useParams } from 'react-router-dom';
+import { useNavigate, Link, useParams, useLocation } from 'react-router-dom';
 import API from '../../api/axios';
 import { AuthContext } from '../../context/AuthContext';
 import { Save, Plus, Trash2, RotateCcw, ListChecks } from 'lucide-react';
@@ -7,6 +7,7 @@ import { Save, Plus, Trash2, RotateCcw, ListChecks } from 'lucide-react';
 export default function AddStudent() {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -52,6 +53,29 @@ export default function AddStudent() {
       .then(res => setProgramsList(Array.isArray(res.data) ? res.data : []))
       .catch(err => console.error('Failed to load programs in AddStudent:', err));
   }, []);
+
+  useEffect(() => {
+    if (location.state?.prefill) {
+      setFormData(prev => ({
+        ...prev,
+        ...location.state.prefill
+      }));
+      setSuccess('Form pre-filled automatically by AI Copilot!');
+    }
+
+    const handleAiFormFill = (e) => {
+      if (e.detail) {
+        setFormData(prev => ({
+          ...prev,
+          ...e.detail
+        }));
+        setSuccess('AI updated field live on form!');
+      }
+    };
+
+    window.addEventListener('ai_form_fill', handleAiFormFill);
+    return () => window.removeEventListener('ai_form_fill', handleAiFormFill);
+  }, [location.state]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

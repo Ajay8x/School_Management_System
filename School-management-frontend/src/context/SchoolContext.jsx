@@ -356,6 +356,7 @@ const DEFAULT_SCHOOLS = [
     _id: 'school_1', 
     name: 'Demo International School',
     appName: 'Campus Pilot',
+    footerText: 'Campus Pilot',
     description: 'Innovative Partner',
     metaAuthor: 'CampusPilot',
     metaDescription: 'Application by campuspilot',

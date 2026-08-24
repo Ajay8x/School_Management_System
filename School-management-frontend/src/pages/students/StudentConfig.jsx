@@ -1043,10 +1043,7 @@ export default function StudentConfig() {
         </div>
       </div>
 
-      {/* Footer Branding - Consistent "Campus Pilot" */}
-      <footer className="mt-8 pt-4 border-t border-gray-200 dark:border-slate-800 text-center text-xs font-medium text-gray-500 dark:text-slate-400">
-        <span>Campus Pilot</span>
-      </footer>
+
 
     </div>
   );

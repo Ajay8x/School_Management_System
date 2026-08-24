@@ -6,6 +6,7 @@ import {
   Search, Trash2, Edit, Check, X, Home, HelpCircle, Tag, AlertCircle, Clock
 } from 'lucide-react';
 import API from '../../api/axios';
+import Footer from '../../components/Footer';
 
 export default function Ticket() {
   const navigate = useNavigate();
@@ -789,10 +790,7 @@ export default function Ticket() {
         )}
       </div>
 
-      {/* Footer Text matching screenshots ("Campus Pilot") */}
-      <footer className="mt-8 py-4 text-center text-xs font-medium text-gray-600 dark:text-slate-400 border-t border-gray-100 dark:border-slate-800">
-        Campus Pilot
-      </footer>
+
 
     </div>
   );

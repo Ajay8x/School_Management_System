@@ -104,8 +104,17 @@ studentSchema.pre('validate', function() {
   if (this.firstName) {
     this.name = [this.firstName, this.middleName, this.lastName].filter(Boolean).join(' ');
   }
-  if (!this.parentName && this.guardians && this.guardians.length > 0) {
-    this.parentName = this.guardians[0].name;
+  if (!this.name) {
+    this.name = 'New Student';
+  }
+  if (!this.className) {
+    this.className = 'Class 10';
+  }
+  if (!this.parentName) {
+    this.parentName = (this.guardians && this.guardians.length > 0) ? this.guardians[0].name : 'Parent / Guardian';
+  }
+  if (!this.contact) {
+    this.contact = '9876543210';
   }
   if (!this.rollNumber) {
     this.rollNumber = undefined;

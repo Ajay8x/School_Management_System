@@ -1100,10 +1100,7 @@ export default function Program() {
         </div>
       )}
 
-      {/* Footer Branding matching Screenshots: "Campus Pilot" */}
-      <footer className="mt-8 pt-4 border-t border-gray-200/60 dark:border-slate-800 text-center text-xs font-medium text-gray-500 dark:text-slate-400 no-print">
-        Campus Pilot
-      </footer>
+
 
     </div>
   );
