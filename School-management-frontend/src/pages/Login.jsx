@@ -39,7 +39,7 @@ export default function Login() {
   };
 
   const inputBase =
-    'w-full pl-11 pr-4 py-3.5 bg-white/80 dark:bg-white/5 border border-gray-200/80 dark:border-white/10 rounded-xl text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-violet-400/50 focus:border-violet-400/50 transition-all duration-200 text-sm backdrop-blur-sm';
+    'w-full pl-11 pr-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-violet-400/50 focus:border-violet-400/50 transition-all duration-200 text-sm backdrop-blur-sm';
 
   const DEFAULT_GUEST_FULL_BG = "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80";
   const bgImage = currentSchool?.assets?.guestFullPageBackground;
@@ -96,11 +96,11 @@ export default function Login() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email field */}
             <div className="relative group">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-violet-400 transition-colors" />
+              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50 group-focus-within:text-violet-400 transition-colors" />
               <input
                 type="email"
                 className={inputBase}
-                placeholder="Email address"
+                placeholder="Enter your email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -110,11 +110,11 @@ export default function Login() {
 
             {/* Password field */}
             <div className="relative group">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-violet-400 transition-colors" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50 group-focus-within:text-violet-400 transition-colors" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 className={`${inputBase} pr-11`}
-                placeholder="Password"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -123,7 +123,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
                 tabIndex={-1}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
