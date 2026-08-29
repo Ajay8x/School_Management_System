@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { SchoolContext } from '../context/SchoolContext';
 import { useNavigate } from 'react-router-dom';
 import {
   School,
@@ -19,6 +20,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   const { login } = useContext(AuthContext);
+  const { currentSchool } = useContext(SchoolContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -39,15 +41,30 @@ export default function Login() {
   const inputBase =
     'w-full pl-11 pr-4 py-3.5 bg-white/80 dark:bg-white/5 border border-gray-200/80 dark:border-white/10 rounded-xl text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-violet-400/50 focus:border-violet-400/50 transition-all duration-200 text-sm backdrop-blur-sm';
 
+  const DEFAULT_GUEST_FULL_BG = "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80";
+  const bgImage = currentSchool?.assets?.guestFullPageBackground;
+  const isCustomBg = bgImage && bgImage !== DEFAULT_GUEST_FULL_BG;
+
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#0f0c29]">
-      {/* Animated gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e]" />
-
-      {/* Floating orbs */}
-      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-teal-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-      <div className="absolute top-3/4 left-1/3 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+      {isCustomBg ? (
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${bgImage})` }}
+        >
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+        </div>
+      ) : (
+        <>
+          {/* Animated gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e]" />
+    
+          {/* Floating orbs */}
+          <div className="absolute top-1/4 -left-32 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-teal-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-3/4 left-1/3 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        </>
+      )}
 
       {/* Card */}
       <div className="relative z-10 w-full max-w-md mx-4">
