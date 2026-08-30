@@ -550,6 +550,88 @@ const seedDummyData = async () => {
       console.log('Seeded initial Service Requests successfully.');
     }
 
+    // Seed Payment Methods if empty
+    const PaymentMethod = require('../models/PaymentMethod');
+    const pmCount = await PaymentMethod.countDocuments();
+    if (pmCount === 0) {
+      console.log('Seeding initial Payment Methods...');
+      const samplePaymentMethods = [
+        {
+          name: 'CASH',
+          code: 'CASH',
+          isPaymentGateway: false,
+          hasInstrumentNumber: false,
+          hasInstrumentDate: false,
+          hasClearingDate: false,
+          hasBankDetail: false,
+          hasBranchDetail: false,
+          hasReferenceNumber: false,
+          hasCardProvider: false,
+          description: 'Cash payment at counter',
+          createdAt: new Date('2025-01-29T09:33:00Z')
+        },
+        {
+          name: 'CCAvenue',
+          code: '',
+          isPaymentGateway: true,
+          hasInstrumentNumber: false,
+          hasInstrumentDate: false,
+          hasClearingDate: false,
+          hasBankDetail: false,
+          hasBranchDetail: false,
+          hasReferenceNumber: true,
+          hasCardProvider: false,
+          description: 'Online CCAvenue Gateway',
+          createdAt: new Date('2025-01-29T09:33:00Z')
+        },
+        {
+          name: 'Internet Banking',
+          code: '',
+          isPaymentGateway: false,
+          hasInstrumentNumber: true,
+          hasInstrumentDate: true,
+          hasClearingDate: true,
+          hasBankDetail: true,
+          hasBranchDetail: true,
+          hasReferenceNumber: true,
+          hasCardProvider: false,
+          description: 'Direct Bank Transfer / NEFT / RTGS',
+          createdAt: new Date('2025-01-29T09:33:00Z')
+        },
+        {
+          name: 'Razorpay',
+          code: '',
+          isPaymentGateway: true,
+          hasInstrumentNumber: false,
+          hasInstrumentDate: false,
+          hasClearingDate: false,
+          hasBankDetail: false,
+          hasBranchDetail: false,
+          hasReferenceNumber: true,
+          hasCardProvider: false,
+          description: 'Razorpay Online Payment Integration',
+          createdAt: new Date('2025-01-29T09:33:00Z')
+        },
+        {
+          name: 'UPI',
+          code: 'UPI',
+          isPaymentGateway: false,
+          hasInstrumentNumber: false,
+          hasInstrumentDate: false,
+          hasClearingDate: false,
+          hasBankDetail: false,
+          hasBranchDetail: false,
+          hasReferenceNumber: true,
+          hasCardProvider: false,
+          description: 'Unified Payments Interface (GPay / PhonePe / Paytm)',
+          createdAt: new Date('2025-02-05T13:09:00Z')
+        }
+      ];
+
+      await PaymentMethod.insertMany(samplePaymentMethods);
+      console.log('Seeded initial Payment Methods successfully.');
+    }
+
     console.log('Dummy data seeded successfully.');
 
 
