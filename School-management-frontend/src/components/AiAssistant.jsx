@@ -50,7 +50,7 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
       recognition.interimResults = true;
-      recognition.lang = 'hi-IN';
+      recognition.lang = 'en-IN';
 
       recognition.onstart = () => setIsListening(true);
       recognition.onend = () => setIsListening(false);
