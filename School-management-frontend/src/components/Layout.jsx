@@ -577,7 +577,8 @@ export default function Layout() {
         { name: 'Locale', href: '/settings?tab=locale', icon: Globe },
         { name: 'User Credentials', href: '/settings?tab=credentials', roles: ['super-admin'], icon: Key },
         { name: 'Role & Access', href: '/settings?tab=roles', icon: ShieldCheck },
-        { name: 'Activity Log', href: '/settings?tab=activity', icon: Activity }
+        { name: 'Activity Log', href: '/settings?tab=activity', icon: Activity },
+        { name: 'Login Session Management', href: '/settings?tab=login-session', icon: LogIn }
       ] 
     },
 

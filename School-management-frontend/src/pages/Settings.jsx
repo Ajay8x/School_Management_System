@@ -55,7 +55,8 @@ export default function Settings({ initialTab = 'general' }) {
     { id: 'terminology', label: 'Terminology', icon: Languages },
     { id: 'locale', label: 'Locale', icon: Globe },
     { id: 'credentials', label: 'User Credentials', icon: Key, superAdminOnly: true },
-    { id: 'activity', label: 'Activity Log', icon: Activity }
+    { id: 'activity', label: 'Activity Log', icon: Activity },
+    { id: 'login-session', label: 'Login Session Management', icon: LogIn }
   ];
 
   const visibleTabs = tabsList.filter(t => !t.superAdminOnly || isSuperAdmin);
@@ -118,6 +119,7 @@ export default function Settings({ initialTab = 'general' }) {
         {activeTab === 'social' && <Placeholder title="Social Network Integration" />}
         {activeTab === 'terminology' && <Placeholder title="Custom Terminology" />}
         {activeTab === 'locale' && <Placeholder title="Locale & Language Settings" />}
+        {activeTab === 'login-session' && <Placeholder title="Login Session Management" />}
       </div>
     </div>
   );
