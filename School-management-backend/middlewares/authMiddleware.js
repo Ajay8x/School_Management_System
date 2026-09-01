@@ -16,6 +16,16 @@ const protect = async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+      const LoginSession = require('../models/LoginSession');
+      // Verify Session if exists in token
+      if (decoded.sessionId) {
+        const session = await LoginSession.findById(decoded.sessionId);
+        if (!session || !session.isActive) {
+          return res.status(401).json({ message: 'Session expired or revoked. Please login again.' });
+        }
+        req.sessionId = decoded.sessionId;
+      }
+
       // Get user from the token
       req.user = await User.findById(decoded.id).select('-password');
       if (!req.user) {
