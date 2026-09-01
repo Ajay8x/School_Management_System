@@ -6,6 +6,7 @@ import ModuleConfig from './super-admin/ModuleConfig';
 import UserCredentials from './super-admin/UserCredentials';
 import Roles from './Roles';
 import ActivityLog from './ActivityLog';
+import LoginSessionManagement from './LoginSessionManagement';
 import Placeholder from '../components/Placeholder';
 import { AuthContext } from '../context/AuthContext';
 import { 
@@ -119,7 +120,7 @@ export default function Settings({ initialTab = 'general' }) {
         {activeTab === 'social' && <Placeholder title="Social Network Integration" />}
         {activeTab === 'terminology' && <Placeholder title="Custom Terminology" />}
         {activeTab === 'locale' && <Placeholder title="Locale & Language Settings" />}
-        {activeTab === 'login-session' && <Placeholder title="Login Session Management" />}
+        {activeTab === 'login-session' && <LoginSessionManagement />}
       </div>
     </div>
   );
