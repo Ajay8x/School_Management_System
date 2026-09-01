@@ -70,6 +70,18 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
     }
   }, []);
 
+  // Auto-listen when direct mic is triggered
+  useEffect(() => {
+    const handleDirectMic = () => {
+      if (recognitionRef.current) {
+        setInputText('');
+        recognitionRef.current.start();
+      }
+    };
+    window.addEventListener('ai_direct_mic', handleDirectMic);
+    return () => window.removeEventListener('ai_direct_mic', handleDirectMic);
+  }, []);
+
   const [availableVoices, setAvailableVoices] = useState([]);
 
   // Pre-load natural voices from browser/OS

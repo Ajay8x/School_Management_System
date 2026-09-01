@@ -14,7 +14,7 @@ import {
   Home, Check, Building, Sliders, ChevronUp, Wrench, Activity, Boxes, Image as ImageIcon,
   CheckSquare, HelpCircle, Folder, Truck, Package, ShoppingBag, FileEdit, Newspaper,
   ShieldAlert, PhoneCall, Utensils, FileCode, Globe, LogIn, Mail, List, MessageCircle, Share2, Languages,
-  QrCode, Download, RefreshCw
+  QrCode, Download, RefreshCw, Mic
 } from 'lucide-react';
 
 
@@ -791,21 +791,36 @@ export default function Layout() {
                 )}
               </div>
 
-              {/* AI Copilot Button with Neon Hexagon Logo */}
-              <button
-                type="button"
-                onClick={() => setIsAiAssistantOpen(true)}
-                className="relative group px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-purple-500/50 hover:border-pink-500 transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.35)] hover:shadow-[0_0_22px_rgba(236,72,153,0.5)] hover:scale-105 flex items-center gap-2 cursor-pointer"
-                title="Open AI School Copilot (Voice & Chat Control)"
-              >
-                <div className="relative w-7 h-7 flex-shrink-0 flex items-center justify-center">
-                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-lg blur-xs opacity-80 animate-pulse"></div>
-                  <img src={aiLogo} alt="AI Copilot" className="w-6 h-6 object-contain relative z-10" />
-                </div>
-                <span className="hidden xl:inline text-xs font-extrabold bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-400 bg-clip-text text-transparent tracking-wider">
-                  AI COPILOT
-                </span>
-              </button>
+              <div className="flex items-center space-x-2">
+                {/* Direct Mic Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsAiAssistantOpen(true);
+                    setTimeout(() => window.dispatchEvent(new CustomEvent('ai_direct_mic')), 100);
+                  }}
+                  className="p-2 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white border border-rose-500/50 transition-all duration-300 shadow-[0_0_10px_rgba(244,63,94,0.2)] hover:shadow-[0_0_15px_rgba(244,63,94,0.4)] hover:scale-105"
+                  title="Direct Voice Command"
+                >
+                  <Mic className="w-5 h-5" />
+                </button>
+
+                {/* AI Copilot Button with Neon Hexagon Logo */}
+                <button
+                  type="button"
+                  onClick={() => setIsAiAssistantOpen(true)}
+                  className="relative group px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-purple-500/50 hover:border-pink-500 transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.35)] hover:shadow-[0_0_22px_rgba(236,72,153,0.5)] hover:scale-105 flex items-center gap-2 cursor-pointer"
+                  title="Open AI School Copilot (Voice & Chat Control)"
+                >
+                  <div className="relative w-7 h-7 flex-shrink-0 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-lg blur-xs opacity-80 animate-pulse"></div>
+                    <img src={aiLogo} alt="AI Copilot" className="w-6 h-6 object-contain relative z-10" />
+                  </div>
+                  <span className="hidden xl:inline text-xs font-extrabold bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-400 bg-clip-text text-transparent tracking-wider">
+                    OPEN MODULE
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
           
