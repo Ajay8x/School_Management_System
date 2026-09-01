@@ -33,10 +33,7 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
   const [speechEnabled, setSpeechEnabled] = useState(true);
   const [thinking, setThinking] = useState(false);
 
-  // Universal Dynamic Multi-Module Form Wizard Engine
-  const [wizardType, setWizardType] = useState('student');
-  const [wizardStep, setWizardStep] = useState(0); 
-  const [wizardData, setWizardData] = useState({});
+
 
   const chatEndRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -391,184 +388,7 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
     let autoCloseModal = false;
 
     try {
-      // =========================================================
-      // 1. UNIVERSAL MULTI-MODULE INTERACTIVE WIZARD ENGINE
-      // =========================================================
-      if (wizardStep > 0) {
-        if (wizardType === 'student') {
-          if (wizardStep === 1) {
-            const studentName = commandText.trim();
-            const firstName = studentName.split(' ')[0] || studentName;
-            const lastName = studentName.split(' ').slice(1).join(' ') || 'Sharma';
-            const timestamp = Date.now().toString().slice(-4);
-            const email = `${studentName.toLowerCase().replace(/[^a-z0-9]/g, '')}${timestamp}@school.com`;
-
-            setWizardData({ ...wizardData, name: studentName, firstName, lastName, email });
-            setWizardStep(2);
-            window.dispatchEvent(new CustomEvent('ai_form_fill', { detail: { name: studentName, firstName, lastName, email } }));
-            reply = `Student Name set to "${studentName}"!\n\n📌 Step 2/4: Student ki Class/Grade konsi hai? (e.g. Class 10)`;
-          } else if (wizardStep === 2) {
-            const className = commandText.trim();
-            setWizardData({ ...wizardData, className });
-            setWizardStep(3);
-            window.dispatchEvent(new CustomEvent('ai_form_fill', { detail: { className, course: className } }));
-            reply = `Class set to "${className}"!\n\n📌 Step 3/4: Parent / Guardian ka Full Name kya hai?`;
-          } else if (wizardStep === 3) {
-            const parentName = commandText.trim();
-            setWizardData({ ...wizardData, parentName });
-            setWizardStep(4);
-            window.dispatchEvent(new CustomEvent('ai_form_fill', { detail: { parentName } }));
-            reply = `Parent Name set to "${parentName}"!\n\n📌 Step 4/4: Mobile Contact Number kya hai?`;
-          } else if (wizardStep === 4) {
-            const contact = commandText.trim();
-            const finalData = { ...wizardData, contact, rollNumber: `STU-${Date.now().toString().slice(-4)}`, status: 'Active' };
-            window.dispatchEvent(new CustomEvent('ai_form_fill', { detail: { contact } }));
-            try {
-              await API.post('/students', finalData);
-              reply = `🎉 Student "${finalData.name}" saved to MongoDB! Opening Students Directory live.`;
-            } catch (e) {
-              reply = `Form complete for "${finalData.name}". Opening Students list!`;
-            }
-            setWizardStep(0);
-            autoCloseModal = true;
-            navigate(ROUTE_MAP.students);
-          }
-        }
-        else if (wizardType === 'teacher') {
-          if (wizardStep === 1) {
-            const name = commandText.trim();
-            setWizardData({ ...wizardData, name });
-            setWizardStep(2);
-            reply = `Teacher Name set to "${name}"!\n\n📌 Step 2/3: Teaching Subject kya hai? (e.g. Mathematics, Science)`;
-          } else if (wizardStep === 2) {
-            const subject = commandText.trim();
-            setWizardData({ ...wizardData, subject });
-            setWizardStep(3);
-            reply = `Subject set to "${subject}"!\n\n📌 Step 3/3: Teacher Email / Contact Details?`;
-          } else if (wizardStep === 3) {
-            const emailOrPhone = commandText.trim();
-            const email = emailOrPhone.includes('@') ? emailOrPhone : `${wizardData.name.toLowerCase().replace(/[^a-z0-9]/g, '')}@school.com`;
-            const finalTeacher = { ...wizardData, email, status: 'Active' };
-            try {
-              await API.post('/teachers', finalTeacher);
-              reply = `🎉 Teacher "${finalTeacher.name}" created! Opening Faculty list live.`;
-            } catch (e) {
-              reply = `Teacher form filled! Opening Faculty list live.`;
-            }
-            setWizardStep(0);
-            autoCloseModal = true;
-            navigate(ROUTE_MAP.teachers);
-          }
-        }
-        else if (wizardType === 'department') {
-          if (wizardStep === 1) {
-            const deptName = commandText.trim();
-            const code = deptName.substring(0, 4).toUpperCase();
-            setWizardData({ name: deptName, code });
-            setWizardStep(2);
-            reply = `Department Name set to "${deptName}" (Code: ${code})!\n\n📌 Step 2/2: HOD / Department Head का नाम क्या है?`;
-          } else if (wizardStep === 2) {
-            const hod = commandText.trim();
-            const finalDept = { ...wizardData, hod, status: 'Active' };
-            try {
-              await API.post('/departments', finalDept);
-              reply = `🎉 Department "${finalDept.name}" created in MongoDB! Opening Departments live.`;
-            } catch (e) {
-              reply = `Department processed! Opening Departments view.`;
-            }
-            setWizardStep(0);
-            autoCloseModal = true;
-            navigate(ROUTE_MAP.department);
-          }
-        }
-      }
-
-      // =========================================================
-      // 2. TRIGGER STEP-BY-STEP INTERACTIVE WIZARDS FOR ANY MODULE
-      // =========================================================
-      else if (lower.includes('puch') || lower.includes('step by step') || lower.includes('interview')) {
-        if (lower.includes('teacher') || lower.includes('faculty') || lower.includes('employee')) {
-          setWizardType('teacher');
-          setWizardStep(1);
-          setWizardData({});
-          navigate(ROUTE_MAP.addteacher);
-          reply = `Starting Step-by-Step Teacher Registration Wizard!\n\n📌 Step 1/3: Teacher ka Full Name kya hai?`;
-        } else if (lower.includes('department')) {
-          setWizardType('department');
-          setWizardStep(1);
-          setWizardData({});
-          navigate(ROUTE_MAP.department);
-          reply = `Starting Step-by-Step Department Wizard!\n\n📌 Step 1/2: Department ka Name kya hai?`;
-        } else {
-          setWizardType('student');
-          setWizardStep(1);
-          setWizardData({});
-          navigate(ROUTE_MAP.addstudent);
-          reply = `Starting Step-by-Step Interactive Student Registration Wizard!\n\n📌 Step 1/4: Student ka Full Name kya hai?`;
-        }
-        executedAction = `Started ${wizardType} Wizard`;
-      }
-
-      // =========================================================
-      // 3. DIRECT CREATIONS FOR MODULES
-      // =========================================================
-      else if (lower.includes('student') && (lower.includes('add') || lower.includes('create') || lower.includes('register') || lower.includes('karo') || lower.includes('banao'))) {
-        let name = commandText.replace(/add|create|register|student|karo|banao|naya|new|ko|ka|ki/gi, '').trim();
-        if (!name) {
-          setWizardType('student');
-          setWizardStep(1);
-          setWizardData({});
-          navigate(ROUTE_MAP.addstudent);
-          reply = `Starting Interactive Student Wizard!\n\n📌 Step 1/4: Student ka Full Name kya hai?`;
-        } else {
-          try {
-            await API.post('/students', { name, className: 'Class 10', parentName: 'Mr. Parent', contact: '9876543210', status: 'Active' });
-            reply = `Student "${name}" registered in MongoDB! Opening Students list live.`;
-            executedAction = `Student Created: ${name}`;
-          } catch (e) {
-            reply = `Opening Student Add screen live for "${name}".`;
-          }
-          autoCloseModal = true;
-          navigate(ROUTE_MAP.students);
-        }
-      }
-      else if ((lower.includes('teacher') || lower.includes('faculty') || lower.includes('employee')) && (lower.includes('add') || lower.includes('create') || lower.includes('karo') || lower.includes('banao'))) {
-        let name = commandText.replace(/add|create|teacher|faculty|employee|karo|banao|naya|new|ko|ka|ki/gi, '').trim() || 'Dr. Vikram Seth';
-        try {
-          await API.post('/teachers', { name, subject: 'Science & Mathematics', status: 'Active' });
-          reply = `Teacher "${name}" added! Opening Teachers list live.`;
-          executedAction = `Teacher Created: ${name}`;
-        } catch (e) {
-          reply = `Opening Teachers screen live.`;
-        }
-        autoCloseModal = true;
-        navigate(ROUTE_MAP.teachers);
-      }
-      else if (lower.includes('department') && (lower.includes('add') || lower.includes('create') || lower.includes('karo') || lower.includes('banao'))) {
-        let name = commandText.replace(/add|create|department|karo|banao|naya|new|ko|ka|ki/gi, '').trim() || 'Artificial Intelligence';
-        try {
-          await API.post('/departments', { name, code: name.substring(0, 4).toUpperCase(), status: 'Active' });
-          reply = `Department "${name}" created! Opening Departments live.`;
-          executedAction = `Department Created: ${name}`;
-        } catch (e) {
-          reply = `Opening Departments live.`;
-        }
-        autoCloseModal = true;
-        navigate(ROUTE_MAP.department);
-      }
-      else if (lower.includes('subject') && (lower.includes('add') || lower.includes('create') || lower.includes('karo') || lower.includes('banao'))) {
-        let name = commandText.replace(/add|create|subject|karo|banao|naya|new|ko|ka|ki/gi, '').trim() || 'Robotics & Automation';
-        try {
-          await API.post('/subjects', { name, code: name.substring(0, 4).toUpperCase(), status: 'Active' });
-          reply = `Subject "${name}" added! Opening Subjects live.`;
-          executedAction = `Subject Created: ${name}`;
-        } catch (e) {
-          reply = `Opening Subjects live.`;
-        }
-        autoCloseModal = true;
-        navigate(ROUTE_MAP.subject);
-      }
-      else if (lower.includes('rebrand') || lower.includes('change school name') || lower.includes('set school name') || (lower.includes('school') && lower.includes('naam'))) {
+      if (lower.includes('rebrand') || lower.includes('change school name') || lower.includes('set school name') || (lower.includes('school') && lower.includes('naam'))) {
         let newName = commandText.replace(/change school name to|set school name to|rebrand to|school ka naam badlo|school name/gi, '').trim() || 'Royal International School';
         if (currentSchool && currentSchool._id) {
           await updateSchool(currentSchool._id, { appName: newName, footerText: newName, name: newName });
@@ -721,15 +541,9 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
                 <h3 className="text-base font-extrabold bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-400 bg-clip-text text-transparent tracking-wide">
                   ALL 36-SIDEBAR MODULE MASTER AI COPILOT
                 </h3>
-                {wizardStep > 0 ? (
-                  <span className="px-2 py-0.5 text-[9px] font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-full animate-pulse uppercase">
-                    {wizardType} WIZARD {wizardStep}
-                  </span>
-                ) : (
-                  <span className="px-2 py-0.5 text-[9px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full animate-pulse uppercase">
-                    36 SIDEBAR MODULES TRAINED
-                  </span>
-                )}
+                <span className="px-2 py-0.5 text-[9px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full animate-pulse uppercase">
+                  36 SIDEBAR MODULES TRAINED
+                </span>
               </div>
               <p className="text-[11px] text-slate-400">Total System Controller for Every Single Sidebar Item</p>
             </div>
@@ -755,22 +569,6 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
             </button>
           </div>
         </div>
-
-        {/* Active Wizard Banner */}
-        {wizardStep > 0 && (
-          <div className="bg-gradient-to-r from-purple-900/80 via-indigo-900/80 to-slate-900 px-4 py-2.5 border-b border-purple-500/30 flex items-center justify-between text-xs text-amber-300 font-bold">
-            <div className="flex items-center gap-2">
-              <QuestionIcon className="w-4 h-4 text-amber-400 animate-bounce" />
-              <span>Step-by-Step {wizardType.toUpperCase()} Wizard: Answer question below</span>
-            </div>
-            <button 
-              onClick={() => setWizardStep(0)}
-              className="px-2 py-0.5 text-[10px] bg-red-500/20 border border-red-500/40 text-red-300 rounded hover:bg-red-500/40"
-            >
-              Cancel Wizard
-            </button>
-          </div>
-        )}
 
         {/* Chat Messages */}
         <div className="flex-1 p-4 sm:p-5 overflow-y-auto space-y-4 custom-scrollbar bg-[#080d19]/80">
@@ -826,9 +624,6 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
             <Zap className="w-3 h-3 text-amber-400" /> Quick Sidebar Commands:
           </span>
           {[
-            'Puch ke student add karo',
-            'Puch ke teacher add karo',
-            'Puch ke department add karo',
             'Open Reception',
             'Open Task',
             'Open Finance',
@@ -878,9 +673,7 @@ export default function AiAssistant({ isOpen, onClose, toggleTheme, isDark }) {
               placeholder={
                 isListening 
                   ? 'Listening to your voice...' 
-                  : wizardStep > 0
-                    ? `Type answer for ${wizardType.toUpperCase()} Step ${wizardStep}...`
-                    : 'Speak or type any command for all 36 sidebar modules...'
+                  : 'Speak or type any command for all 36 sidebar modules...'
               }
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
