@@ -73,6 +73,7 @@ import ClassTiming from './pages/ClassTiming';
 import Timetable from './pages/Timetable';
 import BookList from './pages/BookList';
 import IdCard from './pages/IdCard';
+import PaymentMethod from './pages/finance/PaymentMethod';
 import Placeholder from './components/Placeholder';
 import UserCredentials from './pages/super-admin/UserCredentials';
 import ModuleConfig from './pages/super-admin/ModuleConfig';
@@ -228,7 +229,12 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="academic/id-card-templates/edit/:id" element={<IdCard initialView="create" />} />
 
 
-    <Route path="finance/payment-method" element={<Placeholder title="Payment Method" />} />
+    <Route path="finance/payment-method" element={<PaymentMethod />} />
+    <Route path="finance/payment-methods" element={<PaymentMethod />} />
+    <Route path="finance/payment-method/create" element={<PaymentMethod initialView="add" />} />
+    <Route path="finance/payment-methods/create" element={<PaymentMethod initialView="add" />} />
+    <Route path="finance/payment-method/edit/:id" element={<PaymentMethod initialView="edit" />} />
+    <Route path="finance/payment-methods/edit/:id" element={<PaymentMethod initialView="edit" />} />
     <Route path="finance/fee-group" element={<Placeholder title="Fee Group" />} />
     <Route path="finance/fee-head" element={<Placeholder title="Fee Head" />} />
     <Route path="finance/fee-component" element={<Placeholder title="Fee Component" />} />
