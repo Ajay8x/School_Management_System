@@ -1,13 +1,35 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Student = require('../models/Student');
+const LoginSession = require('../models/LoginSession');
+const SessionTimeout = require('../models/SessionTimeout');
 const { logActivity } = require('../utils/logActivity');
 
-// Generate JWT
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '30d',
+// Generate JWT and Session
+const createSessionAndToken = async (req, user) => {
+  const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'Unknown';
+  const deviceInfo = req.headers['user-agent'] || 'Unknown';
+  
+  const loginSession = await LoginSession.create({
+    user: user._id,
+    ipAddress,
+    deviceInfo
   });
+
+  let expiresIn = '30d'; // default
+  try {
+    const timeoutConfig = await SessionTimeout.findOne({ role: user.role });
+    if (timeoutConfig && timeoutConfig.durationMinutes) {
+      expiresIn = `${timeoutConfig.durationMinutes}m`;
+    }
+  } catch (err) {
+    console.error('Error fetching session timeout config:', err);
+  }
+
+  const token = jwt.sign({ id: user._id, sessionId: loginSession._id }, process.env.JWT_SECRET, {
+    expiresIn
+  });
+  return token;
 };
 
 // @desc    Register a new user (Admin can create others, or open registration for first admin)
@@ -40,6 +62,8 @@ exports.registerUser = async (req, res) => {
         activity: `Registered new user: ${user.name}`
       });
 
+      const token = await createSessionAndToken(req, user);
+
       res.status(201).json({
         _id: user._id,
         name: user.name,
@@ -47,7 +71,7 @@ exports.registerUser = async (req, res) => {
         role: user.role,
         studentId: user.studentId,
         schoolId: user.schoolId,
-        token: generateToken(user._id),
+        token,
       });
     } else {
       res.status(400).json({ message: 'Invalid user data' });
@@ -75,13 +99,15 @@ exports.loginUser = async (req, res) => {
         activity: 'User logged in.'
       });
 
+      const token = await createSessionAndToken(req, user);
+
       res.json({
         _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
         studentId: user.studentId,
-        token: generateToken(user._id),
+        token,
       });
     } else {
       res.status(401).json({ message: 'Invalid email or password' });
@@ -103,6 +129,11 @@ exports.logoutUser = async (req, res) => {
         user: req.user,
         activity: 'User logged out.'
       });
+      
+      // Mark session as inactive
+      if (req.sessionId) {
+        await LoginSession.findByIdAndUpdate(req.sessionId, { isActive: false });
+      }
     }
     res.json({ message: 'Logged out successfully' });
   } catch (error) {
@@ -121,6 +152,11 @@ exports.getMe = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Update last activity for session
+    if (req.sessionId) {
+      await LoginSession.findByIdAndUpdate(req.sessionId, { lastActivity: Date.now() });
     }
 
     res.json({
@@ -172,6 +208,8 @@ exports.studentLogin = async (req, res) => {
       activity: 'User logged in.'
     });
 
+    const token = await createSessionAndToken(req, user);
+
     res.json({
       _id: user._id,
       name: user.name,
@@ -180,7 +218,7 @@ exports.studentLogin = async (req, res) => {
       rollNumber: student.rollNumber,
       className: student.className,
       studentId: student._id,
-      token: generateToken(user._id),
+      token,
     });
   } catch (error) {
     console.error(error);
