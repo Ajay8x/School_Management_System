@@ -12,5 +12,8 @@ export default defineConfig({
     allowedHosts: [
       'school-management-system-1-wemg.onrender.com'
     ]
+  },
+  build: {
+    target: 'es2020'
   }
 })
