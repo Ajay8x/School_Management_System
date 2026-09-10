@@ -5,10 +5,11 @@ import { AuthContext } from './AuthContext';
 export const SchoolContext = createContext();
 
 export const ROLES_TEMPLATE = { 
-  Admin: true, Accountant: false, 'Attendance Assistant': false, 'Exam Incharge': false,
-  Guardian: false, 'Hostel Incharge': false, 'Inventory Incharge': false, Librarian: false,
-  Manager: false, 'Mess Incharge': false, Observer: false, Principal: false, Receptionist: false,
-  Staff: false, Student: false, 'Transport Incharge': false, User: false, 'Vice Principal': false 
+  Admin: true, Teacher: false, Student: false, Guardian: false, Receptionist: false,
+  Accountant: false, Librarian: false, Principal: false, 'Vice Principal': false,
+  Staff: false, Manager: false, 'Exam Incharge': false, 'Hostel Incharge': false,
+  'Mess Incharge': false, 'Transport Incharge': false, 'Inventory Incharge': false,
+  'Attendance Assistant': false, Observer: false, User: false
 };
 
 export const AVAILABLE_ROLES = [

@@ -589,16 +589,17 @@ export default function Layout() {
 
   const navigation = allNavigation
     .filter(item => {
-      // Role check
-      const hasRole = isSuperAdmin || item.roles.includes(user.role);
-      if (!hasRole) return false;
+      // Super admin always has full access to everything
+      if (isSuperAdmin) return true;
 
-      // Module enabled check (hides menu item if module is disabled for the school)
-      // Super admin bypasses this check to always see everything
-      if (!isSuperAdmin && item.moduleKey) {
+      // Dynamic Module-based Role Permission Check:
+      // If the item has a moduleKey, dynamic module configuration determines permission for user.role
+      if (item.moduleKey) {
         return isModuleEnabled(item.moduleKey, null, user.role);
       }
-      return true;
+
+      // Fallback for static items without moduleKey
+      return item.roles ? item.roles.some(r => r.toLowerCase() === user.role?.toLowerCase()) : true;
     })
     .map(item => {
       const routePrefix = (isSuperAdmin || user.role === 'admin') ? '/admin' : `/${user.role}`;
@@ -608,20 +609,33 @@ export default function Layout() {
       let filteredSubmenu = item.submenu;
       if (item.submenu) {
         filteredSubmenu = item.submenu.filter(sub => {
-          if (sub.roles && !isSuperAdmin && !sub.roles.includes(user.role)) return false;
-          if (!isSuperAdmin && item.moduleKey && sub.subKey) {
-            return isModuleEnabled(item.moduleKey, sub.subKey, user.role);
+          if (isSuperAdmin) return true;
+
+          // Check dynamic submodule permission for this role
+          if (item.moduleKey) {
+            const effectiveSubKey = sub.subKey || sub.name?.replace(/[\s\-_]+/g, '');
+            return isModuleEnabled(item.moduleKey, effectiveSubKey, user.role);
+          }
+
+          if (sub.roles) {
+            return sub.roles.some(r => r.toLowerCase() === user.role?.toLowerCase());
           }
           return true;
         });
       }
-
 
       return {
         ...item,
         href: itemHref,
         submenu: filteredSubmenu ? filteredSubmenu.map(sub => ({ ...sub, href: `${routePrefix}${sub.href}` })) : undefined
       };
+    })
+    .filter(item => {
+      // If the menu had submenus, but all of them were disabled for this role, hide the parent item
+      if (item.submenu && item.submenu.length === 0 && !item.href) {
+        return false;
+      }
+      return true;
     });
 
 
