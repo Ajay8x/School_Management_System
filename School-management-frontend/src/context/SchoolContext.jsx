@@ -389,6 +389,49 @@ export const DEFAULT_MODULES_CONFIG = {
       activity: { name: 'Activity Log', enabled: true, roles: { ...rolesTemplate } },
       loginSession: { name: 'Login Session Management', enabled: true, roles: { ...rolesTemplate } }
     }
+  },
+  organization: {
+    enabled: true,
+    title: 'Organization',
+    roles: { ...rolesTemplate },
+    submodules: {}
+  },
+  school: {
+    enabled: true,
+    title: 'School',
+    roles: { ...rolesTemplate },
+    submodules: {}
+  },
+  report: {
+    enabled: true,
+    title: 'Report',
+    roles: { ...rolesTemplate },
+    submodules: {}
+  },
+  downloadFormat: {
+    enabled: true,
+    title: 'Download Format',
+    roles: { ...rolesTemplate },
+    submodules: {}
+  },
+  utility: {
+    enabled: true,
+    title: 'Profile & Quick Menu',
+    roles: { ...rolesTemplate },
+    submodules: {
+      organization: { name: 'Organization', enabled: true, roles: { ...rolesTemplate } },
+      school: { name: 'School', enabled: true, roles: { ...rolesTemplate } },
+      rolePermission: { name: 'Role & Permission', enabled: true, roles: { ...rolesTemplate } },
+      report: { name: 'Report', enabled: true, roles: { ...rolesTemplate } },
+      device: { name: 'Device', enabled: true, roles: { ...rolesTemplate } },
+      attendanceQrCode: { name: 'Attendance QR Code', enabled: true, roles: { ...rolesTemplate } },
+      profile: { name: 'Profile', enabled: true, roles: { ...rolesTemplate } },
+      userPreference: { name: 'User Preference', enabled: true, roles: { ...rolesTemplate } },
+      changePassword: { name: 'Change Password', enabled: true, roles: { ...rolesTemplate } },
+      failedLoginAttempt: { name: 'Failed Login Attempt', enabled: true, roles: { ...rolesTemplate } },
+      clearCache: { name: 'Clear Cache', enabled: true, roles: { ...rolesTemplate } },
+      downloadFormat: { name: 'Download Format', enabled: true, roles: { ...rolesTemplate } }
+    }
   }
 };
 

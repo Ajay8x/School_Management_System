@@ -1161,85 +1161,101 @@ export default function Layout() {
                     </div>
 
                     {/* Organization */}
-                    <Link 
-                      to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/organization`}
-                      onClick={() => setShowProfileDropdown(false)}
-                      className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
-                    >
-                      Organization
-                    </Link>
+                    {(isSuperAdmin || isModuleEnabled('organization', null, user.role) || isModuleEnabled('utility', 'organization', user.role)) && (
+                      <Link 
+                        to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/organization`}
+                        onClick={() => setShowProfileDropdown(false)}
+                        className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
+                      >
+                        Organization
+                      </Link>
+                    )}
 
                     {/* School */}
-                    <Link 
-                      to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/school`}
-                      onClick={() => setShowProfileDropdown(false)}
-                      className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
-                    >
-                      School
-                    </Link>
+                    {(isSuperAdmin || isModuleEnabled('school', null, user.role) || isModuleEnabled('utility', 'school', user.role)) && (
+                      <Link 
+                        to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/school`}
+                        onClick={() => setShowProfileDropdown(false)}
+                        className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
+                      >
+                        School
+                      </Link>
+                    )}
 
                     {/* Role & Permission */}
-                    <Link 
-                      to={isSuperAdmin || user.role === 'admin' ? '/admin/general-config?tab=role' : '/settings?tab=roles'}
-                      onClick={() => setShowProfileDropdown(false)}
-                      className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
-                    >
-                      Role & Permission
-                    </Link>
+                    {(isSuperAdmin || isModuleEnabled('utility', 'rolePermission', user.role)) && (
+                      <Link 
+                        to={isSuperAdmin || user.role === 'admin' ? '/admin/general-config?tab=role' : '/settings?tab=roles'}
+                        onClick={() => setShowProfileDropdown(false)}
+                        className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
+                      >
+                        Role & Permission
+                      </Link>
+                    )}
 
                     {/* Report */}
-                    <Link 
-                      to={`${(isSuperAdmin || user.role === 'admin') ? '/admin' : `/${user.role}`}/reports`}
-                      onClick={() => setShowProfileDropdown(false)}
-                      className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
-                    >
-                      Report
-                    </Link>
+                    {(isSuperAdmin || isModuleEnabled('report', null, user.role) || isModuleEnabled('utility', 'report', user.role)) && (
+                      <Link 
+                        to={`${(isSuperAdmin || user.role === 'admin') ? '/admin' : `/${user.role}`}/reports`}
+                        onClick={() => setShowProfileDropdown(false)}
+                        className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
+                      >
+                        Report
+                      </Link>
+                    )}
 
                     {/* Device */}
-                    <Link 
-                      to="/settings?tab=system"
-                      onClick={() => setShowProfileDropdown(false)}
-                      className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
-                    >
-                      Device
-                    </Link>
+                    {(isSuperAdmin || isModuleEnabled('utility', 'device', user.role)) && (
+                      <Link 
+                        to="/settings?tab=system"
+                        onClick={() => setShowProfileDropdown(false)}
+                        className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
+                      >
+                        Device
+                      </Link>
+                    )}
 
                     {/* Attendance QR Code */}
-                    <button 
-                      type="button"
-                      onClick={() => {
-                        setShowProfileDropdown(false);
-                        setShowQrModal(true);
-                      }}
-                      className="w-full text-left px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
-                    >
-                      Attendance QR Code
-                    </button>
+                    {(isSuperAdmin || isModuleEnabled('utility', 'attendanceQrCode', user.role)) && (
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          setShowProfileDropdown(false);
+                          setShowQrModal(true);
+                        }}
+                        className="w-full text-left px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
+                      >
+                        Attendance QR Code
+                      </button>
+                    )}
 
                     {/* Profile */}
-                    <button 
-                      type="button"
-                      onClick={() => {
-                        setShowProfileDropdown(false);
-                        setShowProfileModal(true);
-                      }}
-                      className="w-full text-left px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
-                    >
-                      Profile
-                    </button>
+                    {(isSuperAdmin || isModuleEnabled('utility', 'profile', user.role)) && (
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          setShowProfileDropdown(false);
+                          setShowProfileModal(true);
+                        }}
+                        className="w-full text-left px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
+                      >
+                        Profile
+                      </button>
+                    )}
 
                     {/* User Preference */}
-                    <Link 
-                      to="/settings?tab=system"
-                      onClick={() => setShowProfileDropdown(false)}
-                      className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
-                    >
-                      User Preference
-                    </Link>
+                    {(isSuperAdmin || isModuleEnabled('utility', 'userPreference', user.role)) && (
+                      <Link 
+                        to="/settings?tab=system"
+                        onClick={() => setShowProfileDropdown(false)}
+                        className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
+                      >
+                        User Preference
+                      </Link>
+                    )}
 
                     {/* Change Password */}
-                    {user?.role !== 'super-admin' && (
+                    {user?.role !== 'super-admin' && (isSuperAdmin || isModuleEnabled('utility', 'changePassword', user.role)) && (
                       <button 
                         type="button"
                         onClick={() => {
@@ -1255,36 +1271,42 @@ export default function Layout() {
                     )}
 
                     {/* Failed Login Attempt */}
-                    <Link 
-                      to="/settings?tab=activity"
-                      onClick={() => setShowProfileDropdown(false)}
-                      className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors pt-3"
-                    >
-                      Failed Login Attempt
-                    </Link>
+                    {(isSuperAdmin || isModuleEnabled('utility', 'failedLoginAttempt', user.role)) && (
+                      <Link 
+                        to="/settings?tab=activity"
+                        onClick={() => setShowProfileDropdown(false)}
+                        className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors pt-3"
+                      >
+                        Failed Login Attempt
+                      </Link>
+                    )}
 
                     {/* Clear Cache */}
-                    <button 
-                      type="button"
-                      onClick={() => {
-                        setShowProfileDropdown(false);
-                        localStorage.removeItem('cached_search_results');
-                        setToastMessage('System cache cleared successfully!');
-                        setTimeout(() => setToastMessage(''), 3000);
-                      }}
-                      className="w-full text-left px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
-                    >
-                      Clear Cache
-                    </button>
+                    {(isSuperAdmin || isModuleEnabled('utility', 'clearCache', user.role)) && (
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          setShowProfileDropdown(false);
+                          localStorage.removeItem('cached_search_results');
+                          setToastMessage('System cache cleared successfully!');
+                          setTimeout(() => setToastMessage(''), 3000);
+                        }}
+                        className="w-full text-left px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
+                      >
+                        Clear Cache
+                      </button>
+                    )}
 
                     {/* Download Format */}
-                    <Link 
-                      to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/download-format`}
-                      onClick={() => setShowProfileDropdown(false)}
-                      className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
-                    >
-                      Download Format
-                    </Link>
+                    {(isSuperAdmin || isModuleEnabled('downloadFormat', null, user.role) || isModuleEnabled('utility', 'downloadFormat', user.role)) && (
+                      <Link 
+                        to={`${(user.role === 'super-admin' || user.role === 'admin') ? '/admin' : `/${user.role}`}/download-format`}
+                        onClick={() => setShowProfileDropdown(false)}
+                        className="block px-5 py-2.5 font-medium text-[14px] hover:bg-teal-50/60 dark:hover:bg-slate-700/60 transition-colors"
+                      >
+                        Download Format
+                      </Link>
+                    )}
 
                     {/* Support */}
                     <Link 
