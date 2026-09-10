@@ -4,12 +4,37 @@ import { AuthContext } from './AuthContext';
 
 export const SchoolContext = createContext();
 
-const rolesTemplate = { 
+export const ROLES_TEMPLATE = { 
   Admin: true, Accountant: false, 'Attendance Assistant': false, 'Exam Incharge': false,
   Guardian: false, 'Hostel Incharge': false, 'Inventory Incharge': false, Librarian: false,
   Manager: false, 'Mess Incharge': false, Observer: false, Principal: false, Receptionist: false,
   Staff: false, Student: false, 'Transport Incharge': false, User: false, 'Vice Principal': false 
 };
+
+export const AVAILABLE_ROLES = [
+  { id: 'all', label: 'All Roles (Global Default)' },
+  { id: 'Admin', label: 'Admin' },
+  { id: 'Teacher', label: 'Teacher' },
+  { id: 'Student', label: 'Student' },
+  { id: 'Guardian', label: 'Guardian / Parent' },
+  { id: 'Receptionist', label: 'Receptionist' },
+  { id: 'Accountant', label: 'Accountant' },
+  { id: 'Librarian', label: 'Librarian' },
+  { id: 'Principal', label: 'Principal' },
+  { id: 'Vice Principal', label: 'Vice Principal' },
+  { id: 'Staff', label: 'Staff' },
+  { id: 'Manager', label: 'Manager' },
+  { id: 'Exam Incharge', label: 'Exam Incharge' },
+  { id: 'Hostel Incharge', label: 'Hostel Incharge' },
+  { id: 'Mess Incharge', label: 'Mess Incharge' },
+  { id: 'Transport Incharge', label: 'Transport Incharge' },
+  { id: 'Inventory Incharge', label: 'Inventory Incharge' },
+  { id: 'Attendance Assistant', label: 'Attendance Assistant' },
+  { id: 'Observer', label: 'Observer' },
+  { id: 'User', label: 'User' }
+];
+
+const rolesTemplate = ROLES_TEMPLATE;
 
 
 export const DEFAULT_MODULES_CONFIG = {
@@ -583,28 +608,60 @@ export const SchoolProvider = ({ children }) => {
 
   // Check if a module or submodule is enabled for a given role (or active user)
   const isModuleEnabled = (moduleKey, subModuleKey = null, userRole = null) => {
-    const key = String(moduleKey).toLowerCase().replace(/\s+/g, '');
+    const key = String(moduleKey).toLowerCase().replace(/[\s\-_]+/g, '');
     const modules = currentSchool?.modules || DEFAULT_MODULES_CONFIG;
     
-    const targetModule = modules[key] || modules[moduleKey];
+    let targetModule = modules[key] || modules[moduleKey];
+    if (!targetModule) {
+      const foundKey = Object.keys(modules).find(k => k.toLowerCase().replace(/[\s\-_]+/g, '') === key);
+      if (foundKey) targetModule = modules[foundKey];
+    }
     if (!targetModule) return true; // Default to true if not specified
 
     if (typeof targetModule === 'boolean') return targetModule;
     if (targetModule.enabled === false) return false;
 
+    // Helper to check role in a roles object (supports case-insensitive & normalized matching)
+    const checkRolePermission = (rolesObj, r) => {
+      if (!rolesObj || typeof rolesObj !== 'object') return true;
+      if (!r) return true;
+      if (rolesObj[r] !== undefined) return rolesObj[r];
+      const normalizedR = String(r).toLowerCase().replace(/[\s\-_]+/g, '');
+      // Handle parent <-> Guardian synonym
+      if (normalizedR === 'parent' && rolesObj['Guardian'] !== undefined) return rolesObj['Guardian'];
+      if (normalizedR === 'guardian' && rolesObj['Parent'] !== undefined) return rolesObj['Parent'];
+      
+      for (const [k, v] of Object.entries(rolesObj)) {
+        if (k.toLowerCase().replace(/[\s\-_]+/g, '') === normalizedR) {
+          return v;
+        }
+      }
+      return true;
+    };
+
     // Role-level override check
     const checkRole = userRole || user?.role;
-    if (checkRole && targetModule.roles && targetModule.roles[checkRole] === false) {
-      return false;
+    if (checkRole && targetModule.roles) {
+      if (checkRolePermission(targetModule.roles, checkRole) === false) {
+        return false;
+      }
     }
 
     // Check submodule
     if (subModuleKey && targetModule.submodules) {
-      const sub = targetModule.submodules[subModuleKey];
+      const subKey = String(subModuleKey).toLowerCase().replace(/[\s\-_]+/g, '');
+      let sub = targetModule.submodules[subKey] || targetModule.submodules[subModuleKey];
+      if (!sub) {
+        const foundSubKey = Object.keys(targetModule.submodules).find(k => k.toLowerCase().replace(/[\s\-_]+/g, '') === subKey);
+        if (foundSubKey) sub = targetModule.submodules[foundSubKey];
+      }
+
       if (typeof sub === 'boolean') return sub;
       if (sub) {
         if (sub.enabled === false) return false;
-        if (checkRole && sub.roles && sub.roles[checkRole] === false) return false;
+        if (checkRole && sub.roles) {
+          if (checkRolePermission(sub.roles, checkRole) === false) return false;
+        }
       }
     }
 

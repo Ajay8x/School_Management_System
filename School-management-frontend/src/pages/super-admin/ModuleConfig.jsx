@@ -1,9 +1,10 @@
 import { useState, useEffect, useContext } from 'react';
-import { SchoolContext, DEFAULT_MODULES_CONFIG } from '../../context/SchoolContext';
+import { SchoolContext, DEFAULT_MODULES_CONFIG, AVAILABLE_ROLES, ROLES_TEMPLATE } from '../../context/SchoolContext';
 import { AuthContext } from '../../context/AuthContext';
 import {
   Boxes, GripVertical, CheckCircle2, AlertCircle, Save, 
-  Building, Search, Plus, UserCheck, Shield
+  Building, Search, Plus, UserCheck, Shield, ShieldCheck,
+  Info, Users, SlidersHorizontal
 } from 'lucide-react';
 
 export default function ModuleConfig() {
@@ -17,6 +18,7 @@ export default function ModuleConfig() {
   } = useContext(SchoolContext);
 
   const [selectedSchoolId, setSelectedSchoolId] = useState('');
+  const [selectedRole, setSelectedRole] = useState('all');
   const [modulesState, setModulesState] = useState(DEFAULT_MODULES_CONFIG);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -40,7 +42,7 @@ export default function ModuleConfig() {
           if (school.modules[modKey]) {
             const incoming = school.modules[modKey];
             merged[modKey].enabled = incoming.enabled !== false;
-            if (incoming.roles) merged[modKey].roles = incoming.roles;
+            merged[modKey].roles = incoming.roles ? { ...ROLES_TEMPLATE, ...incoming.roles } : { ...ROLES_TEMPLATE };
 
             if (incoming.submodules && merged[modKey].submodules) {
               Object.keys(merged[modKey].submodules).forEach(subKey => {
@@ -48,9 +50,10 @@ export default function ModuleConfig() {
                   const val = incoming.submodules[subKey];
                   if (typeof val === 'boolean') {
                     merged[modKey].submodules[subKey].enabled = val;
+                    merged[modKey].submodules[subKey].roles = { ...ROLES_TEMPLATE };
                   } else {
                     merged[modKey].submodules[subKey].enabled = val.enabled !== false;
-                    if (val.roles) merged[modKey].submodules[subKey].roles = val.roles;
+                    merged[modKey].submodules[subKey].roles = val.roles ? { ...ROLES_TEMPLATE, ...val.roles } : { ...ROLES_TEMPLATE };
                   }
                 }
               });
@@ -64,6 +67,28 @@ export default function ModuleConfig() {
     }
   }, [selectedSchoolId, schools]);
 
+  // Check if main module is active for selected view
+  const isModActive = (mod) => {
+    if (selectedRole === 'all') {
+      return mod.enabled !== false;
+    }
+    if (mod.roles && mod.roles[selectedRole] !== undefined) {
+      return mod.roles[selectedRole] === true;
+    }
+    return mod.enabled !== false;
+  };
+
+  // Check if submodule is active for selected view
+  const isSubActive = (sub) => {
+    if (selectedRole === 'all') {
+      return sub.enabled !== false;
+    }
+    if (sub.roles && sub.roles[selectedRole] !== undefined) {
+      return sub.roles[selectedRole] === true;
+    }
+    return sub.enabled !== false;
+  };
+
   // Toggle main module
   const handleToggleModule = (moduleKey) => {
     setModulesState(prev => {
@@ -71,12 +96,31 @@ export default function ModuleConfig() {
       const targetMod = next[moduleKey];
       if (!targetMod) return prev;
 
-      const newStatus = !targetMod.enabled;
-      targetMod.enabled = newStatus;
-      if (targetMod.submodules) {
-        Object.keys(targetMod.submodules).forEach(subKey => {
-          targetMod.submodules[subKey].enabled = newStatus;
-        });
+      if (selectedRole === 'all') {
+        const newStatus = !targetMod.enabled;
+        targetMod.enabled = newStatus;
+        if (targetMod.submodules) {
+          Object.keys(targetMod.submodules).forEach(subKey => {
+            targetMod.submodules[subKey].enabled = newStatus;
+          });
+        }
+      } else {
+        if (!targetMod.roles) targetMod.roles = { ...ROLES_TEMPLATE };
+        const currentRoleStatus = targetMod.roles[selectedRole] !== undefined 
+          ? targetMod.roles[selectedRole] 
+          : (targetMod.enabled !== false);
+        const newStatus = !currentRoleStatus;
+        targetMod.roles[selectedRole] = newStatus;
+
+        // Cascade to submodules for this role
+        if (targetMod.submodules) {
+          Object.keys(targetMod.submodules).forEach(subKey => {
+            if (!targetMod.submodules[subKey].roles) {
+              targetMod.submodules[subKey].roles = { ...ROLES_TEMPLATE };
+            }
+            targetMod.submodules[subKey].roles[selectedRole] = newStatus;
+          });
+        }
       }
 
       return next;
@@ -90,7 +134,15 @@ export default function ModuleConfig() {
       const targetSub = next[moduleKey]?.submodules?.[subKey];
       if (!targetSub) return prev;
 
-      targetSub.enabled = !targetSub.enabled;
+      if (selectedRole === 'all') {
+        targetSub.enabled = !targetSub.enabled;
+      } else {
+        if (!targetSub.roles) targetSub.roles = { ...ROLES_TEMPLATE };
+        const currentRoleStatus = targetSub.roles[selectedRole] !== undefined 
+          ? targetSub.roles[selectedRole] 
+          : (targetSub.enabled !== false);
+        targetSub.roles[selectedRole] = !currentRoleStatus;
+      }
       return next;
     });
   };
@@ -99,11 +151,24 @@ export default function ModuleConfig() {
     setModulesState(prev => {
       const next = JSON.parse(JSON.stringify(prev));
       Object.keys(next).forEach(modKey => {
-        next[modKey].enabled = true;
-        if (next[modKey].submodules) {
-          Object.keys(next[modKey].submodules).forEach(subKey => {
-            next[modKey].submodules[subKey].enabled = true;
-          });
+        if (selectedRole === 'all') {
+          next[modKey].enabled = true;
+          if (next[modKey].submodules) {
+            Object.keys(next[modKey].submodules).forEach(subKey => {
+              next[modKey].submodules[subKey].enabled = true;
+            });
+          }
+        } else {
+          if (!next[modKey].roles) next[modKey].roles = { ...ROLES_TEMPLATE };
+          next[modKey].roles[selectedRole] = true;
+          if (next[modKey].submodules) {
+            Object.keys(next[modKey].submodules).forEach(subKey => {
+              if (!next[modKey].submodules[subKey].roles) {
+                next[modKey].submodules[subKey].roles = { ...ROLES_TEMPLATE };
+              }
+              next[modKey].submodules[subKey].roles[selectedRole] = true;
+            });
+          }
         }
       });
       return next;
@@ -114,11 +179,24 @@ export default function ModuleConfig() {
     setModulesState(prev => {
       const next = JSON.parse(JSON.stringify(prev));
       Object.keys(next).forEach(modKey => {
-        next[modKey].enabled = false;
-        if (next[modKey].submodules) {
-          Object.keys(next[modKey].submodules).forEach(subKey => {
-            next[modKey].submodules[subKey].enabled = false;
-          });
+        if (selectedRole === 'all') {
+          next[modKey].enabled = false;
+          if (next[modKey].submodules) {
+            Object.keys(next[modKey].submodules).forEach(subKey => {
+              next[modKey].submodules[subKey].enabled = false;
+            });
+          }
+        } else {
+          if (!next[modKey].roles) next[modKey].roles = { ...ROLES_TEMPLATE };
+          next[modKey].roles[selectedRole] = false;
+          if (next[modKey].submodules) {
+            Object.keys(next[modKey].submodules).forEach(subKey => {
+              if (!next[modKey].submodules[subKey].roles) {
+                next[modKey].submodules[subKey].roles = { ...ROLES_TEMPLATE };
+              }
+              next[modKey].submodules[subKey].roles[selectedRole] = false;
+            });
+          }
         }
       });
       return next;
@@ -143,6 +221,7 @@ export default function ModuleConfig() {
   };
 
   const activeSchoolObj = schools.find(s => s._id === selectedSchoolId) || currentSchool;
+  const activeRoleObj = AVAILABLE_ROLES.find(r => r.id === selectedRole) || { label: selectedRole };
 
   const filteredModules = Object.entries(modulesState).filter(([key, mod]) => {
     if (!searchTerm) return true;
@@ -151,25 +230,15 @@ export default function ModuleConfig() {
     return matchTitle || matchSub;
   });
 
-  // Check if main module is active for selected view
-  const isModActive = (mod) => {
-    return mod.enabled !== false;
-  };
-
-  // Check if submodule is active for selected view
-  const isSubActive = (sub) => {
-    return sub.enabled !== false;
-  };
-
   return (
     <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in duration-300 pb-16">
-      {/* Top Title matching Screenshot 2 */}
+      {/* Top Title matching Screenshot */}
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
           Module Configuration
         </h1>
         <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">
-          Configure all the modules you would like to enable in the application.
+          Configure all the modules and role permissions you would like to enable in the application.
         </p>
       </div>
 
@@ -177,7 +246,7 @@ export default function ModuleConfig() {
         <div className="flex items-center gap-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 p-4 rounded-xl animate-in fade-in">
           <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
           <p className="text-sm font-semibold">
-            Module permissions updated successfully for {activeSchoolObj?.name}!
+            Module configuration saved successfully for {activeSchoolObj?.name} {selectedRole !== 'all' ? `(Role: ${activeRoleObj.label})` : '(Global)'}!
           </p>
         </div>
       )}
@@ -205,11 +274,30 @@ export default function ModuleConfig() {
                 setSelectedSchoolId(e.target.value);
                 switchSchool(e.target.value);
               }}
-              className="bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm font-semibold text-gray-800 dark:text-white focus:ring-2 focus:ring-teal-500 outline-none"
+              className="bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm font-semibold text-gray-800 dark:text-white focus:ring-2 focus:ring-teal-500 outline-none cursor-pointer"
             >
               {schools.map(s => (
                 <option key={s._id} value={s._id}>
                   {s.name} {s.code ? `(${s.code})` : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Role Selector (Exact Red Outline Area from user screenshot) */}
+          <div className="flex items-center space-x-2">
+            <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider whitespace-nowrap flex items-center gap-1.5">
+              <Shield className="w-4 h-4 text-violet-500" />
+              Role:
+            </label>
+            <select
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+              className="bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm font-semibold text-gray-800 dark:text-white focus:ring-2 focus:ring-violet-500 outline-none cursor-pointer"
+            >
+              {AVAILABLE_ROLES.map(r => (
+                <option key={r.id} value={r.id}>
+                  {r.label}
                 </option>
               ))}
             </select>
@@ -255,31 +343,60 @@ export default function ModuleConfig() {
         </div>
       </div>
 
-      {/* Module Grid Matching Screenshots 2, 3 & 4 */}
+      {/* Role Context Notification Pill */}
+      {selectedRole !== 'all' && (
+        <div className="flex items-center justify-between bg-violet-500/10 border border-violet-500/25 text-violet-700 dark:text-violet-300 px-4 py-2.5 rounded-xl text-xs font-medium">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-violet-500" />
+            <span>
+              Configuring module access specifically for <strong>{activeRoleObj.label}</strong> in <strong>{activeSchoolObj?.name}</strong>.
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setSelectedRole('all')}
+            className="underline hover:text-violet-900 dark:hover:text-white font-bold ml-3"
+          >
+            Switch to All Roles (Global)
+          </button>
+        </div>
+      )}
+
+      {/* Module Grid Matching Screenshots */}
       <div className="space-y-5">
         {filteredModules.map(([moduleKey, mod]) => {
           const mainActive = isModActive(mod);
+          const isGloballyDisabled = selectedRole !== 'all' && mod.enabled === false;
           const submodulesList = mod.submodules ? Object.entries(mod.submodules) : [];
 
           return (
             <div
               key={moduleKey}
-              className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200/90 dark:border-slate-700/80 shadow-sm overflow-hidden transition-all duration-200"
+              className={`bg-white dark:bg-slate-800 rounded-2xl border border-gray-200/90 dark:border-slate-700/80 shadow-sm overflow-hidden transition-all duration-200 ${
+                isGloballyDisabled ? 'border-amber-500/30' : ''
+              }`}
             >
-              {/* Category Header Bar matching Screenshots 2, 3, 4 */}
+              {/* Category Header Bar */}
               <div className="p-3.5 md:px-5 bg-white dark:bg-slate-800 flex items-center justify-between border-b border-gray-100 dark:border-slate-700/80">
                 <div className="flex items-center space-x-2.5">
                   {/* Grip / Move Icon */}
                   <GripVertical className="w-4 h-4 text-gray-400 dark:text-slate-500 cursor-move" />
 
-                  {/* Category Title Pill Badge matching screenshot + Reception, + Academic, + Student */}
+                  {/* Category Title Pill Badge */}
                   <div className="flex items-center space-x-1 px-3 py-1 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-semibold text-gray-800 dark:text-white shadow-xs">
                     <Plus className="w-3.5 h-3.5 text-gray-500" />
                     <span>{mod.title || moduleKey.charAt(0).toUpperCase() + moduleKey.slice(1)}</span>
                   </div>
+
+                  {/* Global Disabled Warning for Role view */}
+                  {isGloballyDisabled && (
+                    <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-md">
+                      Disabled Globally in School
+                    </span>
+                  )}
                 </div>
 
-                {/* Master Switch on the right matching screenshot */}
+                {/* Master Switch on the right */}
                 <div className="flex items-center space-x-3">
                   <button
                     type="button"
@@ -297,14 +414,14 @@ export default function ModuleConfig() {
                 </div>
               </div>
 
-              {/* Sub-modules Grid matching Screenshot 2, 3, 4 */}
+              {/* Sub-modules Grid */}
               {submodulesList.length > 0 && (
                 <div className={`p-5 md:px-6 grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-8 bg-white dark:bg-slate-800/40 ${!mainActive ? 'opacity-40 pointer-events-none' : ''}`}>
                   {submodulesList.map(([subKey, sub]) => {
                     const active = isSubActive(sub);
                     return (
                       <div key={subKey} className="flex items-center space-x-3">
-                        {/* Submodule Toggle Switch on left side matching screenshots */}
+                        {/* Submodule Toggle Switch */}
                         <button
                           type="button"
                           onClick={() => handleToggleSubmodule(moduleKey, subKey)}
@@ -334,16 +451,21 @@ export default function ModuleConfig() {
       </div>
 
       {/* Sticky Bottom Save Bar */}
-      <div className="sticky bottom-4 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-xl border border-gray-200 dark:border-slate-700 flex items-center justify-between z-20">
-        <div className="text-sm text-gray-600 dark:text-slate-300">
-          Target School: <span className="font-bold text-teal-600 dark:text-teal-400">{activeSchoolObj?.name}</span>
-
+      <div className="sticky bottom-4 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-xl border border-gray-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3 z-20">
+        <div className="text-sm text-gray-600 dark:text-slate-300 flex items-center gap-3">
+          <div>
+            Target School: <span className="font-bold text-teal-600 dark:text-teal-400">{activeSchoolObj?.name}</span>
+          </div>
+          <span className="text-gray-300 dark:text-slate-600">|</span>
+          <div>
+            Role: <span className="font-bold text-violet-600 dark:text-violet-400">{activeRoleObj.label}</span>
+          </div>
         </div>
         <button
           type="button"
           onClick={handleSaveModules}
           disabled={saving}
-          className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold bg-teal-500 text-white hover:bg-teal-600 shadow-lg shadow-teal-500/25 transition"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold bg-teal-500 text-white hover:bg-teal-600 shadow-lg shadow-teal-500/25 transition"
         >
           {saving ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Save className="w-4 h-4" />}
           Save All Module Configurations
