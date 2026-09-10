@@ -366,13 +366,28 @@ export const DEFAULT_MODULES_CONFIG = {
     title: 'Config',
     roles: { ...rolesTemplate },
     submodules: {
-    }
-  },
-  utility: {
-    enabled: true,
-    title: 'Utility',
-    roles: { ...rolesTemplate },
-    submodules: {
+      general: { name: 'General Config', enabled: true, roles: { ...rolesTemplate } },
+      roles: { name: 'Role & Permission', enabled: true, roles: { ...rolesTemplate } },
+      asset: { name: 'Asset Config', enabled: true, roles: { ...rolesTemplate } },
+      system: { name: 'System Config', enabled: true, roles: { ...rolesTemplate } },
+      auth: { name: 'Authentication', enabled: true, roles: { ...rolesTemplate } },
+      notification: { name: 'Notification', enabled: true, roles: { ...rolesTemplate } },
+      mail: { name: 'Mail Config', enabled: true, roles: { ...rolesTemplate } },
+      sms: { name: 'SMS Config', enabled: true, roles: { ...rolesTemplate } },
+      whatsapp: { name: 'WhatsApp Config', enabled: true, roles: { ...rolesTemplate } },
+      mailTemplate: { name: 'Mail Template', enabled: true, roles: { ...rolesTemplate } },
+      smsTemplate: { name: 'SMS Template', enabled: true, roles: { ...rolesTemplate } },
+      whatsappTemplate: { name: 'WhatsApp Template', enabled: true, roles: { ...rolesTemplate } },
+      pushTemplate: { name: 'Push Notification Template', enabled: true, roles: { ...rolesTemplate } },
+      feature: { name: 'Feature', enabled: true, roles: { ...rolesTemplate } },
+      chat: { name: 'Chat', enabled: true, roles: { ...rolesTemplate } },
+      module: { name: 'Module', enabled: true, roles: { ...rolesTemplate } },
+      social: { name: 'Social Network', enabled: true, roles: { ...rolesTemplate } },
+      terminology: { name: 'Terminology', enabled: true, roles: { ...rolesTemplate } },
+      locale: { name: 'Locale', enabled: true, roles: { ...rolesTemplate } },
+      credentials: { name: 'User Credentials', enabled: true, roles: { ...rolesTemplate } },
+      activity: { name: 'Activity Log', enabled: true, roles: { ...rolesTemplate } },
+      loginSession: { name: 'Login Session Management', enabled: true, roles: { ...rolesTemplate } }
     }
   }
 };

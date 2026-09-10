@@ -537,48 +537,33 @@ export default function Layout() {
       ]
     },
 
-    { 
-      name: 'Configuration', icon: Settings, roles: ['admin', 'super-admin'], moduleKey: 'generalConfig',
-      submenu: [
-        { name: 'General', href: '/admin/general-config' },
-        { name: 'Roles', href: '/admin/general-config?tab=role' },
-        { name: 'Modules', href: '/admin/module-config' }
-      ]
-    },
     { name: 'User', href: '/users', icon: Users, roles: ['admin', 'super-admin'], moduleKey: 'user' },
     { name: 'Custom Field', href: '/custom-field', icon: Sliders, roles: ['admin', 'super-admin'], moduleKey: 'customField' },
     { 
-      name: 'Utility', icon: Wrench, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent', 'accountant', 'librarian'], moduleKey: 'utility',
+      name: 'Config', icon: Settings, roles: ['admin', 'super-admin'], moduleKey: 'config',
       submenu: [
-        { name: 'Activity Log', href: '/settings?tab=activity' },
-        { name: 'Config', href: '/utility/config' }
-      ] 
-    },
-    { 
-      name: 'Config', icon: Settings, roles: ['admin', 'super-admin'],
-      submenu: [
-        { name: 'General Config', href: '/settings?tab=general', icon: Building },
-        { name: 'Asset Config', href: '/settings?tab=asset', icon: ImageIcon },
-        { name: 'System Config', href: '/settings?tab=system', icon: Settings },
-        { name: 'Authentication', href: '/settings?tab=auth', icon: LogIn },
-        { name: 'Notification', href: '/settings?tab=notification', icon: Bell },
-        { name: 'Mail Config', href: '/settings?tab=mail', icon: Mail },
-        { name: 'SMS Config', href: '/settings?tab=sms', icon: MessageSquare },
-        { name: 'WhatsApp Config', href: '/settings?tab=whatsapp', icon: MessageSquare },
-        { name: 'Mail Template', href: '/settings?tab=mail-template', icon: FileText },
-        { name: 'SMS Template', href: '/settings?tab=sms-template', icon: FileText },
-        { name: 'WhatsApp Template', href: '/settings?tab=whatsapp-template', icon: FileText },
-        { name: 'Push Notification Template', href: '/settings?tab=push-template', icon: FileText },
-        { name: 'Feature', href: '/settings?tab=feature', icon: List },
-        { name: 'Chat', href: '/settings?tab=chat', icon: MessageCircle },
-        { name: 'Module', href: '/settings?tab=module', roles: ['super-admin'], icon: Boxes },
-        { name: 'Social Network', href: '/settings?tab=social', icon: Share2 },
-        { name: 'Terminology', href: '/settings?tab=terminology', icon: Languages },
-        { name: 'Locale', href: '/settings?tab=locale', icon: Globe },
-        { name: 'User Credentials', href: '/settings?tab=credentials', roles: ['super-admin'], icon: Key },
-        { name: 'Role & Access', href: '/settings?tab=roles', icon: ShieldCheck },
-        { name: 'Activity Log', href: '/settings?tab=activity', icon: Activity },
-        { name: 'Login Session Management', href: '/settings?tab=login-session', icon: LogIn }
+        { name: 'General Config', href: '/settings?tab=general', icon: Building, subKey: 'general' },
+        { name: 'Role & Permission', href: '/settings?tab=roles', icon: ShieldCheck, subKey: 'roles' },
+        { name: 'Asset Config', href: '/settings?tab=asset', icon: ImageIcon, subKey: 'asset' },
+        { name: 'System Config', href: '/settings?tab=system', icon: Settings, subKey: 'system' },
+        { name: 'Authentication', href: '/settings?tab=auth', icon: LogIn, subKey: 'auth' },
+        { name: 'Notification', href: '/settings?tab=notification', icon: Bell, subKey: 'notification' },
+        { name: 'Mail Config', href: '/settings?tab=mail', icon: Mail, subKey: 'mail' },
+        { name: 'SMS Config', href: '/settings?tab=sms', icon: MessageSquare, subKey: 'sms' },
+        { name: 'WhatsApp Config', href: '/settings?tab=whatsapp', icon: MessageSquare, subKey: 'whatsapp' },
+        { name: 'Mail Template', href: '/settings?tab=mail-template', icon: FileText, subKey: 'mailTemplate' },
+        { name: 'SMS Template', href: '/settings?tab=sms-template', icon: FileText, subKey: 'smsTemplate' },
+        { name: 'WhatsApp Template', href: '/settings?tab=whatsapp-template', icon: FileText, subKey: 'whatsappTemplate' },
+        { name: 'Push Notification Template', href: '/settings?tab=push-template', icon: FileText, subKey: 'pushTemplate' },
+        { name: 'Feature', href: '/settings?tab=feature', icon: List, subKey: 'feature' },
+        { name: 'Chat', href: '/settings?tab=chat', icon: MessageCircle, subKey: 'chat' },
+        { name: 'Module', href: '/settings?tab=module', roles: ['super-admin'], icon: Boxes, subKey: 'module' },
+        { name: 'Social Network', href: '/settings?tab=social', icon: Share2, subKey: 'social' },
+        { name: 'Terminology', href: '/settings?tab=terminology', icon: Languages, subKey: 'terminology' },
+        { name: 'Locale', href: '/settings?tab=locale', icon: Globe, subKey: 'locale' },
+        { name: 'User Credentials', href: '/settings?tab=credentials', roles: ['super-admin'], icon: Key, subKey: 'credentials' },
+        { name: 'Activity Log', href: '/settings?tab=activity', icon: Activity, subKey: 'activity' },
+        { name: 'Login Session Management', href: '/settings?tab=login-session', icon: LogIn, subKey: 'loginSession' }
       ] 
     },
 
