@@ -10,7 +10,8 @@ export default defineConfig({
   ],
   server: {
     allowedHosts: [
-      'school-management-system-1-wemg.onrender.com'
+      'school-management-system-1-wemg.onrender.com',
+      'school-management-system-x1.vercel.app'
     ]
   },
   build: {
