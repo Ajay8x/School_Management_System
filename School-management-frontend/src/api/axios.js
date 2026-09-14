@@ -7,7 +7,7 @@ const getBaseURL = () => {
   if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
     return 'http://localhost:5000/api';
   }
-  return 'https://school-management-system-jgvl.vercel.app/api';
+  return 'https://school-management-system-x1.vercel.app/api';
 };
 
 const API = axios.create({
@@ -25,7 +25,7 @@ API.interceptors.request.use((config) => {
   if (schoolId) {
     config.headers['x-school-id'] = schoolId;
   }
-  
+
   // Inject the currently active session ID so backend can scope data by academic year
   const activeSessionStr = localStorage.getItem('active_session');
   if (activeSessionStr) {
