@@ -14,13 +14,11 @@ async function fixAdmins() {
     // Let's reset the superadmin@school.com and admin@school.com back to their env passwords
     for (const admin of admins) {
       if (admin.email === process.env.SUPER_ADMIN_EMAIL) {
-        const salt = await bcrypt.genSalt(10);
-        admin.password = await bcrypt.hash(process.env.SUPER_ADMIN_PASSWORD, salt);
+        admin.password = process.env.SUPER_ADMIN_PASSWORD;
         await admin.save();
         console.log(`Reset password for ${admin.email}`);
       } else if (admin.email === process.env.ADMIN_EMAIL) {
-        const salt = await bcrypt.genSalt(10);
-        admin.password = await bcrypt.hash(process.env.ADMIN_PASSWORD, salt);
+        admin.password = process.env.ADMIN_PASSWORD;
         await admin.save();
         console.log(`Reset password for ${admin.email}`);
       } else if (admin.email === 'cloudhero@gmail.com') {
