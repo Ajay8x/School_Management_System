@@ -25,35 +25,35 @@ const SidebarItem = ({ item, isActive, onToggle, isExpanded }) => {
 
   if (hasSubmenu) {
     return (
-      <li className="px-4 mb-1">
+      <li className="px-3 mb-0.5">
         <button
           onClick={() => onToggle(item.name)}
-          className={`w-full flex items-center justify-between px-4 py-2.5 rounded-lg transition-all duration-200 ${
+          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200 ${
             isActive || isExpanded
               ? 'bg-teal-500 text-white shadow-sm' 
               : 'text-[#5c5c5c] dark:text-slate-300 hover:bg-[#f0f5fb] dark:hover:bg-slate-700 hover:text-teal-600 dark:hover:text-teal-400'
           }`}
         >
-          <div className="flex items-center space-x-3">
-            {item.icon && <item.icon className={`w-5 h-5 ${isActive || isExpanded ? 'text-white' : 'text-[#8a98ac] dark:text-slate-400'}`} strokeWidth={1.5} />}
-            <span className="font-medium text-[15px]">{item.name}</span>
+          <div className="flex items-center space-x-2.5 min-w-0">
+            {item.icon && <item.icon className={`w-4.5 h-4.5 flex-shrink-0 ${isActive || isExpanded ? 'text-white' : 'text-[#8a98ac] dark:text-slate-400'}`} strokeWidth={1.5} />}
+            <span className="font-medium text-[13.5px] truncate">{item.name}</span>
           </div>
-          {isExpanded ? <ChevronDown className="w-4 h-4 opacity-80" /> : <ChevronRight className="w-4 h-4 opacity-80" />}
+          {isExpanded ? <ChevronDown className="w-3.5 h-3.5 opacity-80 flex-shrink-0" /> : <ChevronRight className="w-3.5 h-3.5 opacity-80 flex-shrink-0" />}
         </button>
         
         {/* Submenu Accordion */}
-        <div className={`accordion-content pl-11 pr-4 ${isExpanded ? 'open mt-1 mb-2' : 'closed'}`}>
-          <ul className="space-y-1 relative before:absolute before:left-3.5 before:top-0 before:bottom-0 before:w-[1px] before:bg-gray-200 dark:before:bg-slate-600">
+        <div className={`accordion-content pl-9 pr-2 ${isExpanded ? 'open mt-0.5 mb-1.5' : 'closed'}`}>
+          <ul className="space-y-0.5 relative before:absolute before:left-3 before:top-0 before:bottom-0 before:w-[1px] before:bg-gray-200 dark:before:bg-slate-600">
             {item.submenu.map((sub) => {
               const SubIcon = sub.icon;
               return (
                 <li key={sub.name} className="relative">
                   <Link
                     to={sub.href}
-                    className="flex items-center space-x-2.5 px-3 py-1.5 text-[14px] text-gray-500 dark:text-slate-300 hover:text-teal-600 dark:hover:text-white transition-colors rounded-lg hover:bg-gray-100/50 dark:hover:bg-slate-700/50"
+                    className="flex items-center space-x-2 px-2.5 py-1.5 text-[13px] text-gray-500 dark:text-slate-300 hover:text-teal-600 dark:hover:text-white transition-colors rounded-lg hover:bg-gray-100/50 dark:hover:bg-slate-700/50"
                   >
                     {SubIcon ? (
-                      <SubIcon className="w-4 h-4 text-gray-400 dark:text-slate-400 flex-shrink-0" strokeWidth={1.5} />
+                      <SubIcon className="w-3.5 h-3.5 text-gray-400 dark:text-slate-400 flex-shrink-0" strokeWidth={1.5} />
                     ) : (
                       <span className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-slate-500 flex-shrink-0 ml-1"></span>
                     )}
@@ -70,17 +70,17 @@ const SidebarItem = ({ item, isActive, onToggle, isExpanded }) => {
   }
 
   return (
-    <li className="px-4 mb-1">
+    <li className="px-3 mb-0.5">
       <Link
         to={item.href}
-        className={`flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-all duration-200 ${
+        className={`flex items-center space-x-2.5 px-3 py-2 rounded-lg transition-all duration-200 ${
           isActive 
             ? 'bg-teal-500 text-white shadow-sm' 
             : 'text-[#5c5c5c] dark:text-slate-300 hover:bg-[#f0f5fb] dark:hover:bg-slate-700 hover:text-teal-600 dark:hover:text-teal-400'
         }`}
       >
-        {item.icon && <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-[#8a98ac] dark:text-slate-400'}`} strokeWidth={1.5} />}
-        <span className="font-medium text-[15px]">{item.name}</span>
+        {item.icon && <item.icon className={`w-4.5 h-4.5 flex-shrink-0 ${isActive ? 'text-white' : 'text-[#8a98ac] dark:text-slate-400'}`} strokeWidth={1.5} />}
+        <span className="font-medium text-[13.5px] truncate">{item.name}</span>
       </Link>
     </li>
   );
@@ -635,10 +635,10 @@ export default function Layout() {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-30 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 flex flex-col h-screen w-[270px] bg-white dark:bg-slate-800 border-r border-gray-100 dark:border-slate-700 shadow-[0_0_15px_rgba(0,0,0,0.03)] flex-shrink-0 transition-transform duration-300`}>
+      <div className={`fixed inset-y-0 left-0 z-30 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 flex flex-col h-screen w-[245px] bg-white dark:bg-slate-800 border-r border-gray-100 dark:border-slate-700 shadow-[0_0_15px_rgba(0,0,0,0.03)] flex-shrink-0 transition-transform duration-300`}>
         
         {/* Logo Area */}
-        <div className="h-[74px] flex items-center px-5 border-b border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 flex-shrink-0 transition-colors duration-300">
+        <div className="h-[64px] flex items-center px-4 border-b border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 flex-shrink-0 transition-colors duration-300">
           <Link to={`/${user.role}/dashboard`} className="flex items-center space-x-2">
             {currentSchool?.assets?.logo || currentSchool?.assets?.icon || currentSchool?.logoUrl ? (
               <img 
@@ -717,23 +717,23 @@ export default function Layout() {
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative z-10">
         
         {/* Topbar */}
-        <header className="h-[76px] bg-[#0d1527] dark:bg-slate-900 border-b border-slate-800 flex items-center justify-between px-6 flex-shrink-0 transition-colors duration-300 z-30">
-          <div className="flex items-center space-x-4">
+        <header className="h-[62px] bg-[#0d1527] dark:bg-slate-900 border-b border-slate-800 flex items-center justify-between px-3 sm:px-5 flex-shrink-0 transition-colors duration-300 z-30">
+          <div className="flex items-center space-x-3">
             <button 
-              className="text-slate-400 hover:text-teal-400 transition p-2 bg-slate-800/80 rounded-lg md:hidden"
+              className="text-slate-400 hover:text-teal-400 transition p-1.5 bg-slate-800/80 rounded-lg md:hidden"
               onClick={() => setIsMobileMenuOpen(true)}
             >
               <Menu className="w-5 h-5" />
             </button>
             
             {/* Search Bar & AI Copilot Logo */}
-            <div className="hidden lg:flex items-center space-x-3">
-              <div className="flex items-center bg-slate-800/80 border border-slate-700/60 rounded-xl px-3 py-2 w-64 xl:w-72 focus-within:ring-1 focus-within:ring-teal-500 transition-all relative">
-                <Search className="w-[18px] h-[18px] text-slate-400 mr-2" />
+            <div className="hidden lg:flex items-center space-x-2.5">
+              <div className="flex items-center bg-slate-800/80 border border-slate-700/60 rounded-xl px-2.5 py-1.5 w-44 xl:w-56 focus-within:w-64 focus-within:ring-1 focus-within:ring-teal-500 transition-all relative">
+                <Search className="w-4 h-4 text-slate-400 mr-2 flex-shrink-0" />
                 <input 
                   type="text" 
                   placeholder="Search database..." 
-                  className="bg-transparent border-none outline-none w-full text-[13px] text-slate-200 placeholder-slate-400"
+                  className="bg-transparent border-none outline-none w-full text-[12.5px] text-slate-200 placeholder-slate-400"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => {if(searchQuery.length >= 2) setShowSearchDropdown(true)}}
@@ -799,24 +799,24 @@ export default function Layout() {
                     setIsAiAssistantOpen(true);
                     setTimeout(() => window.dispatchEvent(new CustomEvent('ai_direct_mic')), 100);
                   }}
-                  className="p-2 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white border border-rose-500/50 transition-all duration-300 shadow-[0_0_10px_rgba(244,63,94,0.2)] hover:shadow-[0_0_15px_rgba(244,63,94,0.4)] hover:scale-105"
+                  className="p-1.5 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white border border-rose-500/50 transition-all duration-300 shadow-[0_0_10px_rgba(244,63,94,0.2)] hover:shadow-[0_0_15px_rgba(244,63,94,0.4)] hover:scale-105 flex-shrink-0"
                   title="Direct Voice Command"
                 >
-                  <Mic className="w-5 h-5" />
+                  <Mic className="w-4 h-4" />
                 </button>
 
                 {/* AI Copilot Button with Neon Hexagon Logo */}
                 <button
                   type="button"
                   onClick={() => setIsAiAssistantOpen(true)}
-                  className="relative group px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-purple-500/50 hover:border-pink-500 transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.35)] hover:shadow-[0_0_22px_rgba(236,72,153,0.5)] hover:scale-105 flex items-center gap-2 cursor-pointer"
+                  className="relative group px-2.5 py-1 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-purple-500/50 hover:border-pink-500 transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.35)] hover:shadow-[0_0_22px_rgba(236,72,153,0.5)] hover:scale-105 flex items-center gap-1.5 cursor-pointer flex-shrink-0"
                   title="Open AI School Copilot (Voice & Chat Control)"
                 >
-                  <div className="relative w-7 h-7 flex-shrink-0 flex items-center justify-center">
+                  <div className="relative w-6 h-6 flex-shrink-0 flex items-center justify-center">
                     <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-lg blur-xs opacity-80 animate-pulse"></div>
-                    <img src={aiLogo} alt="AI Copilot" className="w-6 h-6 object-contain relative z-10" />
+                    <img src={aiLogo} alt="AI Copilot" className="w-5 h-5 object-contain relative z-10" />
                   </div>
-                  <span className="hidden xl:inline text-xs font-extrabold bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-400 bg-clip-text text-transparent tracking-wider">
+                  <span className="hidden 2xl:inline text-[11px] font-extrabold bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-400 bg-clip-text text-transparent tracking-wider">
                     OPEN MODULE
                   </span>
                 </button>
@@ -825,25 +825,25 @@ export default function Layout() {
           </div>
           
           {/* Topbar Right Area matching Screenshot 1 */}
-          <div className="flex items-center space-x-3 md:space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             
             {/* Session Switcher Selector matching user screenshot */}
             <div className="relative" ref={sessionDropdownRef}>
               <button
                 type="button"
                 onClick={() => setShowSessionDropdown(!showSessionDropdown)}
-                className="flex items-center space-x-1 sm:space-x-2 text-white hover:text-teal-300 px-2 sm:px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700/70 transition-all font-semibold text-[13.5px] sm:text-[14.5px] tracking-tight group shadow-sm"
+                className="flex items-center space-x-1 sm:space-x-1.5 text-white hover:text-teal-300 px-2 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700/70 transition-all font-semibold text-xs sm:text-[13px] tracking-tight group shadow-sm"
               >
-                <Calendar className="w-4 h-4 text-teal-400 flex-shrink-0" />
-                <span className="hidden sm:flex items-center gap-1 truncate">
-                  <span>Session {currentSession?.name || '2025-2026'}</span>
+                <Calendar className="w-3.5 h-3.5 text-teal-400 flex-shrink-0" />
+                <span className="hidden sm:flex items-center gap-1 truncate max-w-[130px] lg:max-w-[170px]">
+                  <span className="truncate">Session {currentSession?.name || '2025-2026'}</span>
                   {(currentSession?.code || currentSession?.shortCode) && (
-                    <span className="text-slate-300 font-normal">
+                    <span className="text-slate-300 font-normal text-[11px]">
                       ({currentSession.code || currentSession.shortCode})
                     </span>
                   )}
                 </span>
-                <ChevronDown className={`w-4 h-4 text-slate-400 group-hover:text-white transition-transform duration-200 ${showSessionDropdown ? 'rotate-180 text-teal-400' : ''}`} />
+                <ChevronDown className={`w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-transform duration-200 ${showSessionDropdown ? 'rotate-180 text-teal-400' : ''}`} />
               </button>
 
               {/* Sleek Dark Session Dropdown */}
@@ -1026,40 +1026,40 @@ export default function Layout() {
             {/* Home Icon */}
             <Link
               to={`/${user.role}/dashboard`}
-              className="hidden md:flex w-9 h-9 items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition"
+              className="hidden md:flex w-8 h-8 items-center justify-center rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition"
               title="Home Dashboard"
             >
-              <Home className="w-5 h-5" />
+              <Home className="w-4 h-4" />
             </Link>
 
             {/* Settings Icon */}
             <Link
               to={isSuperAdmin ? '/admin/general-config' : '/admin/settings'}
-              className="hidden md:flex w-9 h-9 items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition"
+              className="hidden md:flex w-8 h-8 items-center justify-center rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition"
               title="General Configuration & Settings"
             >
-              <Settings className="w-5 h-5" />
+              <Settings className="w-4 h-4" />
             </Link>
 
             {/* Theme Toggle Button */}
             <button 
               onClick={toggleTheme} 
-              className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition"
+              className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition"
               title="Toggle Theme"
             >
-              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
 
             {/* Clock / Notifications Icon */}
             <div className="relative">
               <button 
                 onClick={handleOpenNotifications}
-                className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition relative"
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition relative"
                 title="Notifications"
               >
-                <Clock className="w-5 h-5" />
+                <Clock className="w-4 h-4" />
                 {unreadCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-slate-900 animate-pulse"></span>
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border border-slate-900 animate-pulse"></span>
                 )}
               </button>
 
@@ -1123,7 +1123,7 @@ export default function Layout() {
               <button 
                 type="button"
                 onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                className="w-10 h-10 rounded-full bg-amber-200/80 border-2 border-amber-300/80 shadow-sm overflow-hidden hover:scale-105 transition-transform flex items-center justify-center focus:outline-none"
+                className="w-8.5 h-8.5 rounded-full bg-amber-200/80 border-2 border-amber-300/80 shadow-sm overflow-hidden hover:scale-105 transition-transform flex items-center justify-center focus:outline-none"
                 title="My Profile Options"
               >
                 <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=fbd4a3&color=a05400`} alt="avatar" className="w-full h-full object-cover" />
@@ -1337,8 +1337,8 @@ export default function Layout() {
         </header>
 
         {/* Page Content scrolling area */}
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 md:p-8 bg-[#F0F5FB] dark:bg-slate-900 transition-colors duration-300 flex flex-col justify-between" onClick={() => setShowSearchDropdown(false)}>
-          <div className="max-w-7xl mx-auto w-full flex-1">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-5 lg:p-6 bg-[#F0F5FB] dark:bg-slate-900 transition-colors duration-300 flex flex-col justify-between" onClick={() => setShowSearchDropdown(false)}>
+          <div className="w-full max-w-[1600px] mx-auto flex-1">
             <Outlet />
           </div>
           <Footer />

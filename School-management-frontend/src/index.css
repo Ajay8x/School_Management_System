@@ -9,6 +9,13 @@
   --color-surface: #ffffff;
 }
 
+html {
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
 body {
   background-color: var(--color-background);
   color: #5c5c5c;
