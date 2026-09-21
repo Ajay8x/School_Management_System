@@ -81,6 +81,7 @@ import ActivityLog from './pages/ActivityLog';
 import FAQ from './pages/helpdesk/FAQ';
 import Ticket from './pages/helpdesk/Ticket';
 import HelpdeskConfig from './pages/helpdesk/HelpdeskConfig';
+import Trip from './pages/Trip';
 import NotFound from './pages/NotFound';
 
 
@@ -316,7 +317,8 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="library/issue-return" element={<Placeholder title="Library Issue & Return" />} />
     <Route path="library/report" element={<Placeholder title="Library Report" />} />
 
-    <Route path="activity/trip" element={<Placeholder title="Educational & Excursion Trip" />} />
+    <Route path="activity/trip" element={<Trip />} />
+    <Route path="activity" element={<Trip />} />
 
     <Route path="hostel/list" element={<Placeholder title="Hostel Management" />} />
     <Route path="hostel/allocation" element={<Placeholder title="Room Allocation" />} />
@@ -381,6 +383,7 @@ function App() {
           <Route path="students/service-requests" element={<ServiceRequest />} />
           <Route path="students/service-request/create" element={<ServiceRequest initialView="add" />} />
           <Route path="students/service-requests/create" element={<ServiceRequest initialView="add" />} />
+          <Route path="activity/trip" element={<Trip />} />
           <Route path="library" element={<Library />} />
           <Route path="utility/activity-log" element={<ActivityLog />} />
           <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
@@ -405,7 +408,7 @@ function App() {
           <Route path="students/service-requests" element={<ServiceRequest />} />
           <Route path="students/service-request/create" element={<ServiceRequest initialView="add" />} />
           <Route path="students/service-requests/create" element={<ServiceRequest initialView="add" />} />
-
+          <Route path="activity/trip" element={<Trip />} />
           <Route path="library" element={<Library />} />
           <Route path="utility/activity-log" element={<ActivityLog />} />
           <Route path="utility/config" element={<Placeholder title="Utility Config" />} />

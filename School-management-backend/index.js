@@ -127,6 +127,9 @@ app.use('/api/students/service-request', require('./routes/serviceRequestRoutes'
 app.use('/api/payment-methods', require('./routes/paymentMethodRoutes'));
 app.use('/api/payment-method', require('./routes/paymentMethodRoutes'));
 app.use('/api/finance/payment-methods', require('./routes/paymentMethodRoutes'));
+app.use('/api/trips', require('./routes/tripRoutes'));
+app.use('/api/trip', require('./routes/tripRoutes'));
+app.use('/api/activity/trips', require('./routes/tripRoutes'));
 
 
 

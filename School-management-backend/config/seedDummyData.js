@@ -632,6 +632,52 @@ const seedDummyData = async () => {
       console.log('Seeded initial Payment Methods successfully.');
     }
 
+    // Seed Trips if empty
+    const Trip = require('../models/Trip');
+    const tripCount = await Trip.countDocuments();
+    if (tripCount === 0) {
+      console.log('Seeding initial Trips...');
+      const sampleTrips = [
+        {
+          tripType: 'Educational Trip',
+          title: 'Visit to Science City Museum',
+          destination: 'Science City, Kolkata',
+          startDate: new Date('2025-12-01T00:00:00.000Z'),
+          endDate: new Date('2025-12-02T00:00:00.000Z'),
+          fee: 350,
+          audience: ['Batch Wise Student', 'Department Wise Employee'],
+          incharge: 'Rajesh Sharma',
+          inchargeContact: '+91 98765 43210',
+          maxParticipants: 60,
+          description: 'Educational exploration of science exhibitions, space theatre, and evolution park at Science City, Kolkata.',
+          itinerary: 'Day 1: Departure from School at 8:00 AM, Arrival & Space Odyssey show, Interactive exhibits.\nDay 2: Earth Exploration Hall, Science Park, Return journey by 5:00 PM.',
+          guidelines: 'Students must wear school uniform, bring water bottles, and carry school ID card.',
+          status: 'Upcoming',
+          participants: [
+            {
+              name: 'Aarav Kumar',
+              role: 'student',
+              rollNo: 'R001',
+              className: 'Class 1',
+              batchName: 'Batch A',
+              contactNumber: '9000000001',
+              emergencyContact: '9876543210',
+              paymentStatus: 'Paid',
+              feeAmount: 350,
+              paymentMethod: 'Cash',
+              consentReceived: true,
+              registeredAt: new Date('2025-12-06T19:14:00.000Z'),
+              remarks: 'Parent consent signed'
+            }
+          ],
+          createdAt: new Date('2025-12-06T13:44:00.000Z')
+        }
+      ];
+
+      await Trip.insertMany(sampleTrips);
+      console.log('Seeded initial Trips successfully.');
+    }
+
     console.log('Dummy data seeded successfully.');
 
 
