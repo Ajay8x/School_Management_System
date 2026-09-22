@@ -130,6 +130,8 @@ app.use('/api/finance/payment-methods', require('./routes/paymentMethodRoutes'))
 app.use('/api/trips', require('./routes/tripRoutes'));
 app.use('/api/trip', require('./routes/tripRoutes'));
 app.use('/api/activity/trips', require('./routes/tripRoutes'));
+app.use('/api/news', require('./routes/newsRoutes'));
+app.use('/api/admin/news', require('./routes/newsRoutes'));
 
 
 
