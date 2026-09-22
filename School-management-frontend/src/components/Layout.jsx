@@ -275,6 +275,7 @@ export default function Layout() {
 
   const allNavigation = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent', 'accountant', 'librarian'], moduleKey: 'dashboard' },
+    
     { 
       name: 'Reception', icon: UserPlus, roles: ['admin', 'super-admin'], moduleKey: 'reception',
       submenu: [
@@ -285,14 +286,6 @@ export default function Layout() {
         { name: 'Correspondence', href: '/reception/correspondence', subKey: 'correspondence' },
         { name: 'Query', href: '/reception/query', subKey: 'query' }
       ] 
-    },
-    { name: 'Task', href: '/task', icon: CheckSquare, roles: ['admin', 'super-admin', 'teacher'], moduleKey: 'task' },
-    { 
-      name: 'Helpdesk', icon: HelpCircle, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'], moduleKey: 'helpdesk',
-      submenu: [
-        { name: 'FAQ', href: '/helpdesk/faq' },
-        { name: 'Ticket', href: '/helpdesk/ticket' }
-      ]
     },
 
     { 
@@ -338,6 +331,7 @@ export default function Layout() {
         { name: 'Config', href: '/students/config', subKey: 'config' }
       ] 
     },
+
     { 
       name: 'Finance', icon: CreditCard, roles: ['admin', 'super-admin', 'accountant', 'parent'], moduleKey: 'finance',
       submenu: [
@@ -423,8 +417,7 @@ export default function Layout() {
         { name: 'Event', href: '/calendar/event' }
       ]
     },
-    { name: 'Notice Board', href: '/notice-board', icon: Bell, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'], moduleKey: 'communication' },
-    { name: 'Gallery', href: '/gallery', icon: ImageIcon, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'], moduleKey: 'gallery' },
+
     { 
       name: 'Inventory', icon: Package, roles: ['admin', 'super-admin', 'accountant'], moduleKey: 'inventory',
       submenu: [
@@ -440,38 +433,11 @@ export default function Layout() {
         { name: 'Report', href: '/inventory/report' }
       ]
     },
+
     { 
       name: 'Store', icon: ShoppingBag, roles: ['admin', 'super-admin', 'accountant'], moduleKey: 'store',
       submenu: [
         { name: 'Sale', href: '/store/sale' }
-      ]
-    },
-    { name: 'Blog', href: '/blog', icon: FileEdit, roles: ['admin', 'super-admin', 'teacher', 'student'], moduleKey: 'blog' },
-    { name: 'News', href: '/news', icon: Newspaper, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'], moduleKey: 'news' },
-    { 
-      name: 'Discipline', icon: ShieldAlert, roles: ['admin', 'super-admin', 'teacher'], moduleKey: 'discipline',
-      submenu: [
-        { name: 'Incident', href: '/discipline/incident' }
-      ]
-    },
-    { name: 'Guardian', href: '/guardians', icon: UserCheck, roles: ['admin', 'super-admin'], moduleKey: 'guardian' },
-    { 
-      name: 'Approval', icon: CheckCircle, roles: ['admin', 'super-admin', 'teacher'], moduleKey: 'approval',
-      submenu: [
-        { name: 'Type', href: '/approval/type' },
-        { name: 'Request', href: '/approval/request' },
-        { name: 'Pending Requests', href: '/approval/pending' },
-        { name: 'Processed Requests', href: '/approval/processed' }
-      ]
-    },
-
-    { name: 'Contact', href: '/contact', icon: PhoneCall, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'], moduleKey: 'contact' },
-    { 
-      name: 'Mess', icon: Utensils, roles: ['admin', 'super-admin', 'student', 'parent'], moduleKey: 'mess',
-      submenu: [
-        { name: 'Item', href: '/mess/item' },
-        { name: 'Meal', href: '/mess/meal' },
-        { name: 'Meal Log', href: '/mess/meal-log' }
       ]
     },
 
@@ -497,6 +463,48 @@ export default function Layout() {
     },
 
     { 
+      name: 'Approval', icon: CheckCircle, roles: ['admin', 'super-admin', 'teacher'], moduleKey: 'approval',
+      submenu: [
+        { name: 'Type', href: '/approval/type' },
+        { name: 'Request', href: '/approval/request' },
+        { name: 'Pending Requests', href: '/approval/pending' },
+        { name: 'Processed Requests', href: '/approval/processed' }
+      ]
+    },
+
+    { name: 'Task', href: '/task', icon: CheckSquare, roles: ['admin', 'super-admin', 'teacher'], moduleKey: 'task' },
+
+    { 
+      name: 'Helpdesk', icon: HelpCircle, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'], moduleKey: 'helpdesk',
+      submenu: [
+        { name: 'FAQ', href: '/helpdesk/faq' },
+        { name: 'Ticket', href: '/helpdesk/ticket' }
+      ]
+    },
+
+    { 
+      name: 'Discipline', icon: ShieldAlert, roles: ['admin', 'super-admin', 'teacher'], moduleKey: 'discipline',
+      submenu: [
+        { name: 'Incident', href: '/discipline/incident' }
+      ]
+    },
+
+    { name: 'Gallery', href: '/gallery', icon: ImageIcon, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'], moduleKey: 'gallery' },
+    
+    { name: 'Guardian', href: '/guardians', icon: UserCheck, roles: ['admin', 'super-admin'], moduleKey: 'guardian' },
+
+    { name: 'Contact', href: '/contact', icon: PhoneCall, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'], moduleKey: 'contact' },
+
+    { 
+      name: 'Mess', icon: Utensils, roles: ['admin', 'super-admin', 'student', 'parent'], moduleKey: 'mess',
+      submenu: [
+        { name: 'Item', href: '/mess/item' },
+        { name: 'Meal', href: '/mess/meal' },
+        { name: 'Meal Log', href: '/mess/meal-log' }
+      ]
+    },
+
+    { 
       name: 'Activity', icon: Activity, roles: ['admin', 'super-admin', 'teacher', 'student'], moduleKey: 'activity',
       submenu: [
         { name: 'Trip', href: '/activity/trip' }
@@ -512,6 +520,7 @@ export default function Layout() {
     },
 
     { name: 'Form', href: '/form', icon: FileCode, roles: ['admin', 'super-admin', 'teacher', 'student'], moduleKey: 'form' },
+
     { 
       name: 'Asset', icon: Boxes, roles: ['admin', 'super-admin'], moduleKey: 'asset',
       submenu: [
@@ -528,6 +537,10 @@ export default function Layout() {
       ]
     },
 
+    { name: 'Blog', href: '/blog', icon: FileEdit, roles: ['admin', 'super-admin', 'teacher', 'student'], moduleKey: 'blog' },
+
+    { name: 'News', href: '/news', icon: Newspaper, roles: ['admin', 'super-admin', 'teacher', 'student', 'parent'], moduleKey: 'news' },
+
     { 
       name: 'Recruitment', icon: UserPlus, roles: ['admin', 'super-admin'], moduleKey: 'recruitment',
       submenu: [
@@ -538,7 +551,17 @@ export default function Layout() {
     },
 
     { name: 'User', href: '/users', icon: Users, roles: ['admin', 'super-admin'], moduleKey: 'user' },
+
     { name: 'Custom Field', href: '/custom-field', icon: Sliders, roles: ['admin', 'super-admin'], moduleKey: 'customField' },
+
+    { 
+      name: 'Utility', icon: Wrench, roles: ['admin', 'super-admin'], moduleKey: 'utility',
+      submenu: [
+        { name: 'Activity Log', href: '/utility/activity-log', subKey: 'activityLog' },
+        { name: 'Config', href: '/utility/config', subKey: 'config' }
+      ]
+    },
+
     { 
       name: 'Config', icon: Settings, roles: ['admin', 'super-admin'], moduleKey: 'config',
       submenu: [
@@ -565,9 +588,7 @@ export default function Layout() {
         { name: 'Activity Log', href: '/settings?tab=activity', icon: Activity, subKey: 'activity' },
         { name: 'Login Session Management', href: '/settings?tab=login-session', icon: LogIn, subKey: 'loginSession' }
       ] 
-    },
-
-
+    }
   ];
 
 
