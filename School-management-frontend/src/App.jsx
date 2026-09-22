@@ -82,6 +82,7 @@ import FAQ from './pages/helpdesk/FAQ';
 import Ticket from './pages/helpdesk/Ticket';
 import HelpdeskConfig from './pages/helpdesk/HelpdeskConfig';
 import Trip from './pages/Trip';
+import News from './pages/News';
 import NotFound from './pages/NotFound';
 
 
@@ -297,7 +298,10 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="inventory/report" element={<Placeholder title="Inventory Report" />} />
     <Route path="store/sale" element={<Placeholder title="Store Sale" />} />
     <Route path="blog" element={<Placeholder title="Blog" />} />
-    <Route path="news" element={<Placeholder title="News" />} />
+    <Route path="news" element={<News />} />
+    <Route path="news/add" element={<News initialView="add" />} />
+    <Route path="news/edit/:id" element={<News initialView="edit" />} />
+    <Route path="news/:id" element={<News initialView="view" />} />
     <Route path="discipline/incident" element={<Placeholder title="Discipline Incident" />} />
     <Route path="approval/type" element={<Placeholder title="Approval Type" />} />
     <Route path="approval/request" element={<Placeholder title="Approval Request" />} />
@@ -385,6 +389,10 @@ function App() {
           <Route path="students/service-requests/create" element={<ServiceRequest initialView="add" />} />
           <Route path="activity/trip" element={<Trip />} />
           <Route path="library" element={<Library />} />
+          <Route path="news" element={<News />} />
+          <Route path="news/add" element={<News initialView="add" />} />
+          <Route path="news/edit/:id" element={<News initialView="edit" />} />
+          <Route path="news/:id" element={<News initialView="view" />} />
           <Route path="utility/activity-log" element={<ActivityLog />} />
           <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
         </Route>
@@ -410,6 +418,8 @@ function App() {
           <Route path="students/service-requests/create" element={<ServiceRequest initialView="add" />} />
           <Route path="activity/trip" element={<Trip />} />
           <Route path="library" element={<Library />} />
+          <Route path="news" element={<News />} />
+          <Route path="news/:id" element={<News initialView="view" />} />
           <Route path="utility/activity-log" element={<ActivityLog />} />
           <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
         </Route>
@@ -429,6 +439,8 @@ function App() {
           <Route path="calendar/event" element={<CalendarManager defaultType="event" />} />
           <Route path="download-format" element={<DownloadFormat />} />
           <Route path="message" element={<Message />} />
+          <Route path="news" element={<News />} />
+          <Route path="news/:id" element={<News initialView="view" />} />
           <Route path="utility/activity-log" element={<ActivityLog />} />
           <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
         </Route>
