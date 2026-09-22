@@ -44,20 +44,20 @@ const MODULE_PERMISSIONS_SCHEMA = [
 ];
 
 const PERMISSION_ROWS = [
-  { key: 'login:action', name: 'login:action' },
-  { key: 'profile:update', name: 'profile:update' },
-  { key: 'password:update', name: 'password:update' },
-  { key: 'post:config', name: 'post:config' },
-  { key: 'post:read', name: 'post:read' },
-  { key: 'post:create', name: 'post:create' },
-  { key: 'post:edit', name: 'post:edit' },
-  { key: 'post:delete', name: 'post:delete' },
-  { key: 'post:comment', name: 'post:comment' },
-  { key: 'access:reports', name: 'access:reports' },
-  { key: 'academic:view', name: 'academic:view' },
-  { key: 'student:manage', name: 'student:manage' },
-  { key: 'finance:collect', name: 'finance:collect' },
-  { key: 'exam:entry', name: 'exam:entry' }
+  { key: 'login:action', name: 'User Login Access', category: 'Auth', description: 'Allow users to log into the portal' },
+  { key: 'profile:update', name: 'Edit Profile Information', category: 'Account', description: 'Update profile and personal details' },
+  { key: 'password:update', name: 'Change / Reset Password', category: 'Security', description: 'Change account password' },
+  { key: 'post:config', name: 'Notice Board Settings', category: 'Communication', description: 'Configure notices and categories' },
+  { key: 'post:read', name: 'View Notices & Circulars', category: 'Communication', description: 'Read published announcements' },
+  { key: 'post:create', name: 'Publish New Notice / Post', category: 'Communication', description: 'Create announcements & broadcasts' },
+  { key: 'post:edit', name: 'Edit Published Notices', category: 'Communication', description: 'Modify existing announcements' },
+  { key: 'post:delete', name: 'Delete Notices & Posts', category: 'Communication', description: 'Remove notice board posts' },
+  { key: 'post:comment', name: 'Comment on Announcements', category: 'Communication', description: 'Post comments and feedback' },
+  { key: 'access:reports', name: 'Access Reports & Analytics', category: 'Reports', description: 'View student, fee & class reports' },
+  { key: 'academic:view', name: 'View Academic Records', category: 'Academics', description: 'View courses, batches & subjects' },
+  { key: 'student:manage', name: 'Manage Students & Admissions', category: 'Students', description: 'Student enrollment & profiles' },
+  { key: 'finance:collect', name: 'Collect Fees & Payments', category: 'Finance', description: 'Fee collection & receipt generation' },
+  { key: 'exam:entry', name: 'Enter & Edit Exam Marks', category: 'Examination', description: 'Input grades & exam marks' }
 ];
 
 export default function GeneralConfig() {
@@ -1149,11 +1149,28 @@ export default function GeneralConfig() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 dark:divide-slate-700 text-sm text-gray-700 dark:text-slate-200">
-                    {PERMISSION_ROWS.filter(item => item.name.toLowerCase().includes(filterSearchQuery.toLowerCase()))
-                    .map((permRow) => (
+                    {PERMISSION_ROWS.filter(item => 
+                      item.name.toLowerCase().includes(filterSearchQuery.toLowerCase()) ||
+                      item.key.toLowerCase().includes(filterSearchQuery.toLowerCase()) ||
+                      (item.description && item.description.toLowerCase().includes(filterSearchQuery.toLowerCase()))
+                    ).map((permRow) => (
                       <tr key={permRow.key} className="hover:bg-teal-50/40 dark:hover:bg-slate-700/40 transition">
-                        <td className="sticky left-0 bg-white dark:bg-slate-800 py-3.5 px-6 font-mono text-xs font-bold text-gray-900 dark:text-slate-100 z-10 border-r border-gray-200 dark:border-slate-700 shadow-sm whitespace-nowrap min-w-[200px]">
-                          {permRow.name}
+                        <td className="sticky left-0 bg-white dark:bg-slate-800 py-3.5 px-6 z-10 border-r border-gray-200 dark:border-slate-700 shadow-sm min-w-[260px]">
+                          <div className="flex flex-col">
+                            <span className="text-[13px] font-bold text-gray-900 dark:text-white leading-tight">
+                              {permRow.name}
+                            </span>
+                            <div className="flex items-center gap-2 mt-1 flex-wrap">
+                              <span className="font-mono text-[10px] text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/50 px-1.5 py-0.5 rounded border border-teal-500/20 font-medium">
+                                {permRow.key}
+                              </span>
+                              {permRow.description && (
+                                <span className="text-[11px] text-gray-500 dark:text-slate-400">
+                                  {permRow.description}
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         </td>
 
                         {rolesList.map(role => {
