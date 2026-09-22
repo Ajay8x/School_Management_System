@@ -1,15 +1,28 @@
 const Trip = require('../models/Trip');
+const School = require('../models/School');
 const { logActivity } = require('../utils/logActivity');
 
-// @desc    Get all trips
+// Helper to get active school ID
+const getActiveSchoolId = async (req) => {
+  if (req.schoolId) return req.schoolId;
+  if (req.user && req.user.schoolId) return req.user.schoolId;
+  const defaultSchool = await School.findOne({ isDefault: true }) || await School.findOne();
+  return defaultSchool ? defaultSchool._id : null;
+};
+
+// @desc    Get all trips strictly scoped to active school
 // @route   GET /api/trips
 // @access  Private
 exports.getTrips = async (req, res) => {
   try {
     const { tripType, status, audience, search, fromDate, toDate } = req.query;
+    const activeSchoolId = req.schoolId || (req.user && req.user.schoolId);
+    
     const filter = {};
+    if (activeSchoolId) {
+      filter.schoolId = activeSchoolId;
+    }
 
-    if (req.schoolId) filter.schoolId = req.schoolId;
     if (tripType && tripType !== 'All') filter.tripType = tripType;
     if (status && status !== 'All') filter.status = status;
     if (audience && audience !== 'All') filter.audience = audience;
@@ -55,13 +68,14 @@ exports.getTripById = async (req, res) => {
   }
 };
 
-// @desc    Create a new trip
+// @desc    Create a new trip strictly assigned to the active school
 // @route   POST /api/trips
 // @access  Private (Admin / Super Admin)
 exports.createTrip = async (req, res) => {
   try {
     const payload = { ...req.body };
-    if (req.schoolId) payload.schoolId = req.schoolId;
+    const schoolId = await getActiveSchoolId(req);
+    if (schoolId) payload.schoolId = schoolId;
     if (req.user) payload.createdBy = req.user._id;
 
     // Audience parsing if sent as comma-separated or array
@@ -99,7 +113,7 @@ exports.updateTrip = async (req, res) => {
     const item = await Trip.findByIdAndUpdate(
       req.params.id,
       { $set: payload },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     if (!item) return res.status(404).json({ message: 'Trip not found' });
@@ -226,6 +240,8 @@ exports.importTrips = async (req, res) => {
       return res.status(400).json({ message: 'No trip records provided' });
     }
 
+    const schoolId = await getActiveSchoolId(req);
+
     const prepared = items.map(item => ({
       tripType: item.tripType || 'Educational Trip',
       title: item.title || 'Untitled Trip',
@@ -237,7 +253,7 @@ exports.importTrips = async (req, res) => {
       incharge: item.incharge || '',
       description: item.description || '',
       status: item.status || 'Upcoming',
-      schoolId: req.schoolId,
+      schoolId: schoolId,
       createdBy: req.user?._id
     }));
 

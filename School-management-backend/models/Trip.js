@@ -71,6 +71,6 @@ tripSchema.pre('save', function() {
   this.updatedAt = Date.now();
 });
 
-tripSchema.plugin(require('../plugins/tenantPlugin'));
+// tripSchema.plugin(require('../plugins/tenantPlugin'));
 
 module.exports = mongoose.model('Trip', tripSchema);

@@ -1,20 +1,26 @@
 const News = require('../models/News');
+const School = require('../models/School');
 const { logActivity } = require('../utils/logActivity');
 
-// @desc    Get all news articles with filtering, searching, and sorting
+// Helper to get active school ID
+const getActiveSchoolId = async (req) => {
+  if (req.schoolId) return req.schoolId;
+  if (req.user && req.user.schoolId) return req.user.schoolId;
+  const defaultSchool = await School.findOne({ isDefault: true }) || await School.findOne();
+  return defaultSchool ? defaultSchool._id : null;
+};
+
+// @desc    Get all news articles strictly scoped to active school
 // @route   GET /api/news
-// @access  Public / Private
+// @access  Private
 exports.getNews = async (req, res) => {
   try {
     const { search, category, status, sortBy, limit } = req.query;
-    
+    const activeSchoolId = req.schoolId || (req.user && req.user.schoolId);
+
     let filter = {};
-    if (req.schoolId) {
-      filter.$or = [
-        { schoolId: req.schoolId },
-        { schoolId: null },
-        { schoolId: { $exists: false } }
-      ];
+    if (activeSchoolId) {
+      filter.schoolId = activeSchoolId;
     }
 
     if (category && category !== 'All') {
@@ -37,15 +43,15 @@ exports.getNews = async (req, res) => {
         ]
       };
 
-      if (filter.$or) {
+      if (Object.keys(filter).length > 0) {
         filter = {
           $and: [
-            { $or: filter.$or },
+            filter,
             searchFilter
           ]
         };
       } else {
-        filter = { ...filter, ...searchFilter };
+        filter = searchFilter;
       }
     }
 
@@ -72,9 +78,9 @@ exports.getNews = async (req, res) => {
   }
 };
 
-// @desc    Get single news article by ID and increment views
+// @desc    Get single news article by ID
 // @route   GET /api/news/:id
-// @access  Public / Private
+// @access  Private
 exports.getNewsById = async (req, res) => {
   try {
     const news = await News.findByIdAndUpdate(
@@ -94,9 +100,9 @@ exports.getNewsById = async (req, res) => {
   }
 };
 
-// @desc    Create new news article
+// @desc    Create new news article strictly assigned to active school
 // @route   POST /api/news
-// @access  Private (Authenticated)
+// @access  Private
 exports.createNews = async (req, res) => {
   try {
     const { title, subtitle, content, category, coverImage, status, isFeatured } = req.body;
@@ -109,6 +115,8 @@ exports.createNews = async (req, res) => {
       return res.status(400).json({ message: 'Please provide content for the news article' });
     }
 
+    const schoolId = await getActiveSchoolId(req);
+
     const newsData = {
       title: title.trim(),
       subtitle: subtitle ? subtitle.trim() : '',
@@ -119,12 +127,10 @@ exports.createNews = async (req, res) => {
       isFeatured: Boolean(isFeatured),
       author: req.user?._id || req.user?.id,
       authorName: req.user?.name || req.user?.username || 'School Administration',
-      publishedAt: status === 'Draft' ? null : (req.body.publishedAt || new Date())
+      publishedAt: status === 'Draft' ? null : (req.body.publishedAt || new Date()),
+      schoolId: schoolId
     };
 
-    if (req.schoolId) {
-      newsData.schoolId = req.schoolId;
-    }
     if (req.headers && req.headers['x-session-id']) {
       newsData.sessionId = req.headers['x-session-id'];
     }
@@ -148,7 +154,7 @@ exports.createNews = async (req, res) => {
 
 // @desc    Update existing news article
 // @route   PUT /api/news/:id
-// @access  Private (Authenticated)
+// @access  Private
 exports.updateNews = async (req, res) => {
   try {
     const { title, subtitle, content, category, coverImage, status, isFeatured, publishedAt } = req.body;
@@ -196,7 +202,7 @@ exports.updateNews = async (req, res) => {
 
 // @desc    Delete news article
 // @route   DELETE /api/news/:id
-// @access  Private (Authenticated)
+// @access  Private
 exports.deleteNews = async (req, res) => {
   try {
     const news = await News.findById(req.params.id);
@@ -223,7 +229,7 @@ exports.deleteNews = async (req, res) => {
 
 // @desc    Bulk delete news articles
 // @route   POST /api/news/bulk-delete
-// @access  Private (Authenticated)
+// @access  Private
 exports.bulkDeleteNews = async (req, res) => {
   try {
     const { ids } = req.body;
@@ -250,7 +256,7 @@ exports.bulkDeleteNews = async (req, res) => {
 
 // @desc    Toggle news status (Draft <-> Published)
 // @route   PATCH /api/news/:id/status
-// @access  Private (Authenticated)
+// @access  Private
 exports.toggleNewsStatus = async (req, res) => {
   try {
     const news = await News.findById(req.params.id);

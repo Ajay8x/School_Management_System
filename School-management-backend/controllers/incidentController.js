@@ -1,20 +1,26 @@
 const Incident = require('../models/Incident');
+const School = require('../models/School');
 const { logActivity } = require('../utils/logActivity');
 
-// @desc    Get all discipline incidents
+// Helper to get active school ID
+const getActiveSchoolId = async (req) => {
+  if (req.schoolId) return req.schoolId;
+  if (req.user && req.user.schoolId) return req.user.schoolId;
+  const defaultSchool = await School.findOne({ isDefault: true }) || await School.findOne();
+  return defaultSchool ? defaultSchool._id : null;
+};
+
+// @desc    Get all discipline incidents strictly scoped to active school
 // @route   GET /api/discipline/incidents
 // @access  Private
 exports.getIncidents = async (req, res) => {
   try {
     const { search, category, nature, severity, actionStatus, studentId, fromDate, toDate, sortBy } = req.query;
+    const activeSchoolId = req.schoolId || (req.user && req.user.schoolId);
 
     let filter = {};
-    if (req.schoolId) {
-      filter.$or = [
-        { schoolId: req.schoolId },
-        { schoolId: null },
-        { schoolId: { $exists: false } }
-      ];
+    if (activeSchoolId) {
+      filter.schoolId = activeSchoolId;
     }
 
     if (category && category !== 'All') {
@@ -62,15 +68,15 @@ exports.getIncidents = async (req, res) => {
         ]
       };
 
-      if (filter.$or) {
+      if (Object.keys(filter).length > 0) {
         filter = {
           $and: [
-            { $or: filter.$or },
+            filter,
             searchFilter
           ]
         };
       } else {
-        filter = { ...filter, ...searchFilter };
+        filter = searchFilter;
       }
     }
 
@@ -106,7 +112,7 @@ exports.getIncidentById = async (req, res) => {
   }
 };
 
-// @desc    Create new discipline incident
+// @desc    Create new discipline incident strictly assigned to active school
 // @route   POST /api/discipline/incidents
 // @access  Private
 exports.createIncident = async (req, res) => {
@@ -136,6 +142,8 @@ exports.createIncident = async (req, res) => {
       return res.status(400).json({ message: 'Please provide an incident description' });
     }
 
+    const schoolId = await getActiveSchoolId(req);
+
     const incidentData = {
       category: category || 'Behavioral',
       title: title.trim(),
@@ -151,12 +159,10 @@ exports.createIncident = async (req, res) => {
       description: description.trim(),
       action: action ? action.trim() : '',
       actionStatus: actionStatus || 'Pending',
-      attachments: Array.isArray(attachments) ? attachments : []
+      attachments: Array.isArray(attachments) ? attachments : [],
+      schoolId: schoolId
     };
 
-    if (req.schoolId) {
-      incidentData.schoolId = req.schoolId;
-    }
     if (req.headers && req.headers['x-session-id']) {
       incidentData.sessionId = req.headers['x-session-id'];
     }
