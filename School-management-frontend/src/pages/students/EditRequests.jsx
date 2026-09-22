@@ -412,11 +412,6 @@ export default function EditRequests() {
 
           </div>
 
-          {/* Footer Branding */}
-          <div className="py-4 text-center text-xs text-gray-400 dark:text-slate-500 border-t border-gray-100 dark:border-slate-700">
-            Campus Tracker
-          </div>
-
         </div>
       ) : (
         /* Main List View Mode */
@@ -791,11 +786,6 @@ export default function EditRequests() {
               </div>
             </div>
 
-          </div>
-
-          {/* Footer Branding */}
-          <div className="py-4 text-center text-xs text-gray-400 dark:text-slate-500">
-            Campus Tracker
           </div>
 
         </div>

@@ -378,7 +378,7 @@ export default function News({ initialView = 'list' }) {
   const mathSymbols = ['π', '√', '²', '³', '∑', '∫', '±', '≠', '≤', '≥', '∞', 'α', 'β', 'γ', 'θ', 'λ', 'μ', 'σ', 'Δ', 'Ω', '€', '$', '₹', '£', '¥', '©', '®', '™'];
 
   // Current school label fallback
-  const schoolLabel = currentSchool?.name || 'Campus Tracker';
+  const schoolLabel = currentSchool?.name || '';
 
   // ----------------------------------------------------
   // RENDER: ADD / EDIT VIEW (Matches Screenshot 1)
@@ -1399,11 +1399,6 @@ export default function News({ initialView = 'list' }) {
             )}
           </div>
         )}
-
-        {/* Footer Brand (Matches Screenshot 2 footer "Campus Tracker") */}
-        <div className="text-center mt-12 text-xs font-medium text-slate-400 dark:text-slate-500">
-          {schoolLabel}
-        </div>
       </div>
 
       {/* Reader Modal (Full Article View) */}

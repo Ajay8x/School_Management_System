@@ -562,10 +562,6 @@ export default function PaymentMethod({ initialView = 'list' }) {
               </div>
             </div>
           </div>
-
-          <div className="text-center text-xs text-slate-400 pt-4">
-            Campus Tracker
-          </div>
         </div>
       )}
 
@@ -838,10 +834,6 @@ export default function PaymentMethod({ initialView = 'list' }) {
               </div>
 
             </form>
-          </div>
-
-          <div className="text-center text-xs text-slate-400 pt-4">
-            Campus Tracker
           </div>
         </div>
       )}

@@ -411,11 +411,6 @@ export default function TransportStoppage({ initialView = 'list' }) {
           </div>
         )}
       </div>
-
-      {/* Footer */}
-      <footer className="text-center py-4 text-xs font-medium text-slate-600 dark:text-slate-400 border-t border-slate-200/60 dark:border-slate-800 mt-8">
-        Campus Tracker
-      </footer>
     </div>
   );
 }

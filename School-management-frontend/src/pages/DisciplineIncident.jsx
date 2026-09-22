@@ -380,7 +380,7 @@ export default function DisciplineIncident({ initialView = 'list' }) {
     return matchesSearch && matchesCategory && matchesSeverity && matchesStatus;
   });
 
-  const schoolLabel = currentSchool?.name || 'Campus Tracker';
+  const schoolLabel = currentSchool?.name || '';
 
   // Severity Badges Color Helper
   const getSeverityBadge = (sev) => {
@@ -735,11 +735,6 @@ export default function DisciplineIncident({ initialView = 'list' }) {
               </button>
             </div>
           </div>
-        </div>
-
-        {/* Footer Brand (Matches Screenshot 2 footer "Campus Tracker") */}
-        <div className="text-center mt-12 text-xs font-medium text-slate-400 dark:text-slate-500">
-          {schoolLabel}
         </div>
 
         {/* Attachment Upload Modal */}
@@ -1216,11 +1211,6 @@ export default function DisciplineIncident({ initialView = 'list' }) {
             )}
           </div>
         )}
-
-        {/* Footer Brand (Matches Screenshot 1 footer "Campus Tracker") */}
-        <div className="text-center mt-12 text-xs font-medium text-slate-400 dark:text-slate-500">
-          {schoolLabel}
-        </div>
       </div>
 
       {/* Incident Detail / Investigation Modal */}
