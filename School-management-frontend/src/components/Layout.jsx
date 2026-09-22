@@ -516,7 +516,10 @@ export default function Layout() {
       name: 'Hostel', icon: Building, roles: ['admin', 'super-admin', 'student', 'parent'], moduleKey: 'hostel',
       submenu: [
         { name: 'Hostel', href: '/hostel/list' },
-        { name: 'Room Allocation', href: '/hostel/allocation' }
+        { name: 'Room Allocation', href: '/hostel/allocation' },
+        { name: 'Hostel Incharge', href: '/hostel/incharge' },
+        { name: 'Floor', href: '/hostel/floor' },
+        { name: 'Room', href: '/hostel/room' }
       ]
     },
 

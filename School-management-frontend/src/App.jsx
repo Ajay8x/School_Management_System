@@ -90,6 +90,14 @@ import TransportCircle from './pages/transport/TransportCircle';
 import TransportFee from './pages/transport/TransportFee';
 import Vehicle from './pages/transport/Vehicle';
 import TransportReport from './pages/transport/TransportReport';
+import Hostel from './pages/hostel/Hostel';
+import HostelIncharge from './pages/hostel/HostelIncharge';
+import RoomAllocation from './pages/hostel/RoomAllocation';
+import HostelFloor from './pages/hostel/HostelFloor';
+import HostelRoom from './pages/hostel/HostelRoom';
+import BuildingBlock from './pages/asset/BuildingBlock';
+import BuildingFloor from './pages/asset/BuildingFloor';
+import BuildingRoom from './pages/asset/BuildingRoom';
 import NotFound from './pages/NotFound';
 
 
@@ -332,6 +340,16 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="mess/meal" element={<Placeholder title="Mess Meal Menu" />} />
     <Route path="mess/meal-log" element={<Placeholder title="Mess Meal Log" />} />
 
+    <Route path="hostel" element={<Hostel />} />
+    <Route path="hostel/list" element={<Hostel />} />
+    <Route path="hostel/add" element={<Hostel initialView="add" />} />
+    <Route path="hostel/incharge" element={<HostelIncharge />} />
+    <Route path="hostel/incharge/add" element={<HostelIncharge initialView="add" />} />
+    <Route path="hostel/allocation" element={<RoomAllocation />} />
+    <Route path="hostel/allocation/add" element={<RoomAllocation initialView="add" />} />
+    <Route path="hostel/floor" element={<HostelFloor />} />
+    <Route path="hostel/room" element={<HostelRoom />} />
+
     <Route path="communication/email" element={<Placeholder title="Email Broadcast" />} />
     <Route path="communication/sms" element={<Placeholder title="SMS Broadcast" />} />
     <Route path="communication/whatsapp" element={<Placeholder title="WhatsApp Broadcast" />} />
@@ -344,10 +362,13 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="activity/trip" element={<Trip />} />
     <Route path="activity" element={<Trip />} />
 
-    <Route path="hostel/list" element={<Placeholder title="Hostel Management" />} />
-    <Route path="hostel/allocation" element={<Placeholder title="Room Allocation" />} />
-
-    <Route path="asset/building" element={<Placeholder title="Asset Building" />} />
+    <Route path="asset/building" element={<BuildingBlock />} />
+    <Route path="asset/building/block" element={<BuildingBlock />} />
+    <Route path="asset/building/block/add" element={<BuildingBlock initialView="add" />} />
+    <Route path="asset/building/floor" element={<BuildingFloor />} />
+    <Route path="asset/building/floor/add" element={<BuildingFloor initialView="add" />} />
+    <Route path="asset/building/room" element={<BuildingRoom />} />
+    <Route path="asset/building/room/add" element={<BuildingRoom initialView="add" />} />
 
     <Route path="site/page" element={<Placeholder title="Site Page Management" />} />
     <Route path="site/menu" element={<Placeholder title="Site Navigation Menu" />} />

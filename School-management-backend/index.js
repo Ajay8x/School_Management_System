@@ -136,6 +136,10 @@ app.use('/api/discipline/incidents', require('./routes/incidentRoutes'));
 app.use('/api/incidents', require('./routes/incidentRoutes'));
 app.use('/api/discipline/incident', require('./routes/incidentRoutes'));
 app.use('/api/transport', require('./routes/transportRoutes'));
+app.use('/api/hostel', require('./routes/hostelRoutes'));
+app.use('/api/hostels', require('./routes/hostelRoutes'));
+app.use('/api/asset/building', require('./routes/buildingRoutes'));
+app.use('/api/building', require('./routes/buildingRoutes'));
 
 
 
