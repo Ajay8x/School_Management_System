@@ -402,6 +402,7 @@ export default function Layout() {
       name: 'Transport', icon: Truck, roles: ['admin', 'super-admin', 'student', 'parent'], moduleKey: 'transport',
       submenu: [
         { name: 'Transport Route', href: '/transport/route' },
+        { name: 'Transport Stoppage', href: '/transport/stoppage' },
         { name: 'Transport Circle', href: '/transport/circle' },
         { name: 'Transport Fee', href: '/transport/fee' },
         { name: 'Vehicle', href: '/transport/vehicle' },

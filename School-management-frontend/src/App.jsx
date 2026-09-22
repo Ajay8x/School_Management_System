@@ -84,6 +84,12 @@ import HelpdeskConfig from './pages/helpdesk/HelpdeskConfig';
 import Trip from './pages/Trip';
 import News from './pages/News';
 import DisciplineIncident from './pages/DisciplineIncident';
+import TransportRoute from './pages/transport/TransportRoute';
+import TransportStoppage from './pages/transport/TransportStoppage';
+import TransportCircle from './pages/transport/TransportCircle';
+import TransportFee from './pages/transport/TransportFee';
+import Vehicle from './pages/transport/Vehicle';
+import TransportReport from './pages/transport/TransportReport';
 import NotFound from './pages/NotFound';
 
 
@@ -276,11 +282,22 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="download-format" element={<DownloadFormat />} />
     <Route path="resource/report" element={<Placeholder title="Resource Report" />} />
 
-    <Route path="transport/route" element={<Placeholder title="Transport Route" />} />
-    <Route path="transport/circle" element={<Placeholder title="Transport Circle" />} />
-    <Route path="transport/fee" element={<Placeholder title="Transport Fee" />} />
-    <Route path="transport/vehicle" element={<Placeholder title="Transport Vehicle" />} />
-    <Route path="transport/report" element={<Placeholder title="Transport Report" />} />
+    <Route path="transport/route" element={<TransportRoute />} />
+    <Route path="transport/route/create" element={<TransportRoute initialView="add" />} />
+    <Route path="transport/routes" element={<TransportRoute />} />
+    <Route path="transport/stoppage" element={<TransportStoppage />} />
+    <Route path="transport/stoppages" element={<TransportStoppage />} />
+    <Route path="transport/stoppage/create" element={<TransportStoppage initialView="add" />} />
+    <Route path="transport/circle" element={<TransportCircle />} />
+    <Route path="transport/circles" element={<TransportCircle />} />
+    <Route path="transport/circle/create" element={<TransportCircle initialView="add" />} />
+    <Route path="transport/fee" element={<TransportFee />} />
+    <Route path="transport/fees" element={<TransportFee />} />
+    <Route path="transport/fee/create" element={<TransportFee initialView="add" />} />
+    <Route path="transport/vehicle" element={<Vehicle />} />
+    <Route path="transport/vehicles" element={<Vehicle />} />
+    <Route path="transport/vehicle/create" element={<Vehicle initialView="add" />} />
+    <Route path="transport/report" element={<TransportReport />} />
 
     <Route path="calendar/holiday" element={<CalendarManager defaultType="holiday" />} />
     <Route path="calendar/celebration" element={<CalendarManager defaultType="celebration" />} />

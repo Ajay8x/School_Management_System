@@ -135,6 +135,7 @@ app.use('/api/admin/news', require('./routes/newsRoutes'));
 app.use('/api/discipline/incidents', require('./routes/incidentRoutes'));
 app.use('/api/incidents', require('./routes/incidentRoutes'));
 app.use('/api/discipline/incident', require('./routes/incidentRoutes'));
+app.use('/api/transport', require('./routes/transportRoutes'));
 
 
 
