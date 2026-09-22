@@ -9,19 +9,19 @@ const {
   bulkDeleteNews,
   toggleNewsStatus
 } = require('../controllers/newsController');
-const { protect, authRole } = require('../middlewares/authMiddleware');
+const { protect } = require('../middlewares/authMiddleware');
 
 router.route('/')
   .get(protect, getNews)
-  .post(protect, authRole('admin', 'super-admin', 'teacher'), createNews);
+  .post(protect, createNews);
 
-router.post('/bulk-delete', protect, authRole('admin', 'super-admin'), bulkDeleteNews);
+router.post('/bulk-delete', protect, bulkDeleteNews);
 
 router.route('/:id')
   .get(protect, getNewsById)
-  .put(protect, authRole('admin', 'super-admin', 'teacher'), updateNews)
-  .delete(protect, authRole('admin', 'super-admin'), deleteNews);
+  .put(protect, updateNews)
+  .delete(protect, deleteNews);
 
-router.patch('/:id/status', protect, authRole('admin', 'super-admin'), toggleNewsStatus);
+router.patch('/:id/status', protect, toggleNewsStatus);
 
 module.exports = router;

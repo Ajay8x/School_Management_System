@@ -80,7 +80,7 @@ exports.getNewsById = async (req, res) => {
     const news = await News.findByIdAndUpdate(
       req.params.id,
       { $inc: { views: 1 } },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!news) {
@@ -96,24 +96,28 @@ exports.getNewsById = async (req, res) => {
 
 // @desc    Create new news article
 // @route   POST /api/news
-// @access  Private (Admin / Teacher / Super-Admin)
+// @access  Private (Authenticated)
 exports.createNews = async (req, res) => {
   try {
     const { title, subtitle, content, category, coverImage, status, isFeatured } = req.body;
 
-    if (!title || !content) {
-      return res.status(400).json({ message: 'Title and content are required' });
+    if (!title || !title.trim()) {
+      return res.status(400).json({ message: 'Please provide a title for the news article' });
+    }
+
+    if (!content || !content.trim()) {
+      return res.status(400).json({ message: 'Please provide content for the news article' });
     }
 
     const newsData = {
-      title,
-      subtitle: subtitle || '',
-      content,
+      title: title.trim(),
+      subtitle: subtitle ? subtitle.trim() : '',
+      content: content.trim(),
       category: category || 'General',
       coverImage: coverImage || '',
       status: status || 'Published',
       isFeatured: Boolean(isFeatured),
-      author: req.user?._id,
+      author: req.user?._id || req.user?.id,
       authorName: req.user?.name || req.user?.username || 'School Administration',
       publishedAt: status === 'Draft' ? null : (req.body.publishedAt || new Date())
     };
@@ -121,17 +125,19 @@ exports.createNews = async (req, res) => {
     if (req.schoolId) {
       newsData.schoolId = req.schoolId;
     }
-    if (req.sessionId) {
-      newsData.sessionId = req.sessionId;
+    if (req.headers && req.headers['x-session-id']) {
+      newsData.sessionId = req.headers['x-session-id'];
     }
 
     const news = await News.create(newsData);
 
-    await logActivity({
-      req,
-      user: req.user,
-      activity: `Created news article: "${news.title}"`
-    });
+    if (req.user) {
+      await logActivity({
+        req,
+        user: req.user,
+        activity: `Created news article: "${news.title}"`
+      });
+    }
 
     res.status(201).json(news);
   } catch (error) {
@@ -142,7 +148,7 @@ exports.createNews = async (req, res) => {
 
 // @desc    Update existing news article
 // @route   PUT /api/news/:id
-// @access  Private (Admin / Super-Admin)
+// @access  Private (Authenticated)
 exports.updateNews = async (req, res) => {
   try {
     const { title, subtitle, content, category, coverImage, status, isFeatured, publishedAt } = req.body;
@@ -153,9 +159,9 @@ exports.updateNews = async (req, res) => {
     }
 
     const updateFields = {
-      ...(title !== undefined && { title }),
-      ...(subtitle !== undefined && { subtitle }),
-      ...(content !== undefined && { content }),
+      ...(title !== undefined && { title: title.trim() }),
+      ...(subtitle !== undefined && { subtitle: subtitle ? subtitle.trim() : '' }),
+      ...(content !== undefined && { content: content.trim() }),
       ...(category !== undefined && { category }),
       ...(coverImage !== undefined && { coverImage }),
       ...(status !== undefined && { status }),
@@ -173,11 +179,13 @@ exports.updateNews = async (req, res) => {
       { returnDocument: 'after', runValidators: true }
     );
 
-    await logActivity({
-      req,
-      user: req.user,
-      activity: `Updated news article: "${updatedNews.title}"`
-    });
+    if (req.user) {
+      await logActivity({
+        req,
+        user: req.user,
+        activity: `Updated news article: "${updatedNews.title}"`
+      });
+    }
 
     res.json(updatedNews);
   } catch (error) {
@@ -188,7 +196,7 @@ exports.updateNews = async (req, res) => {
 
 // @desc    Delete news article
 // @route   DELETE /api/news/:id
-// @access  Private (Admin / Super-Admin)
+// @access  Private (Authenticated)
 exports.deleteNews = async (req, res) => {
   try {
     const news = await News.findById(req.params.id);
@@ -198,11 +206,13 @@ exports.deleteNews = async (req, res) => {
 
     await news.deleteOne();
 
-    await logActivity({
-      req,
-      user: req.user,
-      activity: `Deleted news article: "${news.title}"`
-    });
+    if (req.user) {
+      await logActivity({
+        req,
+        user: req.user,
+        activity: `Deleted news article: "${news.title}"`
+      });
+    }
 
     res.json({ message: 'News article removed successfully' });
   } catch (error) {
@@ -213,7 +223,7 @@ exports.deleteNews = async (req, res) => {
 
 // @desc    Bulk delete news articles
 // @route   POST /api/news/bulk-delete
-// @access  Private (Admin / Super-Admin)
+// @access  Private (Authenticated)
 exports.bulkDeleteNews = async (req, res) => {
   try {
     const { ids } = req.body;
@@ -223,11 +233,13 @@ exports.bulkDeleteNews = async (req, res) => {
 
     await News.deleteMany({ _id: { $in: ids } });
 
-    await logActivity({
-      req,
-      user: req.user,
-      activity: `Bulk deleted ${ids.length} news articles`
-    });
+    if (req.user) {
+      await logActivity({
+        req,
+        user: req.user,
+        activity: `Bulk deleted ${ids.length} news articles`
+      });
+    }
 
     res.json({ message: `Successfully deleted ${ids.length} news articles` });
   } catch (error) {
@@ -238,7 +250,7 @@ exports.bulkDeleteNews = async (req, res) => {
 
 // @desc    Toggle news status (Draft <-> Published)
 // @route   PATCH /api/news/:id/status
-// @access  Private (Admin / Super-Admin)
+// @access  Private (Authenticated)
 exports.toggleNewsStatus = async (req, res) => {
   try {
     const news = await News.findById(req.params.id);
@@ -253,11 +265,13 @@ exports.toggleNewsStatus = async (req, res) => {
     }
     await news.save();
 
-    await logActivity({
-      req,
-      user: req.user,
-      activity: `Toggled status of news article "${news.title}" to ${nextStatus}`
-    });
+    if (req.user) {
+      await logActivity({
+        req,
+        user: req.user,
+        activity: `Toggled status of news article "${news.title}" to ${nextStatus}`
+      });
+    }
 
     res.json(news);
   } catch (error) {

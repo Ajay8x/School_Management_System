@@ -63,6 +63,4 @@ const newsSchema = new mongoose.Schema({
   timestamps: true
 });
 
-newsSchema.plugin(require('../plugins/tenantPlugin'));
-
 module.exports = mongoose.model('News', newsSchema);
