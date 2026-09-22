@@ -1066,14 +1066,6 @@ export default function Layout() {
               <Settings className="w-4 h-4" />
             </Link>
 
-            {/* Theme Toggle Button */}
-            <button 
-              onClick={toggleTheme} 
-              className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition"
-              title="Toggle Theme"
-            >
-              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
 
             {/* Clock / Notifications Icon */}
             <div className="relative">
