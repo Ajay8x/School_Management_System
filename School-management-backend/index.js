@@ -132,6 +132,9 @@ app.use('/api/trip', require('./routes/tripRoutes'));
 app.use('/api/activity/trips', require('./routes/tripRoutes'));
 app.use('/api/news', require('./routes/newsRoutes'));
 app.use('/api/admin/news', require('./routes/newsRoutes'));
+app.use('/api/discipline/incidents', require('./routes/incidentRoutes'));
+app.use('/api/incidents', require('./routes/incidentRoutes'));
+app.use('/api/discipline/incident', require('./routes/incidentRoutes'));
 
 
 

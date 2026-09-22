@@ -83,6 +83,7 @@ import Ticket from './pages/helpdesk/Ticket';
 import HelpdeskConfig from './pages/helpdesk/HelpdeskConfig';
 import Trip from './pages/Trip';
 import News from './pages/News';
+import DisciplineIncident from './pages/DisciplineIncident';
 import NotFound from './pages/NotFound';
 
 
@@ -301,8 +302,10 @@ const AdminAndSuperAdminRoutes = () => (
     <Route path="news" element={<News />} />
     <Route path="news/add" element={<News initialView="add" />} />
     <Route path="news/edit/:id" element={<News initialView="edit" />} />
-    <Route path="news/:id" element={<News initialView="view" />} />
-    <Route path="discipline/incident" element={<Placeholder title="Discipline Incident" />} />
+    <Route path="discipline/incident" element={<DisciplineIncident />} />
+    <Route path="discipline/incident/add" element={<DisciplineIncident initialView="add" />} />
+    <Route path="discipline/incident/edit/:id" element={<DisciplineIncident initialView="edit" />} />
+    <Route path="discipline/incident/:id" element={<DisciplineIncident initialView="view" />} />
     <Route path="approval/type" element={<Placeholder title="Approval Type" />} />
     <Route path="approval/request" element={<Placeholder title="Approval Request" />} />
     <Route path="approval/pending" element={<Placeholder title="Pending Requests" />} />
@@ -393,6 +396,10 @@ function App() {
           <Route path="news/add" element={<News initialView="add" />} />
           <Route path="news/edit/:id" element={<News initialView="edit" />} />
           <Route path="news/:id" element={<News initialView="view" />} />
+          <Route path="discipline/incident" element={<DisciplineIncident />} />
+          <Route path="discipline/incident/add" element={<DisciplineIncident initialView="add" />} />
+          <Route path="discipline/incident/edit/:id" element={<DisciplineIncident initialView="edit" />} />
+          <Route path="discipline/incident/:id" element={<DisciplineIncident initialView="view" />} />
           <Route path="utility/activity-log" element={<ActivityLog />} />
           <Route path="utility/config" element={<Placeholder title="Utility Config" />} />
         </Route>
